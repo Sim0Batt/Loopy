@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Loopy</string>
+    <string name="server_client_id" translatable="false">997640296933-b7kqj89mlnbcdba51g0pfktlcj4jvpm1.apps.googleusercontent.com</string>
 </resources>

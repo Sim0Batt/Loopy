@@ -57,26 +57,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //Exposed Implementation
-    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
-
-    //MySql Implementation
-    implementation("mysql:mysql-connector-java:8.0.33")
-
     //Layouts Implementations
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    //XML Parser
-    implementation("org.simpleframework:simple-xml:2.7.1")
 
-    //HTTP
-    implementation("io.ktor:ktor-client-core:2.3.7")
-    implementation("io.ktor:ktor-client-cio:2.3.7")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
 
 

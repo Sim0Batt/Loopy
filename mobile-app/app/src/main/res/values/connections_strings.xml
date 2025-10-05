@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="db_url">jdbc:mysql://ec2-16-171-169-80.eu-north-1.compute.amazonaws.com/tuo_db?useSSL=false&allowPublicKeyRetrieval=true</string>
+    <string name="db_user">root</string>
+    <string name="db_password">Simone04</string>
+</resources>

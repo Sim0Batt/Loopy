@@ -5,32 +5,39 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.example.loopy.R
-import com.example.loopy.configurations.ReadXMLResources
-import configuration.DatabaseConfiguration
-import kotlinx.coroutines.Dispatchers
+import com.example.loopy.login.models.UserJson
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.transaction
+import kotlinx.serialization.json.Json
 
 class LoginActivity : ComponentActivity() {
-
-    // 1. Declare config but initialize it in onCreate
-    private lateinit var config: DatabaseConfiguration
+    private val client = HttpClient (CIO) {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
+        }
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.login)
-
-        // 2. Initialize config here, where context is available
-        // Pass 'this' (the Activity context) to your resource reader
-        config = ReadXMLResources().run()
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)
         val inputPassword = findViewById<EditText>(R.id.passwordInput)
@@ -43,7 +50,7 @@ class LoginActivity : ComponentActivity() {
             val password = inputPassword.text.toString()
             Log.d("Registration", "Email: $email, Password: $password")
             println("Email: $email, Password: $password")
-            // You can call your database logic here
+
         }
 
         submitButton.setOnClickListener {
@@ -51,40 +58,33 @@ class LoginActivity : ComponentActivity() {
             val password = inputPassword.text.toString()
             Log.d("Login", "Email: $email, Password: $password")
             println("Email: $email, Password: $password")
-            // 3. Launch a coroutine for database operations
-            lifecycleScope.launch {
+
+            val credentials = UserJson(email, password)
+
+            lifecycleScope.launch{
                 try {
-                    val isValid = connectAndValidateUser(email, password)
-                    if (isValid) {
-                        Log.d("Login", "Login Successful")
-                        // TODO: Navigate to the next screen
-                    } else {
-                        Log.d("Login", "Invalid credentials")
-                        // TODO: Show an error message to the user
+                    val response = client.post ("http://16.171.169.80:8080/login") {
+                        contentType(io.ktor.http.ContentType.Application.Json)
+                        setBody(credentials)
                     }
+
+                    // Log della risposta del server
+                    val responseBody = response.bodyAsText()
+                    Log.d("Login", "Risposta del server: $responseBody")
+                    println("Risposta del server: $responseBody") //responseBody contiene success o failure
+
+                    runOnUiThread {
+                        Toast.makeText(this@LoginActivity, "Login attempt finished. See logs for details.",
+                            Toast.LENGTH_LONG).show()
+                    }
+
                 } catch (e: Exception) {
-                    Log.e("Login", "Database operation failed", e)
-                    // TODO: Handle connection errors
+                    // Gestione degli errori di rete
+                    Log.e("Login", "Errore durante la richiesta di login", e)
+                    runOnUiThread {
+                        Toast.makeText(this@LoginActivity, "Errore di rete: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
-            }
-        }
-    }
-
-    // 4. Create a suspend function to handle database logic off the main thread
-    private suspend fun connectAndValidateUser(email: String, password: String): Boolean {
-        return withContext(Dispatchers.IO) { // Switch to a background thread
-            val connection = Database.connect(
-                url = config.databaseUrl,
-                driver = "com.mysql.cj.jdbc.Driver",
-                user = config.databaseUser,
-                password = config.databasePassword
-            )
-
-            // Example of a transaction. Replace with your actual user validation logic.
-            transaction(connection) {
-                // val user = UserTable.select { UserTable.email eq email }.singleOrNull()
-                // return@transaction user?.password == password
-                true // Placeholder
             }
         }
     }

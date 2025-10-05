@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.2.20"
+
 }
 
 android {
@@ -59,6 +61,19 @@ dependencies {
 
     //Layouts Implementations
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    //Ktor
+    implementation("io.ktor:ktor-client-core:2.3.7")
+    implementation("io.ktor:ktor-client-cio:2.3.7") // Engine per il client Ktor
+
+    // Ktor Content Negotiation e serializzazione JSON
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+
+    // Libreria per la serializzazione Kotlinx JSON (necessaria)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+
 
 
 

@@ -17,8 +17,10 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.example.main.server.models.UserJson
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import server.models.RegisterJson
 
 
 fun Application.module() {
@@ -32,7 +34,13 @@ fun Application.module() {
             var users = ""
             transaction(DatabaseConfig().getConfig()) {
                 TabellaUserTable.selectAll().map {
-                    users += it[TabellaUserTable.id].toString() + ", " + it[TabellaUserTable.email] + ", " + it[TabellaUserTable.password] + "\n"
+                    users += it[TabellaUserTable.id].toString() + ", " + it[TabellaUserTable.email] + ", " +
+                            it[TabellaUserTable.password] + ", " +
+                            it[TabellaUserTable.username] + ", " +
+                            it[TabellaUserTable.age] + ", " +
+                            it[TabellaUserTable.height] + ", " +
+                            it[TabellaUserTable.weight] + "\n"
+
                 }
             }
             call.respondText {
@@ -56,6 +64,23 @@ fun Application.module() {
             } else {
                 call.respondText("failure")
             }
+        }
+
+        post("/register") {
+            val credentials = call.receive<RegisterJson>()
+            val user = transaction(DatabaseConfig().getConfig()) {
+                TabellaUserTable.insert {
+                    it[email] = credentials.email
+                    it[password] = credentials.password
+                    it[username] = credentials.username
+                    it[age] = credentials.age
+                    it[height] = credentials.height
+                    it[weight] = credentials.weight
+                    it[sex] = credentials.sex
+                }
+            }
+            call.response.header("Location", "/login")
+            call.respondText("Account Created", status = HttpStatusCode.Created)
         }
     }
 }

@@ -10,4 +10,9 @@ class TabellaUserEntity(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<TabellaUserEntity>(TabellaUserTable)
     var email by TabellaUserTable.email
     var password by TabellaUserTable.password
+    var username by TabellaUserTable.username
+    var height by TabellaUserTable.height
+    var weight by TabellaUserTable.weight
+    var age by TabellaUserTable.age
+    var sex by TabellaUserTable.sex
 }

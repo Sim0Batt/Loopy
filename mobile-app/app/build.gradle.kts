@@ -61,6 +61,7 @@ dependencies {
 
     //Layouts Implementations
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.cardview:cardview:1.0.0")
 
     //Ktor
     implementation("io.ktor:ktor-client-core:2.3.7")

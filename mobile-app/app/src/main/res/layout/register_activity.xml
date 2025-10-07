@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/registerbg">
+
+    <!-- Campo di input per l'Email -->
+
+    <!-- Campo di input per la Password -->
+
+    <!-- Campo di input per l'Età -->
+
+    <!-- Campo di input per il Peso -->
+
+    <!-- Campo di input per l'Altezza -->
+
+    <!-- Campo di input per il Sesso -->
+
+    <EditText
+        android:id="@+id/usernameInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="32dp"
+        android:hint="Username"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/weightInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Peso (kg)"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="@id/ageInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/ageInput"
+        app:layout_constraintTop_toBottomOf="@id/ageInput" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@id/emailInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/emailInput"
+        app:layout_constraintTop_toBottomOf="@id/emailInput" />
+
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="212dp"
+        android:layout_marginEnd="32dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:src="@android:drawable/ic_menu_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/submitButton"
+        app:layout_constraintTop_toTopOf="@id/submitButton"
+        tools:ignore="ContentDescription" />
+
+    <EditText
+        android:id="@+id/sexInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="Sesso"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@id/heightInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/heightInput"
+        app:layout_constraintTop_toBottomOf="@id/heightInput" />
+
+    <ImageButton
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:src="@android:drawable/ic_menu_send"
+        app:layout_constraintEnd_toStartOf="@+id/registerButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sexInput"
+        tools:ignore="ContentDescription" />
+
+    <EditText
+        android:id="@+id/heightInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="Altezza (cm)"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@id/weightInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/weightInput"
+        app:layout_constraintTop_toBottomOf="@id/weightInput" />
+
+    <EditText
+        android:id="@+id/ageInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="Età"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@id/passwordInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/passwordInput"
+        app:layout_constraintTop_toBottomOf="@id/passwordInput" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

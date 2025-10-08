@@ -25,7 +25,7 @@
         android:id="@+id/passwordInput"
         android:layout_width="250dp"
         android:layout_height="47dp"
-        android:hint=""
+        android:textColor="@color/white"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/emailInput"
@@ -40,7 +40,7 @@
         android:layout_height="45dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:hint=""
+        android:textColor="@color/white"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:hint=""
+        android:textColor="@color/white"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,6 +112,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.849" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="600px"
+        android:layout_height="200px"
+        android:text="REGISTER"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.975"
+        android:background="@drawable/rounded_button"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

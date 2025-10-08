@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
@@ -52,7 +53,7 @@ class RegisterActivity: ComponentActivity() {
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)
         val inputPassword = findViewById<EditText>(R.id.passwordInput)
-        val submitButton = findViewById<ImageButton>(R.id.submitButton)
+        val submitButton = findViewById<Button>(R.id.submitButton)
         val inputUsername = findViewById<EditText>(R.id.usernameInput)
 
         val inputAge = findViewById<Spinner>(R.id.ageInput)
@@ -115,9 +116,11 @@ class RegisterActivity: ComponentActivity() {
                 sex
             )
 
+            println(credentials.toString())
+
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://16.171.169.80:8080/register") {
+                    val response = client.post ("http://13.61.7.101:8080/register") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }
@@ -128,7 +131,7 @@ class RegisterActivity: ComponentActivity() {
                     println("Risposta del server: $responseBody") //responseBody contiene success o failure
 
                     runOnUiThread {
-                        if(responseBody == "success"){
+                        if(responseBody == "Account Created"){
                             Toast.makeText(this@RegisterActivity, "Register Success",
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@RegisterActivity, MainActivity::class.java)

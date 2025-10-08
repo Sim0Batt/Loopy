@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
@@ -42,26 +44,64 @@ class RegisterActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.register_activity)
+        val ageList: List<Int> = RegisterListSet().setAgeList()
+        val heightList: List<Int> = RegisterListSet().setHeightList()
+        val weightList: List<Int> = RegisterListSet().setWeightList()
+        val sexList: List<String> = listOf("M", "F")
+
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)
         val inputPassword = findViewById<EditText>(R.id.passwordInput)
         val submitButton = findViewById<ImageButton>(R.id.submitButton)
-        val registerButton = findViewById<ImageButton>(R.id.registerButton)
         val inputUsername = findViewById<EditText>(R.id.usernameInput)
-        val inputAge = findViewById<EditText>(R.id.ageInput)
-        val inputWeight = findViewById<EditText>(R.id.weightInput)
-        val inputHeight = findViewById<EditText>(R.id.heightInput)
-        val inputSex = findViewById<EditText>(R.id.sexInput)
+
+        val inputAge = findViewById<Spinner>(R.id.ageInput)
+        var adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            ageList
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        inputAge.adapter = adapter
+
+
+        val inputWeight = findViewById<Spinner>(R.id.weightInput)
+        adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            weightList
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        inputWeight.adapter = adapter
+
+        val inputHeight = findViewById<Spinner>(R.id.heightInput)
+        adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            heightList
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        inputHeight.adapter = adapter
+
+        val inputSex = findViewById<Spinner>(R.id.sexInput)
+        val sexAdapter: ArrayAdapter<String> = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            sexList
+        )
+        sexAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        inputSex.adapter = sexAdapter
+
 
 
         submitButton.setOnClickListener {
             val email = inputEmail.text.toString()
             val password = inputPassword.text.toString()
             val username = inputUsername.text.toString()
-            val age = inputAge.text.toString().toInt()
-            val weight = inputWeight.text.toString().toInt()
-            val height = inputHeight.text.toString().toInt()
-            val sex = inputSex.text.toString()
+            val age = inputAge.selectedItem.toString().toInt()
+            val weight = inputWeight.selectedItem.toString().toInt()
+            val height = inputHeight.selectedItem.toString().toInt()
+            val sex = inputSex.selectedItem.toString()
             Log.d("Login", "Email: $email, Password: $password")
             println("Email: $email, Password: $password")
 

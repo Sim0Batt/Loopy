@@ -69,7 +69,7 @@ fun Application.module() {
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaPpgTable.selectAll().filter {
                     it[TabellaPpgTable.userId] == id?.toInt()
-                }.joinToString { "Battito: ${it[TabellaPpgTable.battito]}, Ossigenazione: ${it[TabellaPpgTable.ossigenazione]}, TimeStamp: ${it[TabellaPpgTable.timestamp]}" }
+                }.joinToString { "Battito:${it[TabellaPpgTable.battito]}, Ossigenazione:${it[TabellaPpgTable.ossigenazione]}, TimeStamp:${it[TabellaPpgTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
@@ -79,7 +79,7 @@ fun Application.module() {
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaAccelerometroTable.selectAll().filter {
                     it[TabellaAccelerometroTable.userId] == id?.toInt()
-                }.joinToString { "Movimento: ${it[TabellaAccelerometroTable.movimento]}, TimeStamp: ${it[TabellaAccelerometroTable.timestamp]}" }
+                }.joinToString { "Movimento:${it[TabellaAccelerometroTable.movimento]}, TimeStamp:${it[TabellaAccelerometroTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
@@ -89,7 +89,7 @@ fun Application.module() {
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaElettrodiTable.selectAll().filter {
                     it[TabellaElettrodiTable.userId] == id?.toInt()
-                }.joinToString { "Sudorazione: ${it[TabellaElettrodiTable.sudorazione]}, TimeStamp: ${it[TabellaElettrodiTable.timestamp]}" }
+                }.joinToString { "Sudorazione:${it[TabellaElettrodiTable.sudorazione]}, TimeStamp:${it[TabellaElettrodiTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
@@ -99,7 +99,7 @@ fun Application.module() {
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaTermometroTable.selectAll().filter {
                     it[TabellaTermometroTable.userId] == id?.toInt()
-                }.joinToString { "Temperatura: ${it[TabellaTermometroTable.temperatura]}, TimeStamp: ${it[TabellaTermometroTable.timestamp]}" }
+                }.joinToString { "Temperatura:${it[TabellaTermometroTable.temperatura]}, TimeStamp:${it[TabellaTermometroTable.timestamp]}\n" }
             }
             call.respondText(info)
         }

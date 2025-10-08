@@ -18,116 +18,100 @@
 
     <!-- Campo di input per il Sesso -->
 
-    <EditText
-        android:id="@+id/usernameInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="144dp"
-        android:layout_marginEnd="32dp"
-        android:hint="Username"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/weightInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Peso (kg)"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="@id/ageInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/ageInput"
-        app:layout_constraintTop_toBottomOf="@id/ageInput" />
+
 
     <EditText
         android:id="@+id/passwordInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:hint="Password"
+        android:layout_width="250dp"
+        android:layout_height="47dp"
+        android:hint=""
         android:inputType="textPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/emailInput"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/emailInput"
-        app:layout_constraintTop_toBottomOf="@id/emailInput" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.587" />
 
     <EditText
         android:id="@+id/emailInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="45dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="212dp"
         android:layout_marginEnd="32dp"
-        android:hint="Email"
+        android:hint=""
         android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.326"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:src="@android:drawable/ic_menu_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/submitButton"
-        app:layout_constraintTop_toTopOf="@id/submitButton"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.47" />
 
     <EditText
-        android:id="@+id/sexInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:hint="Sesso"
+        android:id="@+id/usernameInput"
+        android:layout_width="250dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint=""
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@id/heightInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/heightInput"
-        app:layout_constraintTop_toBottomOf="@id/heightInput" />
-
-    <ImageButton
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:src="@android:drawable/ic_menu_send"
-        app:layout_constraintEnd_toStartOf="@+id/registerButton"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sexInput"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.361" />
 
-    <EditText
-        android:id="@+id/heightInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="Altezza (cm)"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@id/weightInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/weightInput"
-        app:layout_constraintTop_toBottomOf="@id/weightInput" />
-
-    <EditText
+    <Spinner
         android:id="@+id/ageInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="Età"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@id/passwordInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/passwordInput"
-        app:layout_constraintTop_toBottomOf="@id/passwordInput" />
+        android:layout_width="93dp"
+        android:layout_height="46dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        app:layout_constraintVertical_bias="0.743" />
+
+    <Spinner
+        android:id="@+id/heightInput"
+        android:layout_width="93dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ageInput"
+        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        app:layout_constraintVertical_bias="0.849" />
+
+    <Spinner
+        android:id="@+id/sexInput"
+        android:layout_width="93dp"
+        android:layout_height="46dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.737" />
+
+    <Spinner
+        android:id="@+id/weightInput"
+        android:layout_width="93dp"
+        android:layout_height="46dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.921"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.849" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package server
 
 
+import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.scripts.MainScript
 import database.tables.TabellaAccelerometroTable
@@ -20,9 +21,12 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.select
 import server.models.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import server.models.AgentJson
 import server.models.RegisterJson
 
 
@@ -64,44 +68,90 @@ fun Application.module() {
             call.respondText("Account Created", status = HttpStatusCode.Created)
         }
 
-        post("/getPPG/{id}"){
+        get("/getPPG/{id}"){
             val id = call.parameters["id"]
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaPpgTable.selectAll().filter {
                     it[TabellaPpgTable.userId] == id?.toInt()
-                }.joinToString { "Battito:${it[TabellaPpgTable.battito]}, Ossigenazione:${it[TabellaPpgTable.ossigenazione]}, TimeStamp:${it[TabellaPpgTable.timestamp]}\n" }
+                }.joinToString { "HeartRate:${it[TabellaPpgTable.battito]}, Oxygenation:${it[TabellaPpgTable.ossigenazione]}, TimeStamp:${it[TabellaPpgTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
 
-        post("/getAccellerometro/{id}"){
+        get("/getAccelerometer/{id}"){
             val id = call.parameters["id"]
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaAccelerometroTable.selectAll().filter {
                     it[TabellaAccelerometroTable.userId] == id?.toInt()
-                }.joinToString { "Movimento:${it[TabellaAccelerometroTable.movimento]}, TimeStamp:${it[TabellaAccelerometroTable.timestamp]}\n" }
+                }.joinToString { "Mooving:${it[TabellaAccelerometroTable.movimento]}, TimeStamp:${it[TabellaAccelerometroTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
 
-        post("/getElettrodi/{id}"){
+        get("/getElectrodes/{id}"){
             val id = call.parameters["id"]
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaElettrodiTable.selectAll().filter {
                     it[TabellaElettrodiTable.userId] == id?.toInt()
-                }.joinToString { "Sudorazione:${it[TabellaElettrodiTable.sudorazione]}, TimeStamp:${it[TabellaElettrodiTable.timestamp]}\n" }
+                }.joinToString { "Sweating:${it[TabellaElettrodiTable.sudorazione]}, TimeStamp:${it[TabellaElettrodiTable.timestamp]}\n" }
             }
             call.respondText(info)
         }
 
-        post("/getTermometro/{id}"){
+        get("/getTermometer/{id}"){
             val id = call.parameters["id"]
             val info = transaction(DatabaseConfig().getConfig()) {
                 TabellaTermometroTable.selectAll().filter {
                     it[TabellaTermometroTable.userId] == id?.toInt()
-                }.joinToString { "Temperatura:${it[TabellaTermometroTable.temperatura]}, TimeStamp:${it[TabellaTermometroTable.timestamp]}\n" }
+                }.joinToString { "Temperature:${it[TabellaTermometroTable.temperatura]}, TimeStamp:${it[TabellaTermometroTable.timestamp]}\n" }
             }
             call.respondText(info)
+        }
+
+        post("/agentProcess") {
+            val credentials = call.receive<AgentJson>()
+            var id = 0
+            var age = 0
+            var height = 0
+            var weight = 0
+            var sex = ""
+            println(credentials)
+
+            transaction(DatabaseConfig().getConfig()) {
+                id = TabellaUserTable.selectAll().where{
+                    TabellaUserTable.username eq credentials.username
+                }.firstOrNull()?.get(TabellaUserTable.id).toString().toInt()
+
+                age = TabellaUserTable.select(TabellaUserTable.age).where{
+                    TabellaUserTable.id eq id
+                }.firstOrNull()?.get(TabellaUserTable.age).toString().toInt()
+
+                height = TabellaUserTable.selectAll().where{
+                    TabellaUserTable.id eq id
+                }.firstOrNull()?.get(TabellaUserTable.height).toString().toInt()
+
+                weight = TabellaUserTable.selectAll().where{
+                    TabellaUserTable.id eq id
+                }.firstOrNull()?.get(TabellaUserTable.weight).toString().toInt()
+
+                sex = TabellaUserTable.selectAll().where{
+                    TabellaUserTable.id eq id
+                }.firstOrNull()?.get(TabellaUserTable.sex).toString()
+
+            }
+
+            val agent = AgentCreation().getAgent(id)
+            call.respondText(agent.run("""
+                User input: ${credentials.input}
+                Context:
+                -UserId: $id,
+                -Age: $age,
+                -Height: $height,
+                -Weight: $weight,
+                -Sex: $sex
+            """.trimIndent()))
+
+            call.respondText(agent.run(credentials.input))
         }
     }
 }

@@ -1,28 +1,27 @@
-package scripts
+package aiAgent.scripts
 
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
+import ai.koog.agents.features.eventHandler.feature.EventHandler
 import ai.koog.agents.features.eventHandler.feature.EventHandlerConfig
+import ai.koog.agents.memory.feature.AgentMemory
 import ai.koog.agents.memory.providers.LocalFileMemoryProvider
 import ai.koog.agents.memory.providers.LocalMemoryConfig
 import ai.koog.agents.memory.storage.SimpleStorage
 import ai.koog.prompt.executor.clients.google.GoogleModels
-import ai.koog.prompt.executor.clients.openrouter.OpenRouterModels
 import ai.koog.prompt.executor.llms.all.simpleGoogleAIExecutor
 import ai.koog.prompt.executor.llms.all.simpleOpenRouterExecutor
+import ai.koog.prompt.llm.LLMProvider
 import ai.koog.rag.base.files.JVMFileSystemProvider
-import com.imsl.dev.agenttemplate.agentRunTest.mockTools.MockStrategy
-import configuration.ReadXMLResources
-import customModels.OpenRouterCustomModels
-import tools.GetStatusTool
+import aiAgent.strategies.MockStrategy
+import aiAgent.customModels.OpenRouterCustomModels
+import aiAgent.tools.GetStatusTool
+import server.models.AgentJson
 import java.nio.file.Path
 
 class AgentCreation {
-    val xmlReader = ReadXMLResources()
-    val configuration = xmlReader.run()
-
-    fun getOpenRouterAgent(): AIAgent<String, String>{
+    fun getAgent(id: Int): AIAgent<String, String>{
         val memoryProvider = LocalFileMemoryProvider(
             config = LocalMemoryConfig("Agent-Memory"),
             storage = SimpleStorage(fs = JVMFileSystemProvider.ReadWrite),
@@ -51,21 +50,21 @@ class AgentCreation {
 
         return AIAgent(
             toolRegistry = ToolRegistry {
-                tools(GetStatusTool().asTools())
+                tools(GetStatusTool(id).asTools())
             },
             strategy = MockStrategy(),
-            executor = simpleOpenRouterExecutor(configuration.openRouterKey),
-            llmModel = OpenRouterCustomModels.LLama4Maverick,
+            executor = simpleGoogleAIExecutor("AIzaSyDXATpG9D5-7zNoKXszHi0SnleB0hUdKVs"),
+            llmModel = GoogleModels.Gemini2_5Flash,
             systemPrompt = SYSTEM_PROMPT,
             installFeatures = {
-//                install(AgentMemory) {
-//                    this.memoryProvider = memoryProvider
-//                    agentName = "Loopy"
-//                    featureName = "richieste-utente"
-//                    organizationName = "Loopy"
-//                    productName = "memory"
-//                }
-//                install(EventHandler.Feature, eventHandlerConfig)
+                install(AgentMemory) {
+                    this.memoryProvider = memoryProvider
+                    agentName = "Loopy"
+                    featureName = "richieste-utente"
+                    organizationName = "Loopy"
+                    productName = "memory"
+                }
+                install(EventHandler.Feature, eventHandlerConfig)
             }
         )
     }
@@ -102,7 +101,9 @@ You have access to the following tools for retrieving real-time data from an ext
 - If a user asks about their **heart rate**, **hydration levels**, **physical activity**, or **body temperature**, utilize the respective sub-tool from `GetStatusTool`. Provide clear interpretations of the results to help them understand their current wellness state.  
 - If a tool fails or data is unavailable, inform the user politely and suggest alternate steps they can take to assess their health. For example:  
   "I could not retrieve your data right now, but you can stay hydrated and take frequent breaks to care for yourself."  
-- Always prioritize **user well-being and encouragement** in responses.  
+- Always prioritize **user well-being and encouragement** in responses. 
+- If the user asks to get a complete checkup of his health status, call all the available sub-tools and provide a comprehensive response.
+- Summarize the max as possible, messages of max 500 characters.
 
 #### Example Queries You Can Handle
 1. "**How many steps did I take today?**"  
@@ -113,6 +114,11 @@ You have access to the following tools for retrieving real-time data from an ext
    - Call **`getElectrodeInformations`** to interpret hydration and sweating trends.  
 4. "**Am I running a fever?**"  
    - Check **`getTemperatureInformations`** to provide current temperature readings.
+5. "**What is my body temperature?**"  
+   - Call the **`getTemperatureInformations`** tool to retrieve current temperature readings.
+6. "**Give me a full checkup of my health**"  
+   - Call the all **`getHeartInformations`**, **`getElectrodeInformations`**, **`getTemperatureInformations`** and 
+   **`getAccelerometerInformations`** to give the user a complete checkup of his health
 
 #### Features Implemented
 - You are built to **thank users**, provide **encouragement**, and utilize friendly conversational styles to maintain positivity.  

@@ -1,0 +1,69 @@
+{
+    "question": [
+        {
+            "type": "ai.koog.agents.memory.model.MultipleFacts",
+            "concept": {
+                "keyword": "question",
+                "description": "User's previous question",
+                "factType": "MULTIPLE"
+            },
+            "timestamp": 1759941608169,
+            "values": [
+                "The user is feeling sleepy."
+            ]
+        },
+        {
+            "type": "ai.koog.agents.memory.model.MultipleFacts",
+            "concept": {
+                "keyword": "question",
+                "description": "User's previous question",
+                "factType": "MULTIPLE"
+            },
+            "timestamp": 1759941639874,
+            "values": []
+        },
+        {
+            "type": "ai.koog.agents.memory.model.MultipleFacts",
+            "concept": {
+                "keyword": "question",
+                "description": "User's previous question",
+                "factType": "MULTIPLE"
+            },
+            "timestamp": 1759941882579,
+            "values": [
+                "The user inquired about their heart rate for today.",
+                "The system was unable to retrieve heart rate information for user ID 1.",
+                "The inability to retrieve heart rate data was attributed to potential device syncing or temporary connection issues."
+            ]
+        },
+        {
+            "type": "ai.koog.agents.memory.model.MultipleFacts",
+            "concept": {
+                "keyword": "question",
+                "description": "User's previous question",
+                "factType": "MULTIPLE"
+            },
+            "timestamp": 1759942005440,
+            "values": [
+                "The user inquired about their heart rate for today.",
+                "The system was unable to retrieve heart rate information for user ID 1.",
+                "The inability to retrieve heart rate data was attributed to potential device syncing or temporary connection issues."
+            ]
+        },
+        {
+            "type": "ai.koog.agents.memory.model.MultipleFacts",
+            "concept": {
+                "keyword": "question",
+                "description": "User's previous question",
+                "factType": "MULTIPLE"
+            },
+            "timestamp": 1759942103546,
+            "values": [
+                "The user inquired about their heart rate for today.",
+                "The user's ID is 1.",
+                "The system was unable to retrieve heart rate information for user ID 1.",
+                "The inability to retrieve heart rate data was attributed to potential device syncing or temporary connection issues."
+            ]
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-package com.imsl.dev.agenttemplate.agentRunTest.mockTools
+package aiAgent.strategies
 
 import ai.koog.agents.core.agent.entity.AIAgentStrategy
 import ai.koog.agents.core.dsl.builder.forwardTo

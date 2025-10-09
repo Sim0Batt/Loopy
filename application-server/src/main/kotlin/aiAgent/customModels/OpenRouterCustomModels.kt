@@ -1,4 +1,4 @@
-package customModels
+package aiAgent.customModels
 
 import ai.koog.prompt.llm.LLMCapability
 import ai.koog.prompt.llm.LLMProvider

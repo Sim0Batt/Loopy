@@ -1,4 +1,4 @@
-package tools
+package aiAgent.tools
 
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
     Retrieve all user data and use them to give advice.
 """
 )
-class GetStatusTool : ToolSet {
+class GetStatusTool(val id: Int) : ToolSet {
     @Tool
     @LLMDescription("""Using this tool, you can retrieve information about the user's heart rate from an external server. 
         Hence, when the user requests data about their heart rate, use this tool to provide them with the information.
@@ -24,8 +24,8 @@ class GetStatusTool : ToolSet {
         
     """)
     suspend fun getHeartInformations(
-        @LLMDescription("The user's ID")
-        id: Int
+//        @LLMDescription("The user's ID")
+//        id: Int
     ): String {
         val client = HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -60,8 +60,8 @@ class GetStatusTool : ToolSet {
         
     """)
     suspend fun getElectrodeInformations(
-        @LLMDescription("The user's ID")
-        id: Int
+//        @LLMDescription("The user's ID")
+//        id: Int
     ): String {
         val client = HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -97,8 +97,8 @@ class GetStatusTool : ToolSet {
         
     """)
     suspend fun getAccelerometerInformations(
-        @LLMDescription("The user's ID")
-        id: Int
+//        @LLMDescription("The user's ID")
+//        id: Int
     ): String {
         val client = HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -132,8 +132,8 @@ class GetStatusTool : ToolSet {
         
     """)
     suspend fun getTemperatureInformations(
-        @LLMDescription("The user's ID")
-        id: Int
+//        @LLMDescription("The user's ID")
+//        id: Int
     ): String {
         val client = HttpClient(CIO) {
             install(ContentNegotiation) {

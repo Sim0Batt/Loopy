@@ -17,9 +17,9 @@ val ktorVersion = "3.2.1"
 dependencies {
 
     //Exposed Implementation
-    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.50.0")
 
     //MySql Implementation
     implementation("mysql:mysql-connector-java:8.0.33")
@@ -56,7 +56,14 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.json:json:20231013")
 
+    // Koog
+    implementation("ai.koog:koog-agents:0.4.2")
+    testImplementation("ai.koog:agents-test:0.4.2")
+    testImplementation(kotlin("test"))
 
+    //Logging
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("org.slf4j:slf4j-api:2.0.9")
 
     testImplementation(kotlin("test"))
 

@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
@@ -43,8 +45,8 @@ class LoginActivity : ComponentActivity() {
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)
         val inputPassword = findViewById<EditText>(R.id.passwordInput)
-        val submitButton = findViewById<ImageButton>(R.id.submitButton)
-        val registerButton = findViewById<ImageButton>(R.id.registerButton)
+        val submitButton = findViewById<Button>(R.id.submitButton)
+        val registerButton = findViewById<Button>(R.id.registerButton)
 
 
         registerButton.setOnClickListener {

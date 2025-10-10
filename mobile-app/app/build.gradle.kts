@@ -78,13 +78,9 @@ dependencies {
     // Libreria per la serializzazione Kotlinx JSON (necessaria)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    // Koog
-    implementation("ai.koog:koog-agents:0.4.2")
-    testImplementation("ai.koog:agents-test:0.4.2")
+
     testImplementation(kotlin("test"))
 
 
-    //Logging
-    implementation("ch.qos.logback:logback-classic:1.4.11")
-    implementation("org.slf4j:slf4j-api:2.0.9")
+    
 }

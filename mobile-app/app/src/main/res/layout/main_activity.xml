@@ -2,6 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
      >
+=======
+    android:background="@drawable/bg_home">
+>>>>>>> 8a48cd08063646c8f02c2954a3abb4614de1f8df
 
 </androidx.constraintlayout.widget.ConstraintLayout>

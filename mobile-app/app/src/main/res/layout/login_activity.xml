@@ -47,18 +47,18 @@
         android:layout_width="327dp"
         android:layout_height="47dp"
         android:backgroundTint="@android:color/transparent"
-        android:paddingStart="40dp"
         android:ems="10"
         android:gravity="left"
         android:inputType="textEmailAddress"
         android:padding="12dp"
+        android:paddingStart="40dp"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.326"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.481" />
+        app:layout_constraintVertical_bias="0.466" />
 
     <Button
         android:id="@+id/registerButton"

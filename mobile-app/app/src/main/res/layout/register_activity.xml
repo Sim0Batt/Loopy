@@ -19,20 +19,18 @@
     <!-- Campo di input per il Sesso -->
 
 
-
-
     <EditText
         android:id="@+id/passwordInput"
         android:layout_width="250dp"
         android:layout_height="47dp"
-        android:textColor="@color/white"
         android:inputType="textPassword"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/emailInput"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/emailInput"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.587" />
+        app:layout_constraintVertical_bias="0.583" />
 
     <EditText
         android:id="@+id/emailInput"
@@ -55,14 +53,14 @@
         android:layout_height="42dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:textColor="@color/white"
         android:inputType="text"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.329"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.361" />
+        app:layout_constraintVertical_bias="0.354" />
 
     <Spinner
         android:id="@+id/ageInput"

@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -16,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.login.models.RegisterJson
-import com.example.loopy.login.models.UserJson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -27,7 +25,6 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlin.toString
 
 class RegisterActivity: ComponentActivity() {
     private val client = HttpClient (CIO) {

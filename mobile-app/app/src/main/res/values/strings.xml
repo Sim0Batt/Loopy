@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Loopy</string>
     <string name="server_client_id" translatable="false">997640296933-b7kqj89mlnbcdba51g0pfktlcj4jvpm1.apps.googleusercontent.com</string>
-    <string name="open_router_key" translatable="false">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</string>
 </resources>

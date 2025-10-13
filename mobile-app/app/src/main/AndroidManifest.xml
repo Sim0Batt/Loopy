@@ -44,6 +44,30 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Loopy">
+        </activity>
+        <activity
+            android:name=".data.DataActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Loopy">
+        </activity>
+        <activity
+            android:name=".devicemanager.DeviceManagerActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Loopy">
+        </activity>
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Loopy">
+        </activity>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

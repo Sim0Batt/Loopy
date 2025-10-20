@@ -10,5 +10,7 @@ class DeviceManagerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.dm_activity)
+
+
     }
 }

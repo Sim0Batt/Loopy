@@ -1,4 +1,4 @@
-import config.ServerConfig
+import server.ServerConfig
 
 enum class Argument {SERVER, HELP, TEST}
 internal object Main{

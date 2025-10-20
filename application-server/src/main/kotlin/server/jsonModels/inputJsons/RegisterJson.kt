@@ -1,4 +1,4 @@
-package server.models
+package server.jsonModels.inputJsons
 
 import kotlinx.serialization.Serializable
 

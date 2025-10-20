@@ -3,11 +3,8 @@ package server
 
 import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
-import database.scripts.MainScript
-import database.tables.TabellaAccelerometroTable
-import database.tables.TabellaElettrodiTable
-import database.tables.TabellaPpgTable
-import database.tables.TabellaTermometroTable
+import database.QueryManager
+import scripts.MainScript
 import database.tables.TabellaUserTable
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
@@ -21,13 +18,12 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.select
-import server.models.UserJson
+import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import server.models.AgentJson
-import server.models.RegisterJson
+import server.jsonModels.inputJsons.AgentJson
+import server.jsonModels.inputJsons.RegisterJson
+import server.jsonModels.inputJsons.SaveDataJson
 
 
 fun Application.module() {
@@ -46,7 +42,7 @@ fun Application.module() {
         post("/login") {
             val credentials = call.receive<UserJson>()
 
-            val user = transaction(DatabaseConfig().getConfig()) {
+            val user = transaction(DatabaseConfig.getConfig()) {
                 TabellaUserTable.selectAll()
                     .firstOrNull {
                         it[TabellaUserTable.email] == credentials.email &&
@@ -68,45 +64,21 @@ fun Application.module() {
             call.respondText("Account Created", status = HttpStatusCode.Created)
         }
 
-        get("/getPPG/{id}"){
-            val id = call.parameters["id"]
-            val info = transaction(DatabaseConfig().getConfig()) {
-                TabellaPpgTable.selectAll().filter {
-                    it[TabellaPpgTable.userId] == id?.toInt()
-                }.joinToString { "HeartRate:${it[TabellaPpgTable.battito]}, Oxygenation:${it[TabellaPpgTable.ossigenazione]}, TimeStamp:${it[TabellaPpgTable.timestamp]}\n" }
-            }
-            call.respondText(info)
+        staticResources("static", "static")
+        post("/saveData") {
+            val input = call.receive<SaveDataJson>()
+            println{"Received: \n${input}"}
+            call.response.header("Content-Type", "application/json")
+            QueryManager.saveDatas(DatabaseConfig.getConfig(), input)
+            call.respondText("Data Saved")
         }
 
-        get("/getAccelerometer/{id}"){
+        get("/getDatas/{id}") {
             val id = call.parameters["id"]
-            val info = transaction(DatabaseConfig().getConfig()) {
-                TabellaAccelerometroTable.selectAll().filter {
-                    it[TabellaAccelerometroTable.userId] == id?.toInt()
-                }.joinToString { "Mooving:${it[TabellaAccelerometroTable.movimento]}, TimeStamp:${it[TabellaAccelerometroTable.timestamp]}\n" }
-            }
-            call.respondText(info)
+            call.response.header("Content-Type", "application/json")
+            call.respondText(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()).toString())
         }
 
-        get("/getElectrodes/{id}"){
-            val id = call.parameters["id"]
-            val info = transaction(DatabaseConfig().getConfig()) {
-                TabellaElettrodiTable.selectAll().filter {
-                    it[TabellaElettrodiTable.userId] == id?.toInt()
-                }.joinToString { "Sweating:${it[TabellaElettrodiTable.sudorazione]}, TimeStamp:${it[TabellaElettrodiTable.timestamp]}\n" }
-            }
-            call.respondText(info)
-        }
-
-        get("/getTermometer/{id}"){
-            val id = call.parameters["id"]
-            val info = transaction(DatabaseConfig().getConfig()) {
-                TabellaTermometroTable.selectAll().filter {
-                    it[TabellaTermometroTable.userId] == id?.toInt()
-                }.joinToString { "Temperature:${it[TabellaTermometroTable.temperatura]}, TimeStamp:${it[TabellaTermometroTable.timestamp]}\n" }
-            }
-            call.respondText(info)
-        }
 
         post("/agentProcess") {
             val credentials = call.receive<AgentJson>()
@@ -117,7 +89,7 @@ fun Application.module() {
             var sex = ""
             println(credentials)
 
-            transaction(DatabaseConfig().getConfig()) {
+            transaction(DatabaseConfig.getConfig()) {
                 id = TabellaUserTable.selectAll().where{
                     TabellaUserTable.username eq credentials.username
                 }.firstOrNull()?.get(TabellaUserTable.id).toString().toInt()

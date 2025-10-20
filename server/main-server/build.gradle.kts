@@ -17,6 +17,14 @@ val koogVersion = "0.4.1"
 
 dependencies {
 
+    //Exposed Implementation
+    implementation("org.jetbrains.exposed:exposed-core:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.50.0")
+
+    //MySql Implementation
+    implementation("mysql:mysql-connector-java:8.0.33")
+
     //HTTP
     implementation("io.ktor:ktor-client-core:2.3.7")
     implementation("io.ktor:ktor-client-cio:2.3.7")

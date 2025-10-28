@@ -8,7 +8,6 @@ import com.example.loopy.R
 class DeviceManagerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.dm_activity)
 
 

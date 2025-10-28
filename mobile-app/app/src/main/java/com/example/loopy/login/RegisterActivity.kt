@@ -40,7 +40,6 @@ class RegisterActivity: ComponentActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.register_activity)
         val ageList: List<Int> = RegisterListSet().setAgeList()
         val heightList: List<Int> = RegisterListSet().setHeightList()

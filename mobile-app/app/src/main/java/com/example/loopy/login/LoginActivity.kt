@@ -39,7 +39,6 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.login_activity)
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)

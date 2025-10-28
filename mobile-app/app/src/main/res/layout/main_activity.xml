@@ -23,6 +23,8 @@
 
     <ImageButton
         android:id="@+id/settingsButton"
+        android:src="@drawable/ic_settings"
+        android:background="@android:color/transparent"
         android:layout_width="69dp"
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,6 +36,8 @@
 
     <ImageButton
         android:id="@+id/chatbotCloud"
+
+        android:background="@android:color/transparent"
         android:layout_width="322dp"
         android:layout_height="97dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,6 +49,8 @@
 
     <ImageButton
         android:id="@+id/profilePicture"
+        android:src="@drawable/ic_profile"
+        android:background="@android:color/transparent"
         android:layout_width="50dp"
         android:layout_height="45dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,61 +81,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.524" />
-
-    <!-- <ImageButton
-        android:id="@+id/homeButton"
-        android:layout_width="69dp"
-        android:layout_height="60dp"
-        android:background="@drawable/btn_profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.989" /> -->
-
-    <!-- <ImageButton
-        android:id="@+id/dataButton"
-        android:layout_width="69dp"
-        android:layout_height="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.257"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.989" /> -->
-
-    <!-- <ImageButton
-         android:id="@+id/profileButton"
-         android:layout_width="69dp"
-         android:layout_height="60dp"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintHorizontal_bias="1.0"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintVertical_bias="1.0" /> -->
-
-    <!-- <ImageButton
-    android:id="@+id/chatbotButton"
-    android:layout_width="69dp"
-    android:layout_height="60dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.989" /> -->
-
-    <!-- <ImageButton
-        android:id="@+id/dmbutton"
-        android:layout_width="69dp"
-        android:layout_height="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.733"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.989" /> -->
 
     <Button
         android:id="@+id/dailyConsumption"

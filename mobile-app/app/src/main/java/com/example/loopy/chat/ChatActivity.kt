@@ -1,5 +1,6 @@
 package com.example.loopy.chat
 
+import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +16,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.scripts.ChatCaller
+import com.example.loopy.data.DataActivity
+import com.example.loopy.devicemanager.DeviceManagerActivity
+import com.example.loopy.profile.ProfileActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
 class ChatActivity: ComponentActivity() {
@@ -41,8 +47,49 @@ class ChatActivity: ComponentActivity() {
 
         }
 
+        /*------------------TASTI NAVBAR--------------------*/
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
 
+        bottomNavBar.selectedItemId = R.id.nav_chatbot
 
+        bottomNavBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_chatbot -> {
+                    true
+                }
+
+                R.id.nav_data -> {
+                    val intent = Intent(this@ChatActivity, DataActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_home -> {
+                    val intent = Intent(this@ChatActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_dm -> {
+                    val intent = Intent(this@ChatActivity, DeviceManagerActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_profile -> {
+                    val intent = Intent(this@ChatActivity, ProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+        bottomNavBar.selectedItemId = R.id.nav_chatbot
     }
 
     private fun addMessage(testo: String, isSentByUser: Boolean, chatContainer: LinearLayout, scrollView: ScrollView) {

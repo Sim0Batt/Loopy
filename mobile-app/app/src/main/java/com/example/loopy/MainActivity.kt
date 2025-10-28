@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        //  TASTI NAVBAR
+        /*------------------TASTI NAVBAR--------------------*/
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
 
         bottomNavBar.selectedItemId = R.id.nav_home
@@ -93,5 +93,11 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+        bottomNavBar.selectedItemId = R.id.nav_home
     }
 }

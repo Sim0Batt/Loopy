@@ -71,4 +71,9 @@ class DataActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onResume() {
+        super.onResume()
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+        bottomNavBar.selectedItemId = R.id.nav_data
+    }
 }

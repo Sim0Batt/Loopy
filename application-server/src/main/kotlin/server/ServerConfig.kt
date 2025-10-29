@@ -24,6 +24,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.AgentJson
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
+import server.jsonModels.outputJsons.AccountJson
 
 
 fun Application.module() {
@@ -42,16 +43,16 @@ fun Application.module() {
         post("/login") {
             val credentials = call.receive<UserJson>()
 
-            val user = transaction(DatabaseConfig.getConfig()) {
+            val userId = transaction(DatabaseConfig.getConfig()) {
                 TabellaUserTable.selectAll()
                     .firstOrNull {
                         it[TabellaUserTable.email] == credentials.email &&
                                 it[TabellaUserTable.password] == credentials.password
-                    }
+                    }?.getOrNull(TabellaUserTable.id).toString().toIntOrNull()
             }
 
-            if (user != null) {
-                call.respondText("success")
+            if (userId != null) {
+                call.respondText(AccountJson(userId).toString())
             } else {
                 call.respondText("failure")
             }
@@ -59,9 +60,9 @@ fun Application.module() {
 
         post("/register") {
             val credentials = call.receive<RegisterJson>()
-            MainScript().registerUser(credentials)
+            val userId = MainScript().registerUser(credentials)
             call.response.header("Location", "/login")
-            call.respondText("Account Created", status = HttpStatusCode.Created)
+            call.respondText(AccountJson(userId).toString())
         }
 
         staticResources("static", "static")

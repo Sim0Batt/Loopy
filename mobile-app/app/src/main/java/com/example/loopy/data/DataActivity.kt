@@ -2,6 +2,7 @@ package com.example.loopy.data
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -18,6 +19,9 @@ class DataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.data_activity)
+        val bundle = intent.extras
+        val USER_ID = bundle?.getInt("USER_ID")
+        Log.d("DataActivity", "USER_ID: ${USER_ID.toString()}")
 
         val hrValue = findViewById<TextView>(R.id.hrValue)
         val hrvValue = findViewById<TextView>(R.id.hrvValue)

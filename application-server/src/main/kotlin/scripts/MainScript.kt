@@ -24,7 +24,8 @@ class MainScript {
         return users
     }
 
-    fun registerUser(credentials: RegisterJson){
+    fun registerUser(credentials: RegisterJson): Int{
+        var userId = 0
         transaction(DatabaseConfig.getConfig()) {
             TabellaUserTable.insert {
                 it[email] = credentials.email
@@ -35,6 +36,11 @@ class MainScript {
                 it[weight] = credentials.weight
                 it[sex] = credentials.sex
             }
+
+            userId = TabellaUserTable.selectAll().where {
+                TabellaUserTable.email eq credentials.email
+            }.firstOrNull()?.getOrNull(TabellaUserTable.id).toString().toIntOrNull() ?: throw Exception("User not registered")
         }
+        return userId
     }
 }

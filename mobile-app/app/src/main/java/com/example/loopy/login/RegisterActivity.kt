@@ -10,11 +10,11 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
-import com.example.loopy.login.models.RegisterJson
+import com.example.loopy.login.models.input.RegisterJson
+import com.example.loopy.login.models.output.AccountJson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -25,6 +25,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json as KotlinxJson
 
 class RegisterActivity: ComponentActivity() {
     private val client = HttpClient (CIO) {
@@ -127,11 +128,18 @@ class RegisterActivity: ComponentActivity() {
                     println("Risposta del server: $responseBody") //responseBody contiene success o failure
 
                     runOnUiThread {
-                        if(responseBody == "Account Created"){
-                            Toast.makeText(this@RegisterActivity, "Register Success",
+                        try {
+                            // Parse the JSON response {"userId": id}
+                            val loginResponse = KotlinxJson.decodeFromString<AccountJson>(responseBody)
+                            Toast.makeText(this@RegisterActivity, "Registration Success",
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                            // Optionally pass the userId to the next activity
+                            intent.putExtra("USER_ID", loginResponse.userId)
                             startActivity(intent)
+                            finish()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@RegisterActivity, "Login Failed: Invalid response", Toast.LENGTH_LONG).show()
                         }
 
                     }

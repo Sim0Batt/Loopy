@@ -12,6 +12,7 @@ import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.login.models.input.UserJson
 import com.example.loopy.login.models.output.AccountJson
+import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -72,13 +73,13 @@ class LoginActivity : ComponentActivity() {
 
                     runOnUiThread {
                         try {
-                            // Parse the JSON response {"userId": id}
+                            // Parse the JSON response {"userId": id} and save in object S.M.
                             val loginResponse = KotlinxJson.decodeFromString<AccountJson>(responseBody)
+                            SessionManager.currentUserId = loginResponse.userId
+
                             Toast.makeText(this@LoginActivity, "Login Success",
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            // Optionally pass the userId to the next activity
-                            intent.putExtra("USER_ID", loginResponse.userId)
                             startActivity(intent)
                             finish()
                         } catch (e: Exception) {

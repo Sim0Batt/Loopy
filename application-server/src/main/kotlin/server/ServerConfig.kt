@@ -4,11 +4,18 @@ package server
 import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.QueryManager
+import database.tables.TabellaGlucosioTable
 import scripts.MainScript
 import database.tables.TabellaUserTable
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.application.install
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
@@ -18,6 +25,7 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -25,6 +33,8 @@ import server.jsonModels.inputJsons.AgentJson
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
+import kotlinx.serialization.json.Json as KotlinxJson
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 
 
 fun Application.module() {
@@ -32,7 +42,12 @@ fun Application.module() {
         json(Json { ignoreUnknownKeys = true })
     }
 
+
+
+
+
     routing {
+        //LOGIN LOGIC
         staticResources("static", "static")
         get("/getUsers") {
             call.respondText {
@@ -65,6 +80,8 @@ fun Application.module() {
             call.respondText(AccountJson(userId).toString())
         }
 
+
+        //DATA LOGIC
         staticResources("static", "static")
         post("/saveData") {
             val input = call.receive<SaveDataJson>()
@@ -81,6 +98,7 @@ fun Application.module() {
         }
 
 
+        //AI AGENT LOGIC
         post("/agentProcess") {
             val credentials = call.receive<AgentJson>()
             var id = 0
@@ -126,6 +144,37 @@ fun Application.module() {
 
             call.respondText(agent.run(credentials.input))
         }
+
+
+        //MACHINE LEARNING MODELS LOGIC
+        get("/modelProcess/{id}") {
+            try{
+                val userId = call.parameters["id"]
+                val client = HttpClient(CIO) {
+                    install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+                            json(KotlinxJson {
+                                prettyPrint = true
+                                isLenient = true
+                                ignoreUnknownKeys = true
+                            })
+                        }
+                    }
+
+                    val response = client.get ("http://0.0.0.0:18034/process/${userId.toString()}")
+                    // Log della risposta del server
+                    val responseBody = response.bodyAsText()
+                    println("Risposta del server: $responseBody")
+                    QueryManager.saveGlucosePrediction(
+                        DatabaseConfig.getConfig(),
+                        responseBody.toDouble(),
+                        userId.toString().toInt()
+                    )
+
+                    call.respondText("Process Successful")
+                }catch (e: Exception){
+                    call.respondText("Process Failed: ${e}")
+                }
+            }
     }
 }
 

@@ -38,6 +38,8 @@ dependencies {
     implementation("io.ktor:ktor-server-core:${ktorVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("io.netty:netty-all:4.1.98.Final")
+    implementation("io.ktor:ktor-client-core:2.3.7")
+    implementation("io.ktor:ktor-client-cio:2.3.7")
 
     //Logging
     implementation("ch.qos.logback:logback-classic:1.4.11")

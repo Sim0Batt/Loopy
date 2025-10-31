@@ -10,11 +10,15 @@ import com.example.loopy.chat.ChatActivity
 import com.example.loopy.data.DataActivity
 import com.example.loopy.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.loopy.core.BaseActivity
+import com.example.loopy.utils.SessionManager
 
-class DeviceManagerActivity : ComponentActivity() {
+class DeviceManagerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dm_activity)
+
+        val userId = SessionManager.currentUserId!!
 
         /*------------------TASTI NAVBAR--------------------*/
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)

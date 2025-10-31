@@ -14,14 +14,15 @@ import com.example.loopy.chat.ChatActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.loopy.core.BaseActivity
+import com.example.loopy.utils.SessionManager
 
-class DataActivity : AppCompatActivity() {
+class DataActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.data_activity)
-        val bundle = intent.extras
-        val USER_ID = bundle?.getInt("USER_ID")
-        Log.d("DataActivity", "USER_ID: ${USER_ID.toString()}")
+
+        val userId = SessionManager.currentUserId!!
 
         val hrValue = findViewById<TextView>(R.id.hrValue)
         val hrvValue = findViewById<TextView>(R.id.hrvValue)

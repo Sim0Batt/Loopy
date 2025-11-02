@@ -70,7 +70,7 @@ dependencies {
 
     //Ktor
     implementation("io.ktor:ktor-client-core:2.3.7")
-    implementation("io.ktor:ktor-client-cio:2.3.7") // Engine per il client Ktor
+    implementation("io.ktor:ktor-client-cio:2.3.7")
 
     // Ktor Content Negotiation e serializzazione JSON
     implementation("io.ktor:ktor-client-content-negotiation:2.3.7")

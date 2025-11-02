@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Loopy"
         tools:targetApi="31">
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,7 +25,7 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="true"
-            android:label="Login"
+            android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
             <!-- The intent filter has been moved here -->
             <intent-filter>
@@ -32,36 +33,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Register Activity -->
         <activity
             android:name=".login.RegisterActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <!-- ChatBot Activity -->
         <activity
             android:name=".chat.ChatActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <!-- Profile Activity -->
         <activity
             android:name=".profile.ProfileActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <!-- Data Activity -->
         <activity
             android:name=".data.DataActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <!-- Device Manager Activity -->
         <activity
             android:name=".devicemanager.DeviceManagerActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Loopy">
         </activity>
+        <!-- Setting Activity -->
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="true"

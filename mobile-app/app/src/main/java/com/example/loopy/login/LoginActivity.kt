@@ -1,20 +1,18 @@
 package com.example.loopy.login
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
-import com.example.loopy.login.models.UserJson
+import com.example.loopy.login.models.input.UserJson
+import com.example.loopy.login.models.output.AccountJson
+import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -24,12 +22,12 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json as KotlinxJson
 
 class LoginActivity : ComponentActivity() {
     private val client = HttpClient (CIO) {
         install(ContentNegotiation) {
-            json(Json {
+            json(KotlinxJson {
                 prettyPrint = true
                 isLenient = true
                 ignoreUnknownKeys = true
@@ -39,7 +37,6 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.login_activity)
 
         val inputEmail = findViewById<EditText>(R.id.emailInput)
@@ -64,7 +61,7 @@ class LoginActivity : ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://13.61.7.101:8080/login") {
+                    val response = client.post ("http://51.21.196.187:8080/login") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }
@@ -75,16 +72,20 @@ class LoginActivity : ComponentActivity() {
                     println("Risposta del server: $responseBody") //responseBody contiene success o failure
 
                     runOnUiThread {
-                        if(responseBody.toString() == "success"){
+                        try {
+                            // Parse the JSON response {"userId": id} and save in object S.M.
+                            val loginResponse = KotlinxJson.decodeFromString<AccountJson>(responseBody)
+                            SessionManager.currentUserId = loginResponse.userId
+
                             Toast.makeText(this@LoginActivity, "Login Success",
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@LoginActivity, "Login Failed: Invalid response", Toast.LENGTH_LONG).show()
                         }
-
                     }
-
                 } catch (e: Exception) {
                     // Gestione degli errori di rete
                     Log.e("Login", "Errore durante la richiesta di login", e)

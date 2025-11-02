@@ -48,7 +48,7 @@ Inside the [...] you will find a list of the relative last 10 values saved. Resp
         var responseBody = ""
 
         try {
-            val response = client.get("http://13.61.7.101:8080/getDatas/$id")
+            val response = client.get("http://51.21.196.187:8080/getDatas/$id")
             responseBody = response.bodyAsText()
             println("Response by server: $response")
             println("Server response: $responseBody")

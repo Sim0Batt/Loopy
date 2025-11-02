@@ -2,6 +2,8 @@ package database
 
 import database.tables.TabellaAccelerometroTable
 import database.tables.TabellaElettrodiTable
+import database.tables.TabellaGlucosioTable
+import database.tables.TabellaGlucosioTable.glicemia
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import models.AccelerometerData
@@ -139,5 +141,16 @@ object QueryManager {
             movements = accelerometerData.joinToString { "${it.movement}, " },
             timestampsAccelerometer = accelerometerData.joinToString { "${it.timestamp}, " }
         )
+    }
+
+
+    fun getGlucosePredict(userId: Int): String{
+        var predict: String = ""
+        transaction (DatabaseConfig.getConfig()) {
+            predict = TabellaGlucosioTable.selectAll().where{
+                TabellaGlucosioTable.userId eq userId
+            }.orderBy(TabellaGlucosioTable.id to SortOrder.DESC).firstOrNull()?.get(glicemia).toString()
+        }
+        return predict
     }
 }

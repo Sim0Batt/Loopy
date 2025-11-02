@@ -1,8 +1,7 @@
-package com.example.loopy.login.models
+package com.example.loopy.login.models.input
 
 import android.annotation.SuppressLint
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable

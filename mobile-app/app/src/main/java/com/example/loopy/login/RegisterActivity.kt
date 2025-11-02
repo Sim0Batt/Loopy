@@ -10,11 +10,11 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
-import com.example.loopy.login.models.RegisterJson
+import com.example.loopy.login.models.input.RegisterJson
+import com.example.loopy.login.models.output.AccountJson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -25,6 +25,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json as KotlinxJson
 
 class RegisterActivity: ComponentActivity() {
     private val client = HttpClient (CIO) {
@@ -40,7 +41,6 @@ class RegisterActivity: ComponentActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.register_activity)
         val ageList: List<Int> = RegisterListSet().setAgeList()
         val heightList: List<Int> = RegisterListSet().setHeightList()
@@ -117,7 +117,7 @@ class RegisterActivity: ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://13.61.7.101:8080/register") {
+                    val response = client.post ("http://51.21.196.187:8080/register") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }
@@ -128,11 +128,18 @@ class RegisterActivity: ComponentActivity() {
                     println("Risposta del server: $responseBody") //responseBody contiene success o failure
 
                     runOnUiThread {
-                        if(responseBody == "Account Created"){
-                            Toast.makeText(this@RegisterActivity, "Register Success",
+                        try {
+                            // Parse the JSON response {"userId": id}
+                            val loginResponse = KotlinxJson.decodeFromString<AccountJson>(responseBody)
+                            Toast.makeText(this@RegisterActivity, "Registration Success",
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                            // Optionally pass the userId to the next activity
+                            intent.putExtra("USER_ID", loginResponse.userId)
                             startActivity(intent)
+                            finish()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@RegisterActivity, "Login Failed: Invalid response", Toast.LENGTH_LONG).show()
                         }
 
                     }

@@ -4,11 +4,15 @@ package server
 import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.QueryManager
+import database.tables.TabellaElettrodiTable
+import database.tables.TabellaPpgTable
+import database.tables.TabellaTermometroTable
 import scripts.MainScript
 import database.tables.TabellaUserTable
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.application.install
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
@@ -18,12 +22,17 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import okhttp3.internal.wait
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.AgentJson
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
+import server.jsonModels.outputJsons.AccountJson
+import server.jsonModels.outputJsons.PredictJson
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 fun Application.module() {
@@ -31,27 +40,29 @@ fun Application.module() {
         json(Json { ignoreUnknownKeys = true })
     }
 
+
     routing {
+        //LOGIN LOGIC
         staticResources("static", "static")
         get("/getUsers") {
             call.respondText {
-                MainScript().getUsers()
+                MainScript.getUsers()
             }
         }
 
         post("/login") {
             val credentials = call.receive<UserJson>()
 
-            val user = transaction(DatabaseConfig.getConfig()) {
+            val userId = transaction(DatabaseConfig.getConfig()) {
                 TabellaUserTable.selectAll()
                     .firstOrNull {
                         it[TabellaUserTable.email] == credentials.email &&
                                 it[TabellaUserTable.password] == credentials.password
-                    }
+                    }?.getOrNull(TabellaUserTable.id).toString().toIntOrNull()
             }
 
-            if (user != null) {
-                call.respondText("success")
+            if (userId != null) {
+                call.respondText(AccountJson(userId).toString())
             } else {
                 call.respondText("failure")
             }
@@ -59,11 +70,13 @@ fun Application.module() {
 
         post("/register") {
             val credentials = call.receive<RegisterJson>()
-            MainScript().registerUser(credentials)
+            val userId = MainScript.registerUser(credentials)
             call.response.header("Location", "/login")
-            call.respondText("Account Created", status = HttpStatusCode.Created)
+            call.respondText(AccountJson(userId).toString())
         }
 
+
+        //DATA LOGIC
         staticResources("static", "static")
         post("/saveData") {
             val input = call.receive<SaveDataJson>()
@@ -80,6 +93,7 @@ fun Application.module() {
         }
 
 
+        //AI AGENT LOGIC
         post("/agentProcess") {
             val credentials = call.receive<AgentJson>()
             var id = 0
@@ -125,6 +139,54 @@ fun Application.module() {
 
             call.respondText(agent.run(credentials.input))
         }
+
+
+        get ("/trainModel"){
+            val scriptPath = "/home/ubuntu/MLLoopy/train.py"
+            try{
+                println("Process Started")
+                val processBuilder = ProcessBuilder( // /usr/bin/python3 /home/ubuntu/MLLoopy/train.py 1
+                    "/usr/bin/python3",
+                    scriptPath,
+                )
+
+                val process = processBuilder.start()
+
+                val output = process.inputStream.bufferedReader().readText()
+                val error = process.errorStream.bufferedReader().readText()
+
+                process.waitFor(60, TimeUnit.SECONDS)
+                if (process.exitValue() == 0) {
+                    call.respondText("success")
+                } else {
+                    call.respondText("Errore durante l'esecuzione: $output", status = HttpStatusCode.InternalServerError)
+                }
+
+            }catch (e: Exception){
+                call.respondText("Train Failed: ${e.stackTraceToString()}")
+            }
+        }
+
+        get("/modelProcess/{id}") {
+            val userId = call.parameters["id"].toString().toInt()
+            try{
+                MainScript.generateCsv(userId.toString().toInt())
+
+                println("Process Started")
+
+                Thread {
+                    MainScript.executePythonScript(userId.toString())
+                }.start()
+
+                println("Waiting 10 seconds...")
+                Thread.sleep(10000)
+                val predict = QueryManager.getGlucosePredict(userId)
+
+                call.respondText(PredictJson(userId, predict).toString())
+            }catch (e: Exception){
+                    call.respondText("Process Failed: ${e.stackTraceToString()}")
+                }
+            }
     }
 }
 

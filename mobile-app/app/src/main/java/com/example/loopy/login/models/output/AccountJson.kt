@@ -1,19 +1,17 @@
-package com.example.loopy.login.models
+package com.example.loopy.login.models.output
 
 import android.annotation.SuppressLint
 import kotlinx.serialization.Serializable
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
-class UserJson (
-    val email: String,
-    val password: String,
-){
+class AccountJson(
+    val userId: Int
+) {
     override fun toString(): String {
         return """
             {
-                "email": "$email",
-                "password": "$password"
+                "userId":"$userId"
             }
         """.trimIndent()
     }

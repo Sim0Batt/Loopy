@@ -4,14 +4,11 @@ package server
 import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.QueryManager
-import database.tables.TabellaGlucosioTable
+import database.tables.TabellaElettrodiTable
+import database.tables.TabellaPpgTable
+import database.tables.TabellaTermometroTable
 import scripts.MainScript
 import database.tables.TabellaUserTable
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -25,7 +22,6 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -33,8 +29,9 @@ import server.jsonModels.inputJsons.AgentJson
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
-import kotlinx.serialization.json.Json as KotlinxJson
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+import server.jsonModels.outputJsons.PredictJson
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 fun Application.module() {
@@ -43,15 +40,12 @@ fun Application.module() {
     }
 
 
-
-
-
     routing {
         //LOGIN LOGIC
         staticResources("static", "static")
         get("/getUsers") {
             call.respondText {
-                MainScript().getUsers()
+                MainScript.getUsers()
             }
         }
 
@@ -75,7 +69,7 @@ fun Application.module() {
 
         post("/register") {
             val credentials = call.receive<RegisterJson>()
-            val userId = MainScript().registerUser(credentials)
+            val userId = MainScript.registerUser(credentials)
             call.response.header("Location", "/login")
             call.respondText(AccountJson(userId).toString())
         }
@@ -146,33 +140,64 @@ fun Application.module() {
         }
 
 
-        //MACHINE LEARNING MODELS LOGIC
-        get("/modelProcess/{id}") {
+        get ("/trainModel"){
+            val scriptPath = "/home/ubuntu/MLLoopy/train.py"
             try{
-                val userId = call.parameters["id"]
-                val client = HttpClient(CIO) {
-                    install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
-                            json(KotlinxJson {
-                                prettyPrint = true
-                                isLenient = true
-                                ignoreUnknownKeys = true
-                            })
-                        }
-                    }
+                println("Process Started")
+                val processBuilder = ProcessBuilder( // /usr/bin/python3 /home/ubuntu/MLLoopy/train.py 1
+                    "/usr/bin/python3",
+                    scriptPath,
+                )
 
-                    val response = client.get ("http://0.0.0.0:18034/process/${userId.toString()}")
-                    // Log della risposta del server
-                    val responseBody = response.bodyAsText()
-                    println("Risposta del server: $responseBody")
-                    QueryManager.saveGlucosePrediction(
-                        DatabaseConfig.getConfig(),
-                        responseBody.toDouble(),
-                        userId.toString().toInt()
+                val process = processBuilder.start()
+
+                val output = process.inputStream.bufferedReader().readText()
+                val error = process.errorStream.bufferedReader().readText()
+
+                process.waitFor(60, TimeUnit.SECONDS)
+                if (process.exitValue() == 0) {
+                    call.respondText("success")
+                } else {
+                    call.respondText("Errore durante l'esecuzione: $output", status = HttpStatusCode.InternalServerError)
+                }
+
+            }catch (e: Exception){
+                call.respondText("Train Failed: ${e.stackTraceToString()}")
+            }
+        }
+
+        get("/modelProcess/{id}") {
+            val scriptPath = "/home/ubuntu/MLLoopy/predict.py"
+            val user_id = call.parameters["id"]
+            try{
+                val processBuilder = ProcessBuilder(
+                    "/usr/bin/python3",
+                    scriptPath,
+                    user_id,
+                )
+
+                MainScript.generateCsv(user_id.toString().toInt())
+
+                val process = processBuilder.start()
+
+                val output = process.inputStream.bufferedReader().readText()
+                val error = process.errorStream.bufferedReader().readText()
+
+                process.waitFor(60, TimeUnit.SECONDS)
+
+                if (process.exitValue() == 0) {
+                    call.respondText(
+                        PredictJson(
+                            user_id.toString().toInt(),
+                            output.trim()
+                        ).toString()
                     )
+                } else {
+                    call.respondText("Errore durante l'esecuzione: $error", status = HttpStatusCode.InternalServerError)
+                }
 
-                    call.respondText("Process Successful")
-                }catch (e: Exception){
-                    call.respondText("Process Failed: ${e}")
+            }catch (e: Exception){
+                    call.respondText("Process Failed: ${e.stackTraceToString()}")
                 }
             }
     }

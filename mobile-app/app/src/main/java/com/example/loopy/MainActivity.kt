@@ -13,17 +13,16 @@ import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
 import com.example.loopy.settings.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.loopy.core.BaseActivity
+import com.example.loopy.utils.SessionManager
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val bundle = intent.extras
-        val USER_ID = bundle?.getInt("USER_ID")
-        Log.d("MainActivity", "USER_ID: ${USER_ID.toString()}")
-
+        val userId = SessionManager.currentUserId!!
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)
@@ -35,31 +34,26 @@ class MainActivity : AppCompatActivity() {
 
         settingsButton.setOnClickListener {
             val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-            intent.putExtra("USER_ID", USER_ID)
             startActivity(intent)
         }
 
         profilePictures.setOnClickListener {
             val intent = Intent(this@MainActivity, ProfileActivity::class.java)
-            intent.putExtra("USER_ID", USER_ID)
             startActivity(intent)
         }
 
         chatbotCloud.setOnClickListener { // Questo è la nuvoletta, giusto? SI
             val intent = Intent(this@MainActivity, ChatActivity::class.java)
-            intent.putExtra("USER_ID", USER_ID)
             startActivity(intent)
         }
 
         kcalView.setOnClickListener {
             val intent = Intent(this@MainActivity, DataActivity::class.java)
-            intent.putExtra("USER_ID", USER_ID)
             startActivity(intent)
         }
 
         hbView.setOnClickListener {
             val intent = Intent(this@MainActivity, DataActivity::class.java)
-            intent.putExtra("USER_ID", USER_ID)
             startActivity(intent)
         }
 
@@ -77,28 +71,24 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.nav_data -> {
                     val intent = Intent(this@MainActivity, DataActivity::class.java)
-                    intent.putExtra("USER_ID", USER_ID)
                     startActivity(intent)
                     true
                 }
 
                 R.id.nav_chatbot -> {
                     val intent = Intent(this@MainActivity, ChatActivity::class.java)
-                    intent.putExtra("USER_ID", USER_ID)
                     startActivity(intent)
                     true
                 }
 
                 R.id.nav_dm -> {
                     val intent = Intent(this@MainActivity, DeviceManagerActivity::class.java)
-                    intent.putExtra("USER_ID", USER_ID)
                     startActivity(intent)
                     true
                 }
 
                 R.id.nav_profile -> {
                     val intent = Intent(this@MainActivity, ProfileActivity::class.java)
-                    intent.putExtra("USER_ID", USER_ID)
                     startActivity(intent)
                     true
                 }

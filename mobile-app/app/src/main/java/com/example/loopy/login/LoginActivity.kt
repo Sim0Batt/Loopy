@@ -61,7 +61,7 @@ class LoginActivity : ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://13.60.241.135:8080/login") {
+                    val response = client.post ("http://51.21.196.187:8080/login") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }

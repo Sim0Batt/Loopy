@@ -144,13 +144,13 @@ object QueryManager {
     }
 
 
-    fun saveGlucosePrediction(connection: Database, value: Double, id: Int){
-        transaction(connection) {
-            TabellaGlucosioTable.insert {
-                it[glicemia] = value
-                it[userId] = id
-                it[timestamp] = System.currentTimeMillis().toString()
-            }
+    fun getGlucosePredict(userId: Int): String{
+        var predict: String = ""
+        transaction (DatabaseConfig.getConfig()) {
+            predict = TabellaGlucosioTable.selectAll().where{
+                TabellaGlucosioTable.userId eq userId
+            }.orderBy(TabellaGlucosioTable.id to SortOrder.DESC).firstOrNull()?.get(glicemia).toString()
         }
+        return predict
     }
 }

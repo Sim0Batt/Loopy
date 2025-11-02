@@ -22,6 +22,7 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import okhttp3.internal.wait
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -167,35 +168,21 @@ fun Application.module() {
         }
 
         get("/modelProcess/{id}") {
-            val scriptPath = "/home/ubuntu/MLLoopy/predict.py"
-            val user_id = call.parameters["id"]
+            val userId = call.parameters["id"].toString().toInt()
             try{
-                val processBuilder = ProcessBuilder(
-                    "/usr/bin/python3",
-                    scriptPath,
-                    user_id,
-                )
+                MainScript.generateCsv(userId.toString().toInt())
 
-                MainScript.generateCsv(user_id.toString().toInt())
+                println("Process Started")
 
-                val process = processBuilder.start()
+                Thread {
+                    MainScript.executePythonScript(userId.toString())
+                }.start()
 
-                val output = process.inputStream.bufferedReader().readText()
-                val error = process.errorStream.bufferedReader().readText()
+                println("Waiting 10 seconds...")
+                Thread.sleep(10000)
+                val predict = QueryManager.getGlucosePredict(userId)
 
-                process.waitFor(60, TimeUnit.SECONDS)
-
-                if (process.exitValue() == 0) {
-                    call.respondText(
-                        PredictJson(
-                            user_id.toString().toInt(),
-                            output.trim()
-                        ).toString()
-                    )
-                } else {
-                    call.respondText("Errore durante l'esecuzione: $error", status = HttpStatusCode.InternalServerError)
-                }
-
+                call.respondText(PredictJson(userId, predict).toString())
             }catch (e: Exception){
                     call.respondText("Process Failed: ${e.stackTraceToString()}")
                 }

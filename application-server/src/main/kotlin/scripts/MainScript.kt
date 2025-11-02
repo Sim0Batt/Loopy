@@ -5,13 +5,12 @@ import database.tables.TabellaElettrodiTable
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import database.tables.TabellaUserTable
-import io.ktor.server.response.respondText
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.RegisterJson
 import java.io.File
-import kotlin.text.toInt
+import java.util.concurrent.TimeUnit
 
 object MainScript {
     fun getUsers(): String{
@@ -57,20 +56,19 @@ object MainScript {
         var hrs = listOf<Int>()
         var temperatures = listOf<Double>()
 
-        transaction (DatabaseConfig.getConfig()){
+        transaction(DatabaseConfig.getConfig()) {
             sweatings = TabellaElettrodiTable.selectAll().where {
                 TabellaElettrodiTable.userId eq userId
             }.map { it[TabellaElettrodiTable.sudorazione] }.toList().takeLast(10)
 
             hrs = TabellaPpgTable.selectAll().where {
-                TabellaPpgTable.userId eq userId
+                    TabellaPpgTable.userId eq userId
             }.map { it[TabellaPpgTable.battito] }.toList().takeLast(10)
 
             temperatures = TabellaTermometroTable.selectAll().where {
-                TabellaTermometroTable.userId eq userId
+                    TabellaTermometroTable.userId eq userId
             }.map { it[TabellaTermometroTable.temperatura] }.toList().takeLast(10)
         }
-
         try{
             outputFile.bufferedWriter().use { writer ->
                 writer.write("eda,hr,temp\n")
@@ -80,6 +78,33 @@ object MainScript {
             }
         }catch (e: Exception){
             println("Error during CSV generation: ${e.stackTraceToString()}")
+        }
+    }
+
+    fun executePythonScript(userId: String) {
+        var process: Process? = null
+        try {
+            val scriptPath = "/home/ubuntu/MLLoopy/predict.py"
+            val processBuilder = ProcessBuilder(
+                "/usr/bin/python3",
+                scriptPath,
+                userId,
+            )
+
+            processBuilder.redirectErrorStream(false)
+
+            println("Starting Python for user $userId")
+            process = processBuilder.start()
+
+            // Timeout di 30 secondi
+            val completed = process.waitFor(30, TimeUnit.SECONDS)
+
+
+        } catch (e: Exception) {
+            println("Python execution failed for user $userId: ${e.message}")
+            e.printStackTrace()
+        } finally {
+            process?.destroy()
         }
     }
 }

@@ -6,11 +6,13 @@ import numpy as np
 import mysql.connector 
 from sqlalchemy import create_engine
 import matplotlib.patches as mpatches # Per la legenda
+import sys
+
 
 # === CONFIGURAZIONE CONNESSIONE DATABASE ===
 # [INVARIATO]: Connessione al DB locale 'LoopyDB'
 DB_USER = 'root'
-DB_PASS = 'Simone04' 
+DB_PASS = 'Simone04'
 DB_HOST = '127.0.0.1' 
 DB_PORT = '3306'
 DB_NAME = 'LoopyDB' 
@@ -37,17 +39,17 @@ def get_zone_color(value, threshold_high, threshold_mod, threshold_low):
 # =========================================================================
 # 1. GRAFICO STRESS (INVARIATO - Istogramma 30 min)
 # =========================================================================
-def genera_grafico_stress():
+def genera_grafico_stress(user_id):
     print("Inizio generazione Grafico Stress... (lettura dati ACCURATI da DB)")
     
-    query_stress = """
+    query_stress = f"""
     SELECT
       p.timestamp AS timestamp,
       ROUND(AVG( (p.battito - 60) + (e.sudorazione * 50) ), 2) AS stress_avg
     FROM PPG p
     JOIN Elettrodi e ON p.userId = e.userId AND p.timestamp = e.timestamp
     JOIN Accelerometro a ON p.userId = a.userId AND p.timestamp = a.timestamp
-    WHERE p.userId = 1 
+    WHERE p.userId = {user_id}
       AND DATE(p.timestamp) = CURDATE()
       AND a.movimento = 0 
     GROUP BY p.timestamp 
@@ -102,7 +104,7 @@ def genera_grafico_stress():
               loc='upper left', frameon=False, ncol=2, fontsize=10)
 
     plt.tight_layout()
-    output_path = '/home/riccardo/testembedded/Graph_png/grafico_stress_finale_barre.png'
+    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_stress_finale_barre.png'
     plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico stress (accurato) salvato in: {output_path}")
 
@@ -110,9 +112,9 @@ def genera_grafico_stress():
 # =========================================================================
 # 2. GRAFICO ATTIVITA' (INVARIATO - Istogramma 5 min)
 # =========================================================================
-def genera_grafico_attivita():
+def genera_grafico_attivita(user_id):
     print("Inizio generazione Grafico Attività... (lettura dati ACCURATI da DB)")
-    query_activity = """
+    query_activity = f"""
     SELECT
       p.timestamp AS timestamp,
       ROUND(AVG(
@@ -125,7 +127,7 @@ def genera_grafico_attivita():
     FROM PPG p
     JOIN Accelerometro a ON p.userId = a.userId AND p.timestamp = a.timestamp
     JOIN Elettrodi e ON p.userId = e.userId AND p.timestamp = e.timestamp
-    WHERE p.userId = 1 AND DATE(p.timestamp) = CURDATE()
+    WHERE p.userId = {user_id} AND DATE(p.timestamp) = CURDATE()
     GROUP BY p.timestamp 
     ORDER BY p.timestamp;
     """
@@ -161,25 +163,26 @@ def genera_grafico_attivita():
     ax.legend(handles=[zona_alta, zona_media, zona_bassa, zona_recupero], 
               loc='upper left', frameon=False, ncol=2, fontsize=10)
     plt.tight_layout()
-    output_path = '/home/riccardo/testembedded/Graph_png/grafico_attivita_finale.png'
+    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_attivita_finale.png'
     plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico attività (accurato) salvato in: {output_path}")
 
 # =========================================================================
 # 3. GRAFICO SONNO (NUOVO DESIGN: IPNOGRAMMA PROFESSIONALE)
 # =========================================================================
-def genera_grafico_sonno():
+def genera_grafico_sonno(user_id):
     print("Inizio generazione Grafico Sonno... (lettura dati ACCURATI da DB)")
-    
+    # metto la f prima delle """ per fare una f-string
     # [INVARIATO]: Query per dati grezzi (1 minuto) durante la finestra di sonno
-    query_sleep = """
+    
+    query_sleep = f""" 
     SELECT
       p.timestamp AS timestamp,
       p.battito,
       a.movimento
     FROM PPG p
     JOIN Accelerometro a ON p.userId = a.userId AND p.timestamp = a.timestamp
-    WHERE p.userId = 1 
+    WHERE p.userId ={user_id}
       AND DATE(p.timestamp) = CURDATE()
       AND (HOUR(p.timestamp) >= 21 OR HOUR(p.timestamp) <= 9) 
     ORDER BY p.timestamp;
@@ -272,7 +275,7 @@ def genera_grafico_sonno():
     plt.tight_layout()
     
     # [PERCORSO CORRETTO]: Salva nella cartella corretta
-    output_path = '/home/riccardo/testembedded/Graph_png/grafico_sonno_finale.png'
+    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_sonno_finale.png'
     plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico sonno (Ipnogramma) salvato in: {output_path}")
 
@@ -281,7 +284,8 @@ def genera_grafico_sonno():
 # LANCIO DEGLI SCRIPT
 # =========================================================================
 if __name__ == "__main__":
-    genera_grafico_stress()
-    genera_grafico_attivita()
-    genera_grafico_sonno()
+    user_id =sys.argv[1] # Prende l'ID utente come argomento da linea di comando in modo dinamico
+    genera_grafico_stress (user_id)
+    genera_grafico_attivita(user_id)
+    genera_grafico_sonno(user_id)
     print("\n[Operazione Completata] Tutti e 3 i grafici sono stati generati.") 

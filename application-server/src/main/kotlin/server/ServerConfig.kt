@@ -78,11 +78,12 @@ fun Application.module() {
 
         //DATA LOGIC
         staticResources("static", "static")
-        post("/saveData") {
+        post("/saveData/{id}") {
+            val userId = call.parameters["id"]
             val input = call.receive<SaveDataJson>()
             println{"Received: \n${input}"}
             call.response.header("Content-Type", "application/json")
-            QueryManager.saveDatas(DatabaseConfig.getConfig(), input)
+            QueryManager.saveDatas(DatabaseConfig.getConfig(), input, userId.toString().toInt())
             call.respondText("Data Saved")
         }
 

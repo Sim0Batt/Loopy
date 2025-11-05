@@ -19,12 +19,13 @@ import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 
 object QueryManager {
-    fun saveDatas(connection: Database, input: SaveDataJson) {
+    fun saveDatas(connection: Database, input: SaveDataJson, userId: Int) {
         transaction(connection) {
             TabellaPpgTable.insert {
                 TabellaPpgTable.battito to input.heartRate
                 TabellaPpgTable.ossigenazione to input.oxygen
                 TabellaPpgTable.timestamp to input.timestampPPG
+                TabellaPpgTable.userId to userId
             }
         }
         println("Saved Heart Data:\n $input")
@@ -33,25 +34,28 @@ object QueryManager {
             TabellaElettrodiTable.insert {
                 TabellaElettrodiTable.sudorazione to input.sweating
                 TabellaElettrodiTable.timestamp to input.timestampElectrodes
+                TabellaElettrodiTable.userId to userId
             }
         }
-        println("Saved Heart Data:\n $input")
+        println("Saved Sweating Data:\n $input")
 
         transaction(connection) {
             TabellaAccelerometroTable.insert {
                 TabellaAccelerometroTable.movimento to input.movement
                 TabellaAccelerometroTable.timestamp to input.timestampAccelerometer
+                TabellaAccelerometroTable.userId to userId
             }
         }
-        println("Saved Heart Data:\n $input")
+        println("Saved Movement Data:\n $input")
 
         transaction(connection) {
             TabellaTermometroTable.insert {
                 TabellaTermometroTable.temperatura to input.temperature
                 TabellaTermometroTable.timestamp to input.timestampTermometer
+                TabellaTermometroTable.userId to userId
             }
         }
-        println("Saved Heart Data:\n $input")
+        println("Saved Temperature Data:\n $input")
     }
 
     fun getDatas(connection: Database, id:Int): ReturnDataJson {

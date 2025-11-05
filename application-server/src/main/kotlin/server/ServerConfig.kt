@@ -19,6 +19,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.header
+import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
@@ -186,8 +187,52 @@ fun Application.module() {
                 call.respondText(PredictJson(userId, predict).toString())
             }catch (e: Exception){
                     call.respondText("Process Failed: ${e.stackTraceToString()}")
-                }
             }
+        }
+
+        //questo get serve a dare l'indirizzo all'applicazione per prendere i grafici
+        get("/graph/{id}/{name}") { //http://0.0.0.0:8080/graph/1/stress 
+            val name = call.parameters["name"]
+            val userId = call.parameters["id"]
+            val filename = when (name) {
+                "stress"   -> "grafico_stress_finale_barre.png"
+                "activity" -> "grafico_attivita_finale.png"
+                "sleep"    -> "grafico_sonno_finale.png"
+                else -> return@get call.respondText("Graph not found")
+            }
+            //luogo sulla macchina fisico dove stanno i grafici generati
+            val file = File("/home/ubuntu/GraphGeneratorLogic/graphs/$userId/$filename")
+            // il dollaro sta per la f string quindi & e poi nome variabile
+            if (!file.exists()) return@get call.respondText("Graph $filename for user $userId not valid")
+            call.respondFile(file)
+        }
+
+        get ("/generate/{id}") {
+            val userId = call.parameters["id"].toString()
+            val scriptPath = "/home/ubuntu/GraphGeneratorLogic/graph_generator.py"
+            //è il percorso dove vai prendere i file pyhton da avviare
+            try {
+                val processBuilder = ProcessBuilder( //avvia il mio file python "python3 graph_generator.py id"
+                    "/usr/bin/python3",
+                    scriptPath, // se servissero dei parametri dovrei scriverli qui sotto
+                    userId
+                )
+                val process = processBuilder.start()
+                val output = process.inputStream.bufferedReader().readText()
+                val error = process.errorStream.bufferedReader().readText()
+                process.waitFor(60, TimeUnit.SECONDS)
+                if (process.exitValue() == 0) {
+                    call.respondText("return success\n")
+                } else {
+                    call.respondText(
+                        "Errore durante l'esecuzione: $output",
+                        status = HttpStatusCode.InternalServerError
+                    )
+                }
+            } catch (e: Exception) {
+                call.respondText("Train Failed: ${e.stackTraceToString()}")
+            }
+        }
     }
 }
 

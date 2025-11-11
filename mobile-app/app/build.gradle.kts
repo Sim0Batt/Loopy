@@ -2,9 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.2.20"
 
+    // --- CORREZIONE 2 ---
+    // Uso l'alias dal catalogo, come per gli altri.
+    // (Controlla nel tuo file 'libs.versions.toml' se l'alias è 'kotlin-serialization' o simile)
+    alias(libs.plugins.kotlin.serialization)
 }
+
 kotlin {
     jvmToolchain(17)
 }
@@ -33,13 +37,7 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+
     buildFeatures {
         compose = true
     }
@@ -63,25 +61,24 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //Layouts Implementations
+    //  Dipendenze per i tuoi Layout XML
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.google.android.material:material:1.10.0")
 
-    //Ktor
+    //  Ktor
     implementation("io.ktor:ktor-client-core:2.3.7")
     implementation("io.ktor:ktor-client-cio:2.3.7")
-
-    // Ktor Content Negotiation e serializzazione JSON
     implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 
-    // Libreria per la serializzazione Kotlinx JSON (necessaria)
+    // Serialization (va bene)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
+    // ViewModel e LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.activity:activity-ktx:1.9.0")
 
     testImplementation(kotlin("test"))
-
-
-    
 }

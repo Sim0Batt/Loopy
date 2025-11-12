@@ -94,6 +94,13 @@ fun Application.module() {
             call.respondText(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()).toString())
         }
 
+        get("/getHistoricalDatas/{id}") {
+            val id = call.parameters["id"]
+            val limit = call.parameters["limit"]?.toIntOrNull() ?: 1000
+            call.response.header("Content-Type", "application/json")
+            call.respondText(QueryManager.getHistoricalDatas(DatabaseConfig.getConfig(), id.toString().toInt(), limit).toString())
+        }
+
 
         //AI AGENT LOGIC
         post("/agentProcess") {

@@ -19,139 +19,159 @@ import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 
 object QueryManager {
+
+    // Dentro QueryManager.kt
+
     fun saveDatas(connection: Database, input: SaveDataJson, userId: Int) {
         transaction(connection) {
+
+            // PPG
             TabellaPpgTable.insert {
-                TabellaPpgTable.battito to input.heartRate
-                TabellaPpgTable.ossigenazione to input.oxygen
-                TabellaPpgTable.timestamp to input.timestampPPG
-                TabellaPpgTable.userId to userId
+                it[TabellaPpgTable.battito] = input.heartRate
+                it[TabellaPpgTable.ossigenazione] = "${input.oxygen}%"
+                it[TabellaPpgTable.timestamp] = input.timestampPPG
+                it[TabellaPpgTable.userId] = userId
             }
-        }
-        println("Saved Heart Data:\n $input")
 
-        transaction(connection) {
+            // Electrodes
             TabellaElettrodiTable.insert {
-                TabellaElettrodiTable.sudorazione to input.sweating
-                TabellaElettrodiTable.timestamp to input.timestampElectrodes
-                TabellaElettrodiTable.userId to userId
+                it[TabellaElettrodiTable.sudorazione] = input.sweating
+                it[TabellaElettrodiTable.timestamp] = input.timestampElectrodes
+                it[TabellaElettrodiTable.userId] = userId
             }
-        }
-        println("Saved Sweating Data:\n $input")
 
-        transaction(connection) {
+            // Accelerometer
             TabellaAccelerometroTable.insert {
-                TabellaAccelerometroTable.movimento to input.movement
-                TabellaAccelerometroTable.timestamp to input.timestampAccelerometer
-                TabellaAccelerometroTable.userId to userId
+                it[TabellaAccelerometroTable.movimento] = input.movement
+                it[TabellaAccelerometroTable.timestamp] = input.timestampAccelerometer
+                it[TabellaAccelerometroTable.userId] = userId
             }
-        }
-        println("Saved Movement Data:\n $input")
 
-        transaction(connection) {
+            // Termometer
             TabellaTermometroTable.insert {
-                TabellaTermometroTable.temperatura to input.temperature
-                TabellaTermometroTable.timestamp to input.timestampTermometer
-                TabellaTermometroTable.userId to userId
+                it[TabellaTermometroTable.temperatura] = input.temperature
+                it[TabellaTermometroTable.timestamp] = input.timestampTermometer
+                it[TabellaTermometroTable.userId] = userId
             }
         }
-        println("Saved Temperature Data:\n $input")
+        println("All data saved for user $userId")
     }
 
-    fun getDatas(connection: Database, id:Int): ReturnDataJson {
-        val ppgDatas = mutableListOf<PPGData>()
-        val electrodesDatas = mutableListOf<ElectrodeData>()
-        val termometerDatas = mutableListOf<TermometerData>()
-        val accelerometerData = mutableListOf<AccelerometerData>()
+    fun getDatas(connection: Database, id: Int): ReturnDataJson {
 
-        transaction(connection) {
-            //PPG
-            val hrTmp = TabellaPpgTable.selectAll().where {
-                TabellaPpgTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaPpgTable.id to SortOrder.DESC).map{
-                it[TabellaPpgTable.battito]
-            }.take(10)
-            val oxTmp = TabellaPpgTable.selectAll().where {
-                TabellaPpgTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaPpgTable.id to SortOrder.DESC).map{
-                it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble()
-            }.take(10)
-            var tsTmp = TabellaPpgTable.selectAll().where {
-                TabellaPpgTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaPpgTable.id to SortOrder.DESC).map{
-                it[TabellaPpgTable.timestamp]
-            }.take(10)
+        return transaction(connection) {
+            val dataLimit = 10 // limite per pigliamento dati recenti
 
-            for(i in 0..9){
-                ppgDatas.add(PPGData(hrTmp[i], oxTmp[i], tsTmp[i]))
-            }
+            val ppgDatas = TabellaPpgTable.selectAll()
+                .where { TabellaPpgTable.userId eq id }
+                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { PPGData(
+                    it[TabellaPpgTable.battito],
+                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
+                    it[TabellaPpgTable.timestamp]
+                )}
 
-            //Electrodes
-            val swTmp = TabellaElettrodiTable.selectAll().where {
-                TabellaElettrodiTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaElettrodiTable.id to SortOrder.DESC).map{
-                it[TabellaElettrodiTable.sudorazione]
-            }.take(10)
+            val electrodesDatas = TabellaElettrodiTable.selectAll()
+                .where { TabellaElettrodiTable.userId eq id }
+                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { ElectrodeData(
+                    it[TabellaElettrodiTable.sudorazione],
+                    it[TabellaElettrodiTable.timestamp]
+                )}
 
-            tsTmp = TabellaElettrodiTable.selectAll().where {
-                TabellaElettrodiTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaElettrodiTable.id to SortOrder.DESC).map{
-                it[TabellaElettrodiTable.timestamp]
-            }.take(10)
+            val termometerDatas = TabellaTermometroTable.selectAll()
+                .where { TabellaTermometroTable.userId eq id }
+                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { TermometerData(
+                    it[TabellaTermometroTable.temperatura],
+                    it[TabellaTermometroTable.timestamp]
+                )}
 
-            for(i in 0..9){
-                electrodesDatas.add(ElectrodeData(swTmp[i],tsTmp[i]))
-            }
+            val accelerometerData = TabellaAccelerometroTable.selectAll()
+                .where { TabellaAccelerometroTable.userId eq id }
+                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { AccelerometerData(
+                    it[TabellaAccelerometroTable.movimento],
+                    it[TabellaAccelerometroTable.timestamp]
+                )}
 
-            //Termometer
-            val trTmp = TabellaTermometroTable.selectAll().where {
-                TabellaTermometroTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaTermometroTable.id to SortOrder.DESC).map{
-                it[TabellaTermometroTable.temperatura]
-            }.take(10)
-
-            tsTmp = TabellaTermometroTable.selectAll().where {
-                TabellaTermometroTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaTermometroTable.id to SortOrder.DESC).map{
-                it[TabellaTermometroTable.timestamp]
-            }.take(10)
-            for(i in 0..9){
-                termometerDatas.add(TermometerData(trTmp[i],tsTmp[i]))
-            }
-
-            //Accelerometer
-            val mvTmp = TabellaAccelerometroTable.selectAll().where {
-                TabellaAccelerometroTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
-                it[TabellaAccelerometroTable.movimento]
-            }.take(10)
-            tsTmp = TabellaAccelerometroTable.selectAll().where {
-                TabellaAccelerometroTable.userId eq id.toString().toInt()
-            }.orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
-                it[TabellaAccelerometroTable.timestamp]
-            }
-            for(i in 0..9){
-                accelerometerData.add(AccelerometerData(mvTmp[i],tsTmp[i]))
-            }
+            ReturnDataJson(
+                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(", "),
+                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(", "),
+                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(", "),
+                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(", "),
+                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(", "),
+                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(", "),
+                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
+                movements = accelerometerData.map { it.movement }.reversed().joinToString(", "),
+                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
+            )
         }
-        return ReturnDataJson(
-            heartRates = ppgDatas.joinToString{"${it.heartRate}, "},
-            oxygens = ppgDatas.joinToString{"${it.oxygen}, "},
-            timestampsPPG = ppgDatas.joinToString{"${it.timestamp}, "},
-            sweatings = electrodesDatas.joinToString { "${it.sweating}, " },
-            timestampsElectrodes = electrodesDatas.joinToString { "${it.timestamp}, " },
-            temperatures = termometerDatas.joinToString { "${it.temperature}, " },
-            timestampsTermometer = termometerDatas.joinToString { "${it.timestamp}, " },
-            movements = accelerometerData.joinToString { "${it.movement}, " },
-            timestampsAccelerometer = accelerometerData.joinToString { "${it.timestamp}, " }
-        )
     }
 
+    fun getHistoricalDatas(connection: Database, id: Int, dataLimit: Int): ReturnDataJson {
 
-    fun getGlucosePredict(userId: Int): String{
+        return transaction(connection) {
+
+            val ppgDatas = TabellaPpgTable.selectAll()
+                .where { TabellaPpgTable.userId eq id }
+                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { PPGData(
+                    it[TabellaPpgTable.battito],
+                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
+                    it[TabellaPpgTable.timestamp]
+                )}
+
+            val electrodesDatas = TabellaElettrodiTable.selectAll()
+                .where { TabellaElettrodiTable.userId eq id }
+                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { ElectrodeData(
+                    it[TabellaElettrodiTable.sudorazione],
+                    it[TabellaElettrodiTable.timestamp]
+                )}
+
+            val termometerDatas = TabellaTermometroTable.selectAll()
+                .where { TabellaTermometroTable.userId eq id }
+                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { TermometerData(
+                    it[TabellaTermometroTable.temperatura],
+                    it[TabellaTermometroTable.timestamp]
+                )}
+
+            val accelerometerData = TabellaAccelerometroTable.selectAll()
+                .where { TabellaAccelerometroTable.userId eq id }
+                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { AccelerometerData(
+                    it[TabellaAccelerometroTable.movimento],
+                    it[TabellaAccelerometroTable.timestamp]
+                )}
+
+            ReturnDataJson(
+                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(", "),
+                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(", "),
+                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(", "),
+                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(", "),
+                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(", "),
+                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(", "),
+                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
+                movements = accelerometerData.map { it.movement }.reversed().joinToString(", "),
+                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
+            )
+        }
+    }
+
+    fun getGlucosePredict(userId: Int): String {
         var predict: String = ""
-        transaction (DatabaseConfig.getConfig()) {
-            predict = TabellaGlucosioTable.selectAll().where{
+        transaction(DatabaseConfig.getConfig()) {
+            predict = TabellaGlucosioTable.selectAll().where {
                 TabellaGlucosioTable.userId eq userId
             }.orderBy(TabellaGlucosioTable.id to SortOrder.DESC).firstOrNull()?.get(glicemia).toString()
         }

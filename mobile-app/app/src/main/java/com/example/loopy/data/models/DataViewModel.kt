@@ -19,7 +19,7 @@ class DataViewModel : ViewModel() {
 
     private val client = KtorClient.client
     // qui ho creato ste robe cosi se per caso cambiamo http per la decima volta non è un problema :)
-    private val baseUrl = "http://51.21.196.187:8080"
+    private val baseUrl = "http://13.61.174.16:8080"
     private val endpointRecente = "$baseUrl/getDatas"
     private val endpointRiepilogo = "$baseUrl/getSummary"
 

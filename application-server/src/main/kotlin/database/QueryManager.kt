@@ -6,7 +6,6 @@ import database.tables.TabellaGlucosioTable
 import database.tables.TabellaGlucosioTable.glicemia
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
-import database.tables.TabellaRiepilogoGiornalieroTable
 import models.AccelerometerData
 import models.ElectrodeData
 import models.PPGData
@@ -18,7 +17,6 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
-import server.jsonModels.outputJsons.SummaryDataJson
 
 object QueryManager {
 
@@ -114,28 +112,59 @@ object QueryManager {
         }
     }
 
-    // Query per dare il json dei dati "complessi"
-    fun getDailySummary(connection: Database, id: Int): SummaryDataJson {
+    fun getHistoricalDatas(connection: Database, id: Int, dataLimit: Int): ReturnDataJson {
 
-        val riepilogo = transaction(connection) {
-            TabellaRiepilogoGiornalieroTable.selectAll()
-                .where { TabellaRiepilogoGiornalieroTable.userId eq id }
-                .orderBy(TabellaRiepilogoGiornalieroTable.data to SortOrder.DESC)
-                .firstOrNull()
+        return transaction(connection) {
+
+            val ppgDatas = TabellaPpgTable.selectAll()
+                .where { TabellaPpgTable.userId eq id }
+                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { PPGData(
+                    it[TabellaPpgTable.battito],
+                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
+                    it[TabellaPpgTable.timestamp]
+                )}
+
+            val electrodesDatas = TabellaElettrodiTable.selectAll()
+                .where { TabellaElettrodiTable.userId eq id }
+                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { ElectrodeData(
+                    it[TabellaElettrodiTable.sudorazione],
+                    it[TabellaElettrodiTable.timestamp]
+                )}
+
+            val termometerDatas = TabellaTermometroTable.selectAll()
+                .where { TabellaTermometroTable.userId eq id }
+                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { TermometerData(
+                    it[TabellaTermometroTable.temperatura],
+                    it[TabellaTermometroTable.timestamp]
+                )}
+
+            val accelerometerData = TabellaAccelerometroTable.selectAll()
+                .where { TabellaAccelerometroTable.userId eq id }
+                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
+                .limit(dataLimit)
+                .map { AccelerometerData(
+                    it[TabellaAccelerometroTable.movimento],
+                    it[TabellaAccelerometroTable.timestamp]
+                )}
+
+            ReturnDataJson(
+                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(", "),
+                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(", "),
+                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(", "),
+                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(", "),
+                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(", "),
+                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(", "),
+                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
+                movements = accelerometerData.map { it.movement }.reversed().joinToString(", "),
+                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
+            )
         }
-
-        if (riepilogo == null) {
-            return SummaryDataJson(hrv = null, stress = null, passi = null, recupero = null, vo2max = null)
-        }
-
-        return SummaryDataJson(
-            hrv = riepilogo[TabellaRiepilogoGiornalieroTable.hrv],
-            stress = riepilogo[TabellaRiepilogoGiornalieroTable.stress],
-            passi = riepilogo[TabellaRiepilogoGiornalieroTable.passi],
-            recupero = riepilogo[TabellaRiepilogoGiornalieroTable.recupero],
-            vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max]
-            //TODO: DA SISTEMARE UNA VOLTA FATTI I CALCOLI
-        )
     }
 
     fun getGlucosePredict(userId: Int): String {

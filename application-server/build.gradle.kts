@@ -12,14 +12,16 @@ repositories {
 }
 
 val ktorVersion = "3.2.1"
+val exposedVersion = "0.50.0"
 
 
 dependencies {
 
     //Exposed Implementation
-    implementation("org.jetbrains.exposed:exposed-core:0.50.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.50.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.50.0")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
     //MySql Implementation
     implementation("mysql:mysql-connector-java:8.0.33")
@@ -46,10 +48,10 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
 
     //HTTP
-    implementation("io.ktor:ktor-client-core:2.3.7")
-    implementation("io.ktor:ktor-client-cio:2.3.7")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    implementation("io.ktor:ktor-client-core:${ktorVersion}")
+    implementation("io.ktor:ktor-client-cio:${ktorVersion}")
+    implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
     //JSON

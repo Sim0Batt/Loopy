@@ -2,10 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
-    // --- CORREZIONE 2 ---
-    // Uso l'alias dal catalogo, come per gli altri.
-    // (Controlla nel tuo file 'libs.versions.toml' se l'alias è 'kotlin-serialization' o simile)
     alias(libs.plugins.kotlin.serialization)
 }
 

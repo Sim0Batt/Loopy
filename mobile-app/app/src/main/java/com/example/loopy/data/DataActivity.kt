@@ -3,11 +3,10 @@ package com.example.loopy.data
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.TextView
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import com.example.loopy.data.models.DataViewModel
+import androidx.activity.viewModels
 import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
@@ -15,70 +14,124 @@ import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
+import com.example.loopy.data.models.DataDisplay
 import com.example.loopy.utils.SessionManager
+import java.lang.Error
+
 
 class DataActivity : BaseActivity() {
+
+    private val viewModel: DataViewModel by viewModels()
+
+    private lateinit var hrValue: TextView
+    private lateinit var hrvValue: TextView
+    private lateinit var spo2Value: TextView
+    private lateinit var activityValue: TextView
+    private lateinit var tempValue: TextView
+    private lateinit var sweatValue: TextView
+    private lateinit var vo2Value: TextView
+    private lateinit var sleepValue: TextView
+    private lateinit var stressValue: TextView
+    private lateinit var recoveryValue: TextView
+    private lateinit var glucoseValue: TextView
+    private lateinit var bottomNavBar: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.data_activity)
 
-        val userId = SessionManager.currentUserId!!
-
-        val hrValue = findViewById<TextView>(R.id.hrValue)
-        val hrvValue = findViewById<TextView>(R.id.hrvValue)
-        val spo2Value = findViewById<TextView>(R.id.spo2Value)
-        val activityValue = findViewById<TextView>(R.id.activityValue)
-        val tempValue = findViewById<TextView>(R.id.tempValue)
-        val sweatValue = findViewById<TextView>(R.id.sweatValue)
-        val vo2Value = findViewById<TextView>(R.id.vo2Value)
-        val sleepValue = findViewById<TextView>(R.id.sleepValue)
-        val stressValue = findViewById<TextView>(R.id.stressValue)
-        val recoveryValue = findViewById<TextView>(R.id.recoveryValue)
-        val glucoseValue = findViewById<TextView>(R.id.glucoseValue)
+        initViews()
+        setupBottomNavBar()
+        setupObservers()
 
 
-        /* ------------------------TASTI NAVBAR----------------------------*/
-        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+        val userId = SessionManager.currentUserId
+        if (userId != null) {
+            viewModel.caricaDatiUtente(userId)
+        } else {
+            Toast.makeText(this, "Errore: Utente non trovato", Toast.LENGTH_LONG).show()
+            // finish()
+        }
+    }
 
+    private fun initViews() {
+        hrValue = findViewById(R.id.hrValue)
+        hrvValue = findViewById(R.id.hrvValue)
+        spo2Value = findViewById(R.id.spo2Value)
+        activityValue = findViewById(R.id.activityValue)
+        tempValue = findViewById(R.id.tempValue)
+        sweatValue = findViewById(R.id.sweatValue)
+        vo2Value = findViewById(R.id.vo2Value)
+        sleepValue = findViewById(R.id.sleepValue)
+        stressValue = findViewById(R.id.stressValue)
+        recoveryValue = findViewById(R.id.recoveryValue)
+        glucoseValue = findViewById(R.id.glucoseValue)
+        bottomNavBar = findViewById(R.id.bottomNavBar)
+    }
+
+
+    private fun setupObservers() {
+        viewModel.displayData.observe(this) { dati ->
+            if (dati != null) {
+                Log.d("DataActivity", "Dati ricevuti dal ViewModel, aggiorno UI")
+                updateUI(dati)
+            }
+        }
+
+        viewModel.error.observe(this) { errore ->
+            if (errore != null) {
+                Log.e("DataActivity", "Errore dal ViewModel: $errore")
+                Toast.makeText(this, errore, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun updateUI(data: DataDisplay) {
+        hrValue.text = data.hrValue
+        hrvValue.text = data.hrvValue
+        spo2Value.text = data.spo2Value
+        activityValue.text = data.activityValue
+        tempValue.text = data.tempValue
+        sweatValue.text = data.sweatValue
+        vo2Value.text = data.vo2Value
+        sleepValue.text = data.sleepValue
+        stressValue.text = data.stressValue
+        recoveryValue.text = data.recoveryValue
+        glucoseValue.text = data.glucoseValue
+    }
+
+    private fun setupBottomNavBar() {
         bottomNavBar.selectedItemId = R.id.nav_data
-
         bottomNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_data -> {
-                    true
-                }
-
+                R.id.nav_data -> true
                 R.id.nav_home -> {
-                    val intent = Intent(this@DataActivity, MainActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MainActivity::class.java))
                     true
                 }
-
                 R.id.nav_chatbot -> {
-                    val intent = Intent(this@DataActivity, ChatActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, ChatActivity::class.java))
                     true
                 }
-
                 R.id.nav_dm -> {
-                    val intent = Intent(this@DataActivity, DeviceManagerActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, DeviceManagerActivity::class.java))
                     true
                 }
-
                 R.id.nav_profile -> {
-                    val intent = Intent(this@DataActivity, ProfileActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, ProfileActivity::class.java))
                     true
                 }
-
                 else -> false
             }
         }
     }
+    // sta roba serve a non far baggare il coso che mostra in che activity siamo nella navbar
     override fun onResume() {
         super.onResume()
-        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
-        bottomNavBar.selectedItemId = R.id.nav_data
+        if (::bottomNavBar.isInitialized) {
+            bottomNavBar.selectedItemId = R.id.nav_data
+        }
     }
 }
+
+// TODO: gestire meglio quello che arriva con glucosio... cambiare logica, (forse?) per ora l'ho messo come gli altri valori

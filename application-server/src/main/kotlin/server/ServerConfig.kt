@@ -7,6 +7,9 @@ import database.QueryManager
 import database.tables.TabellaElettrodiTable
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
+import database.tables.TabellaRiepilogoGiornalieroTable
+import server.jsonModels.outputJsons.SummaryDataJson
+import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
 import database.tables.TabellaUserTable
 import io.ktor.http.HttpStatusCode
@@ -21,6 +24,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.header
 import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondText
+import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import okhttp3.internal.wait
@@ -94,13 +98,37 @@ fun Application.module() {
             call.respondText(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()).toString())
         }
 
-        get("/getHistoricalDatas/{id}") {
+        // Chiamata per prendere il Json con i dati "complessi"
+        get("/getSummary/{id}") {
             val id = call.parameters["id"]
-            val limit = call.parameters["limit"]?.toIntOrNull() ?: 1000
+            if (id == null) {
+                call.respondText("Missing id", status = HttpStatusCode.BadRequest)
+                return@get
+            }
             call.response.header("Content-Type", "application/json")
-            call.respondText(QueryManager.getHistoricalDatas(DatabaseConfig.getConfig(), id.toString().toInt(), limit).toString())
+
+            val riepilogo = QueryManager.getDailySummary(DatabaseConfig.getConfig(), id.toString().toInt())
+
+            call.respond(riepilogo) // se te lo stai chiedendo, non ho messo respondText perche respond lo fa in automatico ed è piu efficiente
         }
 
+        // TODO: cancellare questo blocco... è della roba vecchia
+       /* post("/calculateSummary/{id}") {
+            val userId = call.parameters["id"].toString()
+            val scriptPath = "/home/ubuntu/MetricCalculator/calcola_metriche.py"
+
+            try {
+                val processBuilder = ProcessBuilder(
+                    "/usr/bin/python3",
+                    scriptPath,
+                    userId
+                )
+                processBuilder.start()
+                call.respondText("Calcolo avviato per $userId")
+            } catch (e: Exception) {
+                call.respondText("Fallimento avvio script: ${e.stackTraceToString()}", status = HttpStatusCode.InternalServerError)
+            }
+        }  */
 
         //AI AGENT LOGIC
         post("/agentProcess") {
@@ -240,6 +268,8 @@ fun Application.module() {
                 call.respondText("Train Failed: ${e.stackTraceToString()}")
             }
         }
+
+
     }
 }
 
@@ -251,5 +281,9 @@ class ServerConfig {
             host = "0.0.0.0",
             module = Application::module
         ).start(wait = true)
+
+
+        // SPIEGAZIONE GENERALE PER SIMON:
+        //
     }
 }

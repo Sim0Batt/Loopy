@@ -19,9 +19,6 @@ import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 
 object QueryManager {
-
-    // Dentro QueryManager.kt
-
     fun saveDatas(connection: Database, input: SaveDataJson, userId: Int) {
         transaction(connection) {
 

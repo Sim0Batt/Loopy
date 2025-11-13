@@ -281,9 +281,5 @@ class ServerConfig {
             host = "0.0.0.0",
             module = Application::module
         ).start(wait = true)
-
-
-        // SPIEGAZIONE GENERALE PER SIMON:
-        //
     }
 }

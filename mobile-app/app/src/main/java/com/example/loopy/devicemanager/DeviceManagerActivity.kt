@@ -1,9 +1,13 @@
 package com.example.loopy.devicemanager
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
@@ -11,14 +15,111 @@ import com.example.loopy.data.DataActivity
 import com.example.loopy.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
-import com.example.loopy.utils.SessionManager
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json as KotlinxJson
 
 class DeviceManagerActivity : BaseActivity() {
+    private val client = HttpClient (CIO) {
+        install(ContentNegotiation) {
+            json(KotlinxJson {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dm_activity)
 
-        val userId = SessionManager.currentUserId!!
+        val deviceStatusText = findViewById<TextView>(R.id.deviceStatus)
+        val ppgStatusText = findViewById<TextView>(R.id.ppgStatus)
+        val accelerometerStatusText = findViewById<TextView>(R.id.accelerometerStatus)
+        val thermometerStatusText = findViewById<TextView>(R.id.thermometerStatus)
+        val electrodesStatusText = findViewById<TextView>(R.id.electrodesStatus)
+        val reloadButton = findViewById<Button>(R.id.button)
+
+        reloadButton.setOnClickListener {
+            lifecycleScope.launch{
+                try {
+                    val response = client.get("http://url:8080/status")
+
+                    val responseBody = response.bodyAsText()
+                    Log.d("Device Manager", "Server Response: $responseBody")
+                    println("Server response: $responseBody") //responseBody contiene success o failure
+
+                    runOnUiThread {
+                        try {
+                            if(getDeviceStatus(responseBody, deviceStatusText, ppgStatusText, accelerometerStatusText, thermometerStatusText, electrodesStatusText) == "SUCCESS"){
+                                Toast.makeText(this@DeviceManagerActivity, "All services are running", Toast.LENGTH_LONG).show()
+                                Log.d("Device Manager", "All services are running")
+                            }else{
+                                deviceStatusText.setTextColor(resources.getColor(R.color.red))
+                                deviceStatusText.text = "FAILURE"
+                                getSensorsStatus(ppgStatusText, accelerometerStatusText, thermometerStatusText, electrodesStatusText)
+                            }
+                            finish()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@DeviceManagerActivity, "Device Refresh Failed: Invalid response", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("Login", "Errore durante la richiesta di login", e)
+                    runOnUiThread {
+                        Toast.makeText(this@DeviceManagerActivity, "Errore di rete: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch{
+            try {
+                val response = client.get("http://url:8080/status")
+
+                val responseBody = response.bodyAsText()
+                Log.d("Device Manager", "Server Response: $responseBody")
+                println("Server response: $responseBody") //responseBody contiene success o failure
+
+                runOnUiThread {
+                    try {
+                        if(getDeviceStatus(responseBody, deviceStatusText, ppgStatusText, accelerometerStatusText, thermometerStatusText, electrodesStatusText) == "SUCCESS"){
+                            Toast.makeText(this@DeviceManagerActivity, "All services are running", Toast.LENGTH_LONG).show()
+                            Log.d("Device Manager", "All services are running")
+                        }else{
+                            deviceStatusText.setTextColor(resources.getColor(R.color.red))
+                            deviceStatusText.text = "FAILURE"
+                            getSensorsStatus(ppgStatusText, accelerometerStatusText, thermometerStatusText, electrodesStatusText)
+                        }
+                        finish()
+                    } catch (e: Exception) {
+                        Toast.makeText(this@DeviceManagerActivity, "Device Refresh Failed: Invalid response", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Login", "Errore durante la richiesta di login", e)
+                runOnUiThread {
+                    Toast.makeText(this@DeviceManagerActivity, "Errore di rete: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
 
         /*------------------TASTI NAVBAR--------------------*/
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
@@ -64,5 +165,85 @@ class DeviceManagerActivity : BaseActivity() {
         super.onResume()
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
         bottomNavBar.selectedItemId = R.id.nav_dm
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun getDeviceStatus(
+        responseBody: String,
+        deviceStatusText: TextView,
+        ppgStatusText: TextView,
+        accelerometerStatusText: TextView,
+        thermometerStatusText: TextView,
+        electrodesStatusText: TextView
+    ): String{
+        if(responseBody == "SUCCESS"){
+            deviceStatusText.text = "SUCCESS"
+            deviceStatusText.setTextColor(resources.getColor(R.color.green))
+            ppgStatusText.text = "SUCCESS"
+            ppgStatusText.setTextColor(resources.getColor(R.color.green))
+            accelerometerStatusText.text = "SUCCESS"
+            accelerometerStatusText.setTextColor(resources.getColor(R.color.green))
+            thermometerStatusText.text = "SUCCESS"
+            thermometerStatusText.setTextColor(resources.getColor(R.color.green))
+            electrodesStatusText.text = "SUCCESS"
+            electrodesStatusText.setTextColor(resources.getColor(R.color.green))
+            Toast.makeText(this@DeviceManagerActivity, "Reloaded Values",
+                Toast.LENGTH_LONG).show()
+            return "SUCCESS"
+        }else{
+            deviceStatusText.text = "FAILURE"
+            deviceStatusText.setTextColor(resources.getColor(R.color.green))
+        }
+        Toast.makeText(this@DeviceManagerActivity, "Reloaded Values",
+            Toast.LENGTH_LONG).show()
+        return "FAILURE"
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun getSensorsStatus(ppgStatusText: TextView, accelerometerStatusText: TextView, thermometerStatusText: TextView, electrodesStatusText: TextView){
+        runBlocking {
+            val ppgSensor = client.get("http://url:8080/status")
+            val ppgStatus = ppgSensor.bodyAsText()
+            if(ppgStatus == "FAILURE"){
+                ppgStatusText.text = "FAILURE"
+                ppgStatusText.setTextColor(resources.getColor(R.color.red))
+            }else{
+                ppgStatusText.text = "SUCCESS"
+                ppgStatusText.setTextColor(resources.getColor(R.color.green))
+            }
+
+
+            val electrodesSensor = client.get("http://url:8080/status")
+            val electrodesStatus = electrodesSensor.bodyAsText()
+            if(electrodesStatus == "FAILURE"){
+                electrodesStatusText.text = "FAILURE"
+                electrodesStatusText.setTextColor(resources.getColor(R.color.red))
+            }else{
+                electrodesStatusText.text = "SUCCESS"
+                electrodesStatusText.setTextColor(resources.getColor(R.color.green))
+            }
+
+
+            val thermometerSensor = client.get("http://url:8080/status")
+            val thermometerStatus = thermometerSensor.bodyAsText()
+            if(thermometerStatus == "FAILURE"){
+                thermometerStatusText.text = "FAILURE"
+                thermometerStatusText.setTextColor(resources.getColor(R.color.red))
+            }else{
+                thermometerStatusText.text = "SUCCESS"
+                thermometerStatusText.setTextColor(resources.getColor(R.color.green))
+            }
+
+
+            val accelerometerSensor = client.get("http://url:8080/status")
+            val accelerometerStatus = accelerometerSensor.bodyAsText()
+            if(accelerometerStatus == "FAILURE"){
+                accelerometerStatusText.text = "FAILURE"
+                accelerometerStatusText.setTextColor(resources.getColor(R.color.red))
+            }else{
+                accelerometerStatusText.text = "SUCCESS"
+                accelerometerStatusText.setTextColor(resources.getColor(R.color.green))
+            }
+        }
     }
 }

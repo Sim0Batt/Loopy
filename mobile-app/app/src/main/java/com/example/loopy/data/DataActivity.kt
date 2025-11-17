@@ -47,7 +47,7 @@ class DataActivity : BaseActivity() {
 
         val userId = SessionManager.currentUserId
         if (userId != null) {
-            viewModel.caricaDatiUtente(userId)
+            viewModel.caricaDatiUtente(userId.toString())
         } else {
             Toast.makeText(this, "Errore: Utente non trovato", Toast.LENGTH_LONG).show()
             // finish()

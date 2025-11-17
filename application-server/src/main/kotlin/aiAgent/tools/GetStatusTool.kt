@@ -20,9 +20,9 @@ class GetStatusTool(val id: Int) : ToolSet {
     @Tool
     @LLMDescription("""Using this tool, you can retrieve all the status informations about the user in a way:
 {
-    "heartRate": "[]",
+    "heartRate": "[...]",
     "oxygen": "[...]",
-    "timestampPPG": "[....]",
+    "timestampPPG": "[...]",
     "sweating": "[...]",
     "timestampElectrodes": "[...]",
     "temperature": "[...]",

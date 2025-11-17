@@ -21,4 +21,12 @@ object OpenRouterCustomModels {
         contextLength = 163_800,
         maxOutputTokens = 163_800,
     )
+
+    val Gemini20Experimental: LLModel = LLModel(
+        provider = LLMProvider.OpenRouter,
+        id = "google/gemini-2.0-flash-exp:free",
+        capabilities = standardCapabilities,
+        contextLength = 1_048_576,
+        maxOutputTokens = 1_048_576,
+    )
 }

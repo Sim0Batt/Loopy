@@ -5,64 +5,42 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.asTools
 import ai.koog.agents.features.eventHandler.feature.EventHandler
 import ai.koog.agents.features.eventHandler.feature.EventHandlerConfig
-import ai.koog.agents.memory.feature.AgentMemory
-import ai.koog.agents.memory.providers.LocalFileMemoryProvider
-import ai.koog.agents.memory.providers.LocalMemoryConfig
-import ai.koog.agents.memory.storage.SimpleStorage
 import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.llms.all.simpleGoogleAIExecutor
-import ai.koog.rag.base.files.JVMFileSystemProvider
 import aiAgent.strategies.MockStrategy
 import aiAgent.tools.GetStatusTool
-import java.nio.file.Path
 
 class AgentCreation {
     fun getAgent(id: Int): AIAgent<String, String>{
-        val memoryProvider = LocalFileMemoryProvider(
-            config = LocalMemoryConfig("Agent-Memory"),
-            storage = SimpleStorage(fs = JVMFileSystemProvider.ReadWrite),
-            fs = JVMFileSystemProvider.ReadWrite,
-            root = Path.of("~/tmp/LoopyAgent/Memory/")
-        )
-
-
         val eventHandlerConfig: EventHandlerConfig.() -> Unit = {
-            onToolCall { toolContext ->
+            onToolCallStarting { toolContext ->
                 println("Tool called: tool=${toolContext.tool.name}")
             }
 
-            onToolValidationError { toolContext ->
+            onToolValidationFailed { toolContext ->
                 println("Tool validation error: tool=${toolContext.tool.name}")
             }
 
-            onToolCallFailure { toolContext ->
+            onToolCallFailed { toolContext ->
                 println("Tool call failure: tool=${toolContext.tool.name}")
             }
 
-            onToolCallResult { toolContext ->
+            onToolCallCompleted { toolContext ->
                 println("Tool call result: tool=${toolContext.tool.name}")
             }
         }
 
         return AIAgent(
+            promptExecutor = simpleGoogleAIExecutor("AIzaSyDXATpG9D5-7zNoKXszHi0SnleB0hUdKVs"),
+            llmModel = GoogleModels.Gemini2_5Flash,
+            strategy = MockStrategy(),
             toolRegistry = ToolRegistry {
                 tools(GetStatusTool(id).asTools())
             },
-            strategy = MockStrategy(),
-            executor = simpleGoogleAIExecutor("AIzaSyDXATpG9D5-7zNoKXszHi0SnleB0hUdKVs"),
-            llmModel = GoogleModels.Gemini2_5Flash,
             systemPrompt = SYSTEM_PROMPT,
-            installFeatures = {
-                install(AgentMemory) {
-                    this.memoryProvider = memoryProvider
-                    agentName = "Loopy"
-                    featureName = "richieste-utente"
-                    organizationName = "Loopy"
-                    productName = "memory"
-                }
-                install(EventHandler.Feature, eventHandlerConfig)
-            }
-        )
+        ){
+            install(EventHandler){eventHandlerConfig()}
+        }
     }
 
 

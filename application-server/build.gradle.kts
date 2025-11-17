@@ -61,8 +61,8 @@ dependencies {
     implementation("org.json:json:20231013")
 
     // Koog
-    implementation("ai.koog:koog-agents:0.4.2")
-    testImplementation("ai.koog:agents-test:0.4.2")
+    implementation("ai.koog:koog-agents:0.5.3")
+    testImplementation("ai.koog:agents-test:0.5.3")
     testImplementation(kotlin("test"))
 
     //Logging

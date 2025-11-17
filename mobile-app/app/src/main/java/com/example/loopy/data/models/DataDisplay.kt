@@ -32,4 +32,12 @@ data class DataDisplay(
     val stressGraficoJson: String? = null,
 
     // val glucoseValue: String = "N/D"
+
+    //TODO: da implementare
+    val activityValue: String = "N/D",
+    val vo2Value: String = "N/D",
+    val sleepValue: String = "N/D",
+    val stressValue: String? = null,
+    val recoveryValue: String = "N/D",
+    val glucoseValue: String? = null,
 )

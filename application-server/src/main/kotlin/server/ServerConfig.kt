@@ -112,24 +112,6 @@ fun Application.module() {
             call.respond(riepilogo) // se te lo stai chiedendo, non ho messo respondText perche respond lo fa in automatico ed è piu efficiente
         }
 
-        // TODO: cancellare questo blocco... è della roba vecchia
-       /* post("/calculateSummary/{id}") {
-            val userId = call.parameters["id"].toString()
-            val scriptPath = "/home/ubuntu/MetricCalculator/calcola_metriche.py"
-
-            try {
-                val processBuilder = ProcessBuilder(
-                    "/usr/bin/python3",
-                    scriptPath,
-                    userId
-                )
-                processBuilder.start()
-                call.respondText("Calcolo avviato per $userId")
-            } catch (e: Exception) {
-                call.respondText("Fallimento avvio script: ${e.stackTraceToString()}", status = HttpStatusCode.InternalServerError)
-            }
-        }  */
-
         //AI AGENT LOGIC
         post("/agentProcess") {
             val credentials = call.receive<AgentJson>()
@@ -172,7 +154,9 @@ fun Application.module() {
                 -Height: $height,
                 -Weight: $weight,
                 -Sex: $sex
-            """.trimIndent()))
+                """.trimIndent()
+                )
+            )
 
             call.respondText(agent.run(credentials.input))
         }

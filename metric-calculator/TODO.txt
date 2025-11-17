@@ -1,0 +1,93 @@
+
+i titoli sopra, difianco ad A,B... sono possibili commit
+quando uno si prende una casella tipo A, la fa tutta lui, per avere commit piu coerenti
+una volta fatto un punto, mettere a fianco (FATTO), cosi sappiamo cosa è gia stato fatto
+
+
+
+A------------------"refactor: from boolean movement to x,y,z (double)"---------------------------------------------------
+
+1.In SaveDataJson
+rimuovere val movement: Boolean
+mettere val acc_x: Double.....
+
+2.In TabellaAccelerometroTable.kt
+rimuovere val movimento = bool(..)
+mettere val x = double("acc_x"), ....
+
+3.In QueryManager.kt - in saveDatas
+modificare INSERT in TabellaAccelerometroTable per salvare nuovi campi input.acc_x, ....
+
+4. In db_utils.py
+modificare query_config per acc (FATTO)
+
+B------------------"added column for calculating"-------------------------------------------------
+
+1.In TabellaRiepilogoGiornalieroTable.kt
+aggiungere nuove colonne a oggetto table:
+
+(Sonno/Recupero)
+           val rhr_a_riposo = integer("rhr_a_riposo").nullable()
+
+           val sonno_totale_minuti = integer("sonno_totale_minuti").nullable()
+
+           val sonno_profondo_minuti = integer("sonno_profondo_minuti").nullable()
+
+           val sonno_leggero_minuti = integer("sonno_leggero_minuti").nullable()
+
+           val sonno_rem_minuti = integer("sonno_rem_minuti").nullable()
+
+           val sonno_sveglio_minuti = integer("sonno_sveglio_minuti").nullable()
+
+           val sonno_grafico_json = text("sonno_grafico_json").nullable()
+
+(Attività Diurna)
+           val attivita_sedentaria_minuti = integer("attivita_sedentaria_minuti").nullable()
+
+           val attivita_leggera_minuti = integer("attivita_leggera_minuti").nullable()
+
+           val attivita_moderata_minuti = integer("attivita_moderata_minuti").nullable()
+
+           val attivita_intensa_minuti = integer("attivita_intensa_minuti").nullable()
+
+           val attivita_grafico_json = text("attivita_grafico_json").nullable()
+
+(stress diurno)
+           val stress_calmo_minuti = integer("stress_calmo_minuti").nullable()
+
+           val stress_medio_minuti = integer("stress_medio_minuti").nullable()
+
+           val stress_alto_minuti = integer("stress_alto_minuti").nullable()
+
+           val stress_grafico_json = text("stress_grafico_json").nullable()
+
+C------------------------------"refactor: update data flow"-------------------------------------------------------------
+
+1.In SymmaryDataJson (server)
+aggiungere nuovi campi serializable corrispopndentiu alle colonne punto B.1
+(es. val rhr_a_riposo: Int? = null, val sonno_grafico_json: String? = null, val attivita_leggera_minuti: Int? = null, ecc.)
+
+2.In QueryManager.kt - getDailySummary
+aggiornare funzione per leggere i nuovi campi da TabellaRiepilogoGiornalieroTable e inserirli nel SummaryDataJson
+
+3.In ServerConfig ( o na roba simile non ricordo.... il file del sevrer con post e get)
+Rimuovere endpoint POST /calculateSummary/{id}
+(non serve perche useremo cronjob)
+
+4. In SummaryDataJson ( app)
+rendere identico a quello sul server ( C.1)
+
+
+D-------------------------------"Setup server via ssh"-------------------------------------------------------------------
+
+DA FARE PER ULTIMO
+
+1.aggiungere al db tutte nuove colonne del puntio B.1
+
+2.sempre in ssh fare pull per scaricare script python
+
+3. sempre ssh aggiungere i crontab -e
+
+4. riavviare server
+
+

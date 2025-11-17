@@ -19,7 +19,7 @@ class DataViewModel : ViewModel() {
 
     private val client = KtorClient.client
     // qui ho creato ste robe cosi se per caso cambiamo http per la decima volta non è un problema :)
-    private val baseUrl = "http://13.61.174.16:8080"
+    private val baseUrl = "http://51.21.196.187:8080"
     private val endpointRecente = "$baseUrl/getDatas"
     private val endpointRiepilogo = "$baseUrl/getSummary"
 
@@ -28,7 +28,7 @@ class DataViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    //vabbe funzione che gestisce le chiamate per prendere i dati
+    // vabbe funzione che gestisce le chiamate per prendere i dati
     fun caricaDatiUtente(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -43,15 +43,17 @@ class DataViewModel : ViewModel() {
                     Log.d("DataViewModel", "Chiamo: $endpointRiepilogo/$userId")
                     client.get("$endpointRiepilogo/$userId").body<SummaryDataJson>()
                 }
-                // le ho fatte con await cosi non si sfancula tutto se magari l'utente gira il telefono o
-                // fa qualsiasi altra cosa... non blocco gli altri thread
+
+                // le ho fatte con await cosi non si sfancula tutto se magari l'utente gira il telefono
                 val datiRecenti = datiRecentiJob.await()
                 val datiRiepilogo = datiRiepilogoJob.await()
 
                 Log.d("DataViewModel", "Dati recenti e riepilogo scaricati.")
 
+                // Combina i risultati dei due lavori
                 val datiPuliti = combinaDati(datiRecenti, datiRiepilogo)
 
+                // Scrivo in bacheca
                 _displayData.postValue(datiPuliti)
 
             } catch (e: Exception) {
@@ -61,44 +63,73 @@ class DataViewModel : ViewModel() {
         }
     }
 
-
     private fun combinaDati(datiRecenti: SensorDataJson, datiRiepilogo: SummaryDataJson): DataDisplay {
 
+        //Dati semplici
         val hrAttuale = datiRecenti.heartRates.split(',').lastOrNull()?.trim() ?: "N/D"
         val spo2Attuale = datiRecenti.oxygens.split(',').lastOrNull()?.trim() ?: "N/D"
         val tempAttuale = datiRecenti.temperatures.split(',').lastOrNull()?.trim() ?: "N/D"
         val sweatAttuale = datiRecenti.sweatings.split(',').lastOrNull()?.trim() ?: "N/D"
 
-        val hrvCalcolato = datiRiepilogo.hrv?.toString() ?: "N/D"
-        val stressCalcolato = datiRiepilogo.stress?.toString() ?: "N/D"
-        val passiCalcolati = datiRiepilogo.passi?.toString() ?: "N/D"
-        val recuperoCalcolato = datiRiepilogo.recupero?.toString() ?: "N/D"
-        val vo2maxCalcolato = datiRiepilogo.vo2max?.toString() ?: "N/D"
+        // funzione che converte minuti in h
+        fun formattaMinuti(minuti: Int?): String {
+            if (minuti == null || minuti == 0) return "N/D"
+            return "${minuti / 60}h ${minuti % 60}m"
+        }
 
+        // SONO IN ROSSO PERCHE BISOGNA SISTEMARE SUMMARYDATAJSON (SERVER E APP)---> GUARDARE TODO:TXT IN METRICHE
+        val hrvCalcolato = datiRiepilogo.hrv?.toString() ?: "N/D"
+        val rhrCalcolato = datiRiepilogo.rhr_a_riposo?.toString() ?: "N/D"
+        val recuperoCalcolato = datiRiepilogo.recupero?.toString() ?: "N/D"
+
+        val sonnoTotale = formattaMinuti(datiRiepilogo.sonno_totale_minuti)
+        val sonnoProfondo = formattaMinuti(datiRiepilogo.sonno_profondo_minuti)
+        val sonnoRem = formattaMinuti(datiRiepilogo.sonno_rem_minuti)
+
+        val attivitaIntensa = formattaMinuti(datiRiepilogo.attivita_intensa_minuti)
+        val attivitaModerata = formattaMinuti(datiRiepilogo.attivita_moderata_minuti)
+        val attivitaLeggera = formattaMinuti(datiRiepilogo.attivita_leggera_minuti)
+        val attivitaSedentaria = formattaMinuti(datiRiepilogo.attivita_sedentaria_minuti)
+
+        val stressAlto = formattaMinuti(datiRiepilogo.stress_alto_minuti)
+        val stressMedio = formattaMinuti(datiRiepilogo.stress_medio_minuti)
+        val stressCalmo = formattaMinuti(datiRiepilogo.stress_calmo_minuti)
+
+        // oggetto finale da mostrare
         return DataDisplay(
+            // semplivci
             hrValue = "$hrAttuale bpm",
             spo2Value = "$spo2Attuale %",
             tempValue = "$tempAttuale °C",
             sweatValue = sweatAttuale,
 
+            //calcolati
+
+            // Recupero
             hrvValue = "$hrvCalcolato ms",
-            stressValue = "$stressCalcolato / 100",
-            activityValue = "$passiCalcolati passi",
-            recoveryValue = "$recuperoCalcolato / 100",
-            vo2Value = "$vo2maxCalcolato ml/kg/min",
-            // TODO: questi da sistemare, apsetto a capire cosa effettivamente ci arriva
-            // TODO: sistemare anche eventuali cose come ml/kg/min ecc... dipende da cosa otterrò con gli alg.
-            sleepValue = "78 / 100",
-            glucoseValue = "Normale"
+            rhrValue = "$rhrCalcolato bpm",
+            recuperoValue = "$recuperoCalcolato / 100",
+
+            // Sonno
+            sonnoTotale = sonnoTotale,
+            sonnoProfondo = sonnoProfondo,
+            sonnoRem = sonnoRem,
+            sonnoGraficoJson = datiRiepilogo.sonno_grafico_json,
+
+            // Attività
+            attivitaIntensa = attivitaIntensa,
+            attivitaModerata = attivitaModerata,
+            attivitaLeggera = attivitaLeggera,
+            attivitaSedentaria = attivitaSedentaria,
+            attivitaGraficoJson = datiRiepilogo.attivita_grafico_json,
+
+            // Stress
+            stressAlto = stressAlto,
+            stressMedio = stressMedio,
+            stressCalmo = stressCalmo,
+            stressGraficoJson = datiRiepilogo.stress_grafico_json
+
+            // (glucoseValue, ecc.
         )
     }
 }
-
-
-
-// SPIEGAZIONE GENERALE PER SIMON:
-// in caricaDatiUtente faccio le chiamate al server per prendere dati istantanei e quelli complessi " riepilogo"
-// notare che lo faccio in modo asincrono cosi non perdo tempo nelle chiamate che verrebbero "distrutte" se ad esempio l'utente gira il telefono
-// combino i dati istantanei e quelli complessi, notare che in caso i dati complessi siano nulli ( perche magari non abbiamo abbastanza valori)
-// uscira N/D ( non disponibile).
-// Scrivo in "bacheca" questi dati con _displayData... cosi appena abbiamo qualcosa bussa alla DataActivity e quella osserva i dati con displayData

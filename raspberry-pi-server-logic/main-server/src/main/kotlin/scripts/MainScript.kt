@@ -112,7 +112,7 @@ object MainScript {
         }
     }
 
-    fun executeTermometerSensor(): String{
+    fun executeThermometerSensor(): String{
         var process: Process? = null
         val termometerScriptPath = "/home/loopy/sensors-logic/termometer_sensor.py"
         val termometerProcessBuilder = ProcessBuilder(

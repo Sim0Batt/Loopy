@@ -2,7 +2,14 @@ package server
 
 import database.DatabaseConfig
 import database.QueryManagement
-import io.ktor.http.plus
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -15,19 +22,34 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.Database
 import scripts.MainScript
 import server.inputJsons.SaveDataJson
+import server.outputJsons.StatusJson
+import java.time.LocalDateTime
+import kotlinx.serialization.json.Json as KotlinxJson
+import io.ktor.http.contentType
 
+
+val client = HttpClient (CIO) {
+    install(ContentNegotiation) {
+        json(KotlinxJson {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
+    }
+}
 
 fun Application.module() {
-    install(ContentNegotiation) {
+    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
     }
 
     install(CORS) {
         anyHost()
     }
+
+
 
     routing {
         staticResources("static", "static")
@@ -54,7 +76,7 @@ fun Application.module() {
         }
 
         get("/termometer"){
-            val completed = MainScript.executeTermometerSensor()
+            val completed = MainScript.executeThermometerSensor()
             if(completed == "success"){
                 call.respondText("SUCCESS")
             }else{
@@ -87,6 +109,34 @@ fun Application.module() {
             }else{
                 call.respondText("FAILURE")
             }
+        }
+
+        get ("/saveStatus") {
+            val mainStatus = MainScript.executeAllSensors()
+            var resultStatusJson: StatusJson
+            if(mainStatus == "success"){
+                resultStatusJson = StatusJson(
+                    "OK",
+                    "OK",
+                    "OK",
+                    "OK",
+                    LocalDateTime.now().toString(),
+                )
+            }else{
+                resultStatusJson = StatusJson(
+                    if(MainScript.executeAccelerometerSensor() == "success") "OK" else "NA",
+                    if(MainScript.executeThermometerSensor() == "success") "OK" else "NA",
+                    if(MainScript.executePPGSensor() == "success") "OK" else "NA",
+                    if(MainScript.executeElectrodeSensor() == "success") "OK" else "NA",
+                    LocalDateTime.now().toString(),
+                )
+            }
+
+            client.post("http://13.61.174.16:8080/saveStatus/1"){
+                contentType(ContentType.Application.Json)
+                setBody(resultStatusJson)
+            }
+
         }
     }
 }

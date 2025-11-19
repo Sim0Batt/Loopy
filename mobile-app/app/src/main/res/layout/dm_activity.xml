@@ -7,55 +7,39 @@
     android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
+    <com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="0dp" android:layout_height="120dp"
+        android:layout_marginStart="16dp" android:layout_marginEnd="16dp"   app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191">
+        app:layout_constraintVertical_bias="0.191"> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="386dp"
-            android:layout_height="120dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.48"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.44">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Raspberry Status"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Raspberry Status"
-                    android:textAlignment="center"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/deviceStatus"
-                    android:layout_width="123dp"
-                    android:layout_height="wrap_content"
-                    android:text="FAILURE"
-                    android:textAlignment="center"
-                    android:textColor="@color/red"
-                    android:textSize="24sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+        <TextView
+            android:id="@+id/deviceStatus"
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:text="FAILURE"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="24sp" />
     </LinearLayout>
 
+    </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavBar"
         android:layout_width="0dp"

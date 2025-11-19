@@ -8,6 +8,7 @@ import database.tables.TabellaElettrodiTable
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import database.tables.TabellaRiepilogoGiornalieroTable
+import database.tables.TabellaSensorsStatusTable
 import server.jsonModels.outputJsons.SummaryDataJson
 import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
@@ -28,6 +29,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import okhttp3.internal.wait
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -36,6 +39,7 @@ import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
 import server.jsonModels.outputJsons.PredictJson
+import server.jsonModels.outputJsons.StatusJson
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -254,6 +258,39 @@ fun Application.module() {
         }
 
 
+        //Sensors Staus
+        get("/status/{id}"){
+            val userId = call.parameters["id"].toString().toInt()
+            var currentStatus: ResultRow? = null
+            transaction(DatabaseConfig.getConfig()) {
+                currentStatus = TabellaSensorsStatusTable.selectAll().where{
+                    TabellaSensorsStatusTable.userId eq userId
+                }.orderBy(TabellaSensorsStatusTable.id to SortOrder.DESC).firstOrNull()
+            }
+            call.respondText(StatusJson(
+                currentStatus?.get(TabellaSensorsStatusTable.accelerometerStatus).toString(),
+                currentStatus?.get(TabellaSensorsStatusTable.thermometerStatus).toString(),
+                currentStatus?.get(TabellaSensorsStatusTable.ppgStatus).toString(),
+                currentStatus?.get(TabellaSensorsStatusTable.electrodeStatus).toString(),
+                currentStatus?.get(TabellaSensorsStatusTable.timestamp).toString()
+                ).toString()
+            )
+        }
+
+        post("/saveStatus/{id}"){
+            val userId = call.parameters["id"].toString().toInt()
+            val statusJson = call.receive<StatusJson>()
+            transaction(DatabaseConfig.getConfig()) {
+                TabellaSensorsStatusTable.insert {
+                    it[accelerometerStatus] = statusJson.accelerometerStatus
+                    it[ppgStatus] = statusJson.ppgStatus
+                    it[thermometerStatus] = statusJson.thermometerStatus
+                    it[electrodeStatus] = statusJson.electrodesStatus
+                    it[timestamp] = statusJson.timestamp
+                    it[TabellaSensorsStatusTable.userId] = userId
+                }
+            }
+        }
     }
 }
 

@@ -58,5 +58,4 @@ log out
 cancella account 
 contact 
 privacy
-CAMBIO INDIRIZZO IP DEL RASP (solo per debug e dimostrazione) -> basta un semplice campo dove inserire del testo ed un pulsante "Salva"
 

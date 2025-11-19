@@ -21,46 +21,6 @@ modificare INSERT in TabellaAccelerometroTable per salvare nuovi campi input.acc
 4. In db_utils.py
 modificare query_config per acc (FATTO)
 
-B------------------"added column for calculating"-------------------------------------------------
-
-1.In TabellaRiepilogoGiornalieroTable.kt
-aggiungere nuove colonne a oggetto table:
-
-(Sonno/Recupero)
-           val rhr_a_riposo = integer("rhr_a_riposo").nullable()
-
-           val sonno_totale_minuti = integer("sonno_totale_minuti").nullable()
-
-           val sonno_profondo_minuti = integer("sonno_profondo_minuti").nullable()
-
-           val sonno_leggero_minuti = integer("sonno_leggero_minuti").nullable()
-
-           val sonno_rem_minuti = integer("sonno_rem_minuti").nullable()
-
-           val sonno_sveglio_minuti = integer("sonno_sveglio_minuti").nullable()
-
-           val sonno_grafico_json = text("sonno_grafico_json").nullable()
-
-(Attività Diurna)
-           val attivita_sedentaria_minuti = integer("attivita_sedentaria_minuti").nullable()
-
-           val attivita_leggera_minuti = integer("attivita_leggera_minuti").nullable()
-
-           val attivita_moderata_minuti = integer("attivita_moderata_minuti").nullable()
-
-           val attivita_intensa_minuti = integer("attivita_intensa_minuti").nullable()
-
-           val attivita_grafico_json = text("attivita_grafico_json").nullable()
-
-(stress diurno)
-           val stress_calmo_minuti = integer("stress_calmo_minuti").nullable()
-
-           val stress_medio_minuti = integer("stress_medio_minuti").nullable()
-
-           val stress_alto_minuti = integer("stress_alto_minuti").nullable()
-
-           val stress_grafico_json = text("stress_grafico_json").nullable()
-
 C------------------------------"refactor: update data flow"-------------------------------------------------------------
 
 1.In SymmaryDataJson (server)

@@ -22,7 +22,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val userId = Sess ionManager.currentUserId!!
+        val userId = SessionManager.currentUserId!!
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)

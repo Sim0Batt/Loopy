@@ -161,8 +161,6 @@ fun Application.module() {
                 """.trimIndent()
                 )
             )
-
-            call.respondText(agent.run(credentials.input))
         }
 
 

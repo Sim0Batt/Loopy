@@ -132,7 +132,7 @@ fun Application.module() {
                 )
             }
 
-            client.post("http://13.61.174.16:8080/saveStatus/1"){
+            client.post("http://56.228.35.114:8080/saveStatus/1"){
                 contentType(ContentType.Application.Json)
                 setBody(resultStatusJson)
             }

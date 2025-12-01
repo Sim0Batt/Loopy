@@ -1,36 +1,71 @@
 package com.example.loopy
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.example.loopy.chat.ChatActivity
+import com.example.loopy.chat.scripts.ChatCaller
 import com.example.loopy.data.DataActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
 import com.example.loopy.settings.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
+import com.example.loopy.utils.GraphsAdapter
 import com.example.loopy.utils.SessionManager
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.statement.readBytes
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json as KotlinxJson
+
 
 class MainActivity : BaseActivity() {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+        val client = HttpClient (CIO) {
+            install(ContentNegotiation) {
+                json(KotlinxJson {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
+            }
+        }
+
 
         val userId = SessionManager.currentUserId!!
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)
         val helloUser = findViewById<TextView>(R.id.helloUser)
-        val chatbotCloud = findViewById<ImageButton>(R.id.chatbotCloud) /* nuvoletta */
-        val graphView = findViewById<ImageButton>(R.id.dataGraph) /* da controllare per switching */
+        val chatbotCloud = findViewById<TextView>(R.id.chatbotCloud) /* nuvoletta */
+        //val graphView = findViewById<ImageView>(R.id.graphImage) /* da controllare per switching */
         val kcalView = findViewById<Button>(R.id.dailyConsumption) /* rivedere il nome */
         val hbView = findViewById<Button>(R.id.heartBeat)
+        val viewPager = findViewById<ViewPager2>(R.id.graphsViewPager)
+
+
+
+
+
+
+
+
 
         settingsButton.setOnClickListener {
             val intent = Intent(this@MainActivity, SettingsActivity::class.java)
@@ -42,7 +77,7 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        chatbotCloud.setOnClickListener { // Questo è la nuvoletta, giusto? SI
+        chatbotCloud.setOnClickListener {
             val intent = Intent(this@MainActivity, ChatActivity::class.java)
             startActivity(intent)
         }
@@ -56,6 +91,17 @@ class MainActivity : BaseActivity() {
             val intent = Intent(this@MainActivity, DataActivity::class.java)
             startActivity(intent)
         }
+
+        /*------------------ASYNCHRONOUS LOGIC--------------------*/
+        lifecycleScope.launch {
+            val agentResponse = ChatCaller().run(BEGINNING_PROMPT, "Simone")
+            updateChatBotMessage(chatbotCloud, agentResponse)
+
+            //Image Retrive
+            viewPager.adapter = GraphsAdapter(downloadImagesBitmap(client, userId))
+        }
+
+
 
 
         /*------------------TASTI NAVBAR--------------------*/
@@ -103,4 +149,33 @@ class MainActivity : BaseActivity() {
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
         bottomNavBar.selectedItemId = R.id.nav_home
     }
+
+    private fun updateChatBotMessage(textView: TextView, message: String){
+        textView.text = message
+    }
+
+    private val BEGINNING_PROMPT = """
+        Give me a full checkup in base of my data IN MAXIMUM 15 WORDS.
+    """.trimIndent()
+
+    private suspend fun downloadImagesBitmap(client: HttpClient, userId: Int): List<Bitmap> {
+        val tmp: MutableList<Bitmap> = mutableListOf()
+        try {
+            var serverResponse = client.get("http://56.228.35.114:8080/graph/$userId/stress")
+            var imageBytes = serverResponse.readBytes()
+            tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+
+            serverResponse = client.get("http://56.228.35.114:8080/graph/$userId/activity")
+            imageBytes = serverResponse.readBytes()
+            tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+
+            serverResponse = client.get("http://56.228.35.114:8080/graph/$userId/sleep")
+            imageBytes = serverResponse.readBytes()
+            tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+        }catch (e: Exception){
+            Log.d("HomePage", "Error during graphs download")
+        }
+        return tmp
+    }
+
 }

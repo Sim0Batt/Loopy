@@ -7,9 +7,8 @@ import json
 
 from db_utils import DB_CONFIG, leggi_dati_grezzi
 
-# Finestra di analisi: le ultime 10 ore (per coprire la notte)
-# TODO: da decidere insieme cosa conviene mettere
-ANALISI_SONNO_ORE = 10
+
+ANALISI_SONNO_ORE = 48
 
 def analizza_sonno_e_metriche(dati_grezzi: dict) -> (dict, str | None):
     """
@@ -157,7 +156,7 @@ def analizza_sonno_e_metriche(dati_grezzi: dict) -> (dict, str | None):
 
         # creo json
         df_grafico = df[df['is_asleep_stable'] == True][['fase']].copy()
-        df_grafico.index = df_grafico.index.strftime('%H:%M')
+        df_grafico.index = df_grafico.index.strftime('%Y-%m-%d %H:%M')
         grafico_json_str = df_grafico['fase'].to_json(orient='index')
 
         print(f"  [SONNO] Analisi completata: {risultati_finali}")

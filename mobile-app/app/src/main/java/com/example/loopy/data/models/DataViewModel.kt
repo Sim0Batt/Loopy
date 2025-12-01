@@ -77,7 +77,7 @@ class DataViewModel : ViewModel() {
             return "${minuti / 60}h ${minuti % 60}m"
         }
 
-        // SONO IN ROSSO PERCHE BISOGNA SISTEMARE SUMMARYDATAJSON (SERVER E APP)---> GUARDARE TODO:TXT IN METRICHE
+        
         val hrvCalcolato = datiRiepilogo.hrv?.toString() ?: "N/D"
         val rhrCalcolato = datiRiepilogo.rhr_a_riposo?.toString() ?: "N/D"
         val recuperoCalcolato = datiRiepilogo.recupero?.toString() ?: "N/D"

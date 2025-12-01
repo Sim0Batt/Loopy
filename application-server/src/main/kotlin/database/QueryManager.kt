@@ -12,6 +12,7 @@ import models.ElectrodeData
 import models.PPGData
 import models.TermometerData
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -177,4 +178,74 @@ object QueryManager {
         }
         return predict
     }
+
+    fun getDayDatas(connection: Database, id: Int): ReturnDataJson {
+        return transaction(connection) {
+            val dataLimit = 10 // Limite fisso per i dati "recenti"
+
+            val ppgDatas = TabellaPpgTable.selectAll()
+                .where { TabellaPpgTable.userId eq id }
+                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
+                .map { PPGData(
+                    it[TabellaPpgTable.battito],
+                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
+                    it[TabellaPpgTable.timestamp]
+                )}
+
+            val electrodesDatas = TabellaElettrodiTable.selectAll()
+                .where { TabellaElettrodiTable.userId eq id }
+                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
+                .map { ElectrodeData(
+                    it[TabellaElettrodiTable.sudorazione],
+                    it[TabellaElettrodiTable.timestamp]
+                )}
+
+            val termometerDatas = TabellaTermometroTable.selectAll()
+                .where { TabellaTermometroTable.userId eq id }
+                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
+                .map { TermometerData(
+                    it[TabellaTermometroTable.temperatura],
+                    it[TabellaTermometroTable.timestamp]
+                )}
+
+            val accelerometerData = TabellaAccelerometroTable.selectAll()
+                .where { TabellaAccelerometroTable.userId eq id}
+                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
+                .map { AccelerometerData(
+                        acc_x = it[TabellaAccelerometroTable.acc_x],
+                        acc_y = it[TabellaAccelerometroTable.acc_y],
+                        acc_z = it[TabellaAccelerometroTable.acc_z],
+                        timestamp = it[TabellaAccelerometroTable.timestamp]
+                    )
+                }
+
+            ReturnDataJson(
+                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(","),
+                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(","),
+                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(","),
+                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(","),
+                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(","),
+                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(","),
+                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(","),
+                movements = accelerometerData
+                    .map { data ->
+                        // modulo del vettore (x,y,z) come indicatore di intensità movimento
+                        kotlin.math.sqrt(
+                            data.acc_x * data.acc_x +
+                                    data.acc_y * data.acc_y +
+                                    data.acc_z * data.acc_z
+                        )
+                    }
+                    .reversed()
+                    .joinToString(", "),
+
+                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
+            )
+        }
+    }
+
+//    private fun isTodaa(input: String): Op<Boolean>{
+//
+//    }
+
 }

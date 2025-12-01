@@ -13,6 +13,7 @@ import server.jsonModels.outputJsons.SummaryDataJson
 import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
 import database.tables.TabellaUserTable
+import graph.GraphsManagement
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -288,6 +289,11 @@ fun Application.module() {
                     it[TabellaSensorsStatusTable.userId] = userId
                 }
             }
+        }
+
+        get("/generateGraph/{id}"){
+            val userId = call.parameters["id"].toString().toInt()
+            GraphsManagement.generateGraph(userId)
         }
     }
 }

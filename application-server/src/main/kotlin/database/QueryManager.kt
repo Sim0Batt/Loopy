@@ -37,10 +37,13 @@ object QueryManager {
                 it[TabellaElettrodiTable.userId] = userId
             }
             TabellaAccelerometroTable.insert {
-                it[TabellaAccelerometroTable.movimento] = input.movement
+                it[TabellaAccelerometroTable.acc_x] = input.acc_x
+                it[TabellaAccelerometroTable.acc_y] = input.acc_y
+                it[TabellaAccelerometroTable.acc_z] = input.acc_z
                 it[TabellaAccelerometroTable.timestamp] = input.timestampAccelerometer
                 it[TabellaAccelerometroTable.userId] = userId
             }
+
             TabellaTermometroTable.insert {
                 it[TabellaTermometroTable.temperatura] = input.temperature
                 it[TabellaTermometroTable.timestamp] = input.timestampTermometer
@@ -82,14 +85,20 @@ object QueryManager {
                     it[TabellaTermometroTable.timestamp]
                 )}
 
+
             val accelerometerData = TabellaAccelerometroTable.selectAll()
                 .where { TabellaAccelerometroTable.userId eq id }
                 .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
                 .limit(dataLimit)
-                .map { AccelerometerData(
-                    it[TabellaAccelerometroTable.movimento],
-                    it[TabellaAccelerometroTable.timestamp]
-                )}
+                .map {
+                    AccelerometerData(
+                        acc_x = it[TabellaAccelerometroTable.acc_x],
+                        acc_y = it[TabellaAccelerometroTable.acc_y],
+                        acc_z = it[TabellaAccelerometroTable.acc_z],
+                        timestamp = it[TabellaAccelerometroTable.timestamp]
+                    )
+                }
+
 
             ReturnDataJson(
                 heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(", "),
@@ -99,7 +108,18 @@ object QueryManager {
                 timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(", "),
                 temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(", "),
                 timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
-                movements = accelerometerData.map { it.movement }.reversed().joinToString(", "),
+                movements = accelerometerData
+                    .map { data ->
+                        // modulo del vettore (x,y,z) come indicatore di intensità movimento
+                        kotlin.math.sqrt(
+                            data.acc_x * data.acc_x +
+                                    data.acc_y * data.acc_y +
+                                    data.acc_z * data.acc_z
+                        )
+                    }
+                    .reversed()
+                    .joinToString(", "),
+
                 timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
             )
         }

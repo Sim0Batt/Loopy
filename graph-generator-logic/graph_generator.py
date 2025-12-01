@@ -7,9 +7,10 @@ import mysql.connector
 from sqlalchemy import create_engine
 import matplotlib.patches as mpatches # Per la legenda
 import sys
-
+import os
 
 # === CONFIGURAZIONE CONNESSIONE DATABASE ===
+# [INVARIATO]: Connessione al DB locale 'LoopyDB'
 DB_USER = 'root'
 DB_PASS = 'Simone04'
 DB_HOST = '127.0.0.1' 
@@ -25,8 +26,15 @@ except Exception as e:
     exit()
 # ==========================================
 
+# [INVARIATO]: Impostazioni di Design e Funzione Colori
 BACKGROUND_COLOR = '#F3F5F6'
 TEXT_COLOR = 'black'
+
+FIG_SIZE = (10, 6) 
+DPI_SETTINGS = 150
+TITLE_SIZE = 16
+LABEL_SIZE = 9
+
 
 def get_zone_color(value, threshold_high, threshold_mod, threshold_low):
     if value >= threshold_high: return '#c0392b'  # Rosso
@@ -35,7 +43,7 @@ def get_zone_color(value, threshold_high, threshold_mod, threshold_low):
     else: return '#3498db'  # Blu
 
 # =========================================================================
-# 1. GRAFICO STRESS
+# 1. GRAFICO STRESS (INVARIATO - Istogramma 30 min)
 # =========================================================================
 def genera_grafico_stress(user_id):
     print("Inizio generazione Grafico Stress... (lettura dati ACCURATI da DB)")
@@ -69,7 +77,7 @@ def genera_grafico_stress(user_id):
 
     # Plotting
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(16, 7), facecolor=BACKGROUND_COLOR)
+    fig, ax = plt.subplots(figsize=FIG_SIZE, facecolor=BACKGROUND_COLOR)
     ax.set_facecolor(BACKGROUND_COLOR)
 
     ax.bar(df_agg['timestamp'], df_agg['stress_liscio'],
@@ -88,7 +96,7 @@ def genera_grafico_stress(user_id):
         ax.xaxis.set_major_locator(mdates.HourLocator(interval=3))
         ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
-    ax.set_title('Daily Stress', color=TEXT_COLOR, fontsize=20, pad=20)
+    ax.set_title('Daily Stress', color=TEXT_COLOR, fontsize=TITLE_SIZE, pad=20)
     ax.set_yticklabels([]); ax.tick_params(axis='y', length=0)
     ax.tick_params(axis='x', colors=TEXT_COLOR)
     ax.grid(axis='y', linestyle='--', alpha=0.5, color='gray')
@@ -99,16 +107,16 @@ def genera_grafico_stress(user_id):
     zona_bassa = mpatches.Patch(color='#27ae60', label='Stress Basso')
     zona_recupero = mpatches.Patch(color='#3498db', label='Recupero')
     ax.legend(handles=[zona_alta, zona_media, zona_bassa, zona_recupero], 
-              loc='upper left', frameon=False, ncol=2, fontsize=10)
+              loc='upper left', frameon=False, ncol=2, fontsize=LABEL_SIZE)
 
     plt.tight_layout()
-    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_stress_finale_barre.png'
-    plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
+    output_path = f"/home/ubuntu/GraphGeneratorLogic/graphs/{user_id}/grafico_stress_finale_barre.png"
+    plt.savefig(output_path, dpi=DPI_SETTINGS, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico stress (accurato) salvato in: {output_path}")
 
 
 # =========================================================================
-# 2. GRAFICO ATTIVITA'
+# 2. GRAFICO ATTIVITA' (INVARIATO - Istogramma 5 min)
 # =========================================================================
 def genera_grafico_attivita(user_id):
     print("Inizio generazione Grafico Attività... (lettura dati ACCURATI da DB)")
@@ -139,20 +147,18 @@ def genera_grafico_attivita(user_id):
     df_agg['score_liscio'] = df_agg['combined_score'].rolling(window=1, min_periods=1).mean()
     df_agg['color'] = df_agg['score_liscio'].apply(lambda x: get_zone_color(x, 30.0, 15.0, 5.0))
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(16, 7), facecolor=BACKGROUND_COLOR)
+    fig, ax = plt.subplots(figsize=FIG_SIZE, facecolor=BACKGROUND_COLOR)
     ax.set_facecolor(BACKGROUND_COLOR)
     ax.bar(df_agg['timestamp'], df_agg['score_liscio'],
            width=pd.Timedelta(minutes=5), color=df_agg['color'],
            edgecolor=TEXT_COLOR, linewidth=0.8, label='Daily Activity Score', align='edge')
-    
     if not df_agg.empty:
         start_day = df_agg['timestamp'].min().normalize()
         end_day = df_agg['timestamp'].max().normalize() + pd.Timedelta(days=1)
         ax.set_xlim(start_day, end_day)
         ax.xaxis.set_major_locator(mdates.HourLocator(interval=3))
         ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
-
-    ax.set_title('Daily Activity', color=TEXT_COLOR, fontsize=20, pad=20)
+    ax.set_title('Daily Activity', color=TEXT_COLOR, fontsize=TITLE_SIZE, pad=20)
     ax.set_yticklabels([]); ax.tick_params(axis='y', length=0)
     ax.tick_params(axis='x', colors=TEXT_COLOR)
     ax.grid(axis='y', linestyle='--', alpha=0.5, color='gray')
@@ -161,18 +167,19 @@ def genera_grafico_attivita(user_id):
     zona_bassa = mpatches.Patch(color='#27ae60', label='Leggero (Zona 2)')
     zona_recupero = mpatches.Patch(color='#3498db', label='Riposo (Zona 1)')
     ax.legend(handles=[zona_alta, zona_media, zona_bassa, zona_recupero], 
-              loc='upper left', frameon=False, ncol=2, fontsize=10)
+              loc='upper left', frameon=False, ncol=2, fontsize=LABEL_SIZE)
     plt.tight_layout()
-    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_attivita_finale.png'
-    plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
+    output_path = f"/home/ubuntu/GraphGeneratorLogic/graphs/{user_id}/grafico_attivita_finale.png"
+    plt.savefig(output_path, dpi=DPI_SETTINGS, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico attività (accurato) salvato in: {output_path}")
 
 # =========================================================================
-# 3. GRAFICO SONNO
+# 3. GRAFICO SONNO (NUOVO DESIGN: IPNOGRAMMA PROFESSIONALE)
 # =========================================================================
 def genera_grafico_sonno(user_id):
     print("Inizio generazione Grafico Sonno... (lettura dati ACCURATI da DB)")
-    # metto la f prima delle """ per fare una f-string
+    # metto la f prima delle  per fare una f-string
+    # [INVARIATO]: Query per dati grezzi (1 minuto) durante la finestra di sonno
     
     query_sleep = f""" 
     SELECT
@@ -199,7 +206,11 @@ def genera_grafico_sonno(user_id):
     df['hrv_proxy'] = df['battito'].rolling(window='5min', min_periods=1).std()
     df = df.reset_index().fillna(0) 
 
+    # [MODIFICA]: Logica di classificazione Fasi migliorata
+    # [PERCHÉ]: La logica precedente era troppo rigida e non produceva sonno profondo.
+    # Questa nuova logica è più flessibile e realistica.
     def classifica_fase_livello(row):
+        # Soglie fittizie (basate sui nostri dati simulati)
         HR_DEEP_THRESHOLD = 58   # Battito molto basso
         HR_LIGHT_THRESHOLD = 65  # Battito a riposo normale
         HRV_LOW_THRESHOLD = 1.5  # Stabile (per Sonno Profondo)
@@ -237,7 +248,7 @@ def genera_grafico_sonno(user_id):
     # === PLOTTING: IPNOGRAMMA (Grafico a Livelli) ===
     # [PERCHÉ]: Questo è il design standard e intuitivo per il sonno.
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(16, 7), facecolor=BACKGROUND_COLOR)
+    fig, ax = plt.subplots(figsize=FIG_SIZE, facecolor=BACKGROUND_COLOR)
     ax.set_facecolor(BACKGROUND_COLOR) 
 
     # [PERCHÉ]: Disegniamo barre da 1 minuto senza bordi per creare un blocco visivo.
@@ -258,8 +269,9 @@ def genera_grafico_sonno(user_id):
         ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
     # Pulizia Visiva (Asse Y con i nomi delle Fasi)
-    ax.set_title('Sleep Phases Estimation (Hypnogram)', color=TEXT_COLOR, fontsize=20, pad=20)
+    ax.set_title('Sleep Phases Estimation (Hypnogram)', color=TEXT_COLOR, fontsize=TITLE_SIZE, pad=20)
     
+    # [PERCHÉ]: Aggiungiamo le etichette delle Fasi sull'asse Y. Questa è la legenda.
     ax.set_yticks([1, 2, 3, 4])
     ax.set_yticklabels(['Profondo', 'Leggero', 'REM', 'Sveglio'], color=TEXT_COLOR, fontsize=12)
     ax.tick_params(axis='y', length=0)
@@ -268,14 +280,29 @@ def genera_grafico_sonno(user_id):
     
     plt.tight_layout()
     
-    output_path = '/home/ubuntu/GraphicGeneratorLogic/graphs/grafico_sonno_finale.png'
-    plt.savefig(output_path, dpi=200, facecolor=BACKGROUND_COLOR)
+    # [PERCORSO CORRETTO]: Salva nella cartella corretta
+    output_path = f"/home/ubuntu/GraphGeneratorLogic/graphs/{user_id}/grafico_sonno_finale.png"
+    plt.savefig(output_path, dpi=DPI_SETTINGS, facecolor=BACKGROUND_COLOR)
     print(f"✅ Grafico sonno (Ipnogramma) salvato in: {output_path}")
 
 
+# =========================================================================
+# LANCIO DEGLI SCRIPT
+# =========================================================================
 if __name__ == "__main__":
     user_id =sys.argv[1] # Prende l'ID utente come argomento da linea di comando in modo dinamico
-    genera_grafico_stress (user_id)
+    
+    try:
+        os.mkdir(f"/home/ubuntu/GraphGeneratorLogic/graphs/{user_id}")
+        print(f"Directory created successfully.")
+    except FileExistsError:
+        print(f"Directory already exists.")
+    except PermissionError:
+        print(f"Permission denied: Unable to create")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    genera_grafico_stress(user_id)
     genera_grafico_attivita(user_id)
     genera_grafico_sonno(user_id)
     print("\n[Operazione Completata] Tutti e 3 i grafici sono stati generati.") 

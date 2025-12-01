@@ -21,31 +21,19 @@
 
     <!-- TASTI PER LA PAGE -->
 
+
     <ImageButton
         android:id="@+id/settingsButton"
-        android:src="@drawable/ic_settings"
-        android:background="@android:color/transparent"
         android:layout_width="69dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.862"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.086" />
-
-    <ImageButton
-        android:id="@+id/chatbotCloud"
-
         android:background="@android:color/transparent"
-        android:layout_width="322dp"
-        android:layout_height="97dp"
+        android:src="@drawable/ic_settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.219" />
+        app:layout_constraintVertical_bias="0.023" />
 
     <ImageButton
         android:id="@+id/profilePicture"
@@ -71,16 +59,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.031" />
 
-    <ImageButton
-        android:id="@+id/dataGraph"
-        android:layout_width="360dp"
-        android:layout_height="241dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.524" />
+
 
     <Button
         android:id="@+id/dailyConsumption"
@@ -103,5 +82,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.827" />
+
+    <TextView
+        android:id="@+id/chatbotCloud"
+        android:layout_width="275dp"
+        android:layout_height="77dp"
+        android:background="@drawable/loopy_hompage_recap"
+        android:text="Loading..."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.882"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.226" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/graphsViewPager"
+        android:layout_width="330dp"
+        android:layout_height="223dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.527" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:tabIndicatorHeight="0dp"
+        app:tabGravity="center"
+        app:layout_constraintTop_toBottomOf="@id/graphsViewPager"
+        app:layout_constraintStart_toStartOf="@id/graphsViewPager"
+        app:layout_constraintEnd_toEndOf="@id/graphsViewPager"
+        android:layout_marginTop="4dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

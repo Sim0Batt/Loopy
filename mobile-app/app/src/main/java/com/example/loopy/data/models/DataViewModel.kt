@@ -65,22 +65,22 @@ class DataViewModel : ViewModel() {
 
     private fun combinaDati(datiRecenti: SensorDataJson, datiRiepilogo: SummaryDataJson): DataDisplay {
 
-        //Dati semplici
+        // dati base
         val hrAttuale = datiRecenti.heartRates.split(',').lastOrNull()?.trim() ?: "N/D"
         val spo2Attuale = datiRecenti.oxygens.split(',').lastOrNull()?.trim() ?: "N/D"
         val tempAttuale = datiRecenti.temperatures.split(',').lastOrNull()?.trim() ?: "N/D"
         val sweatAttuale = datiRecenti.sweatings.split(',').lastOrNull()?.trim() ?: "N/D"
 
-        // funzione che converte minuti in h
         fun formattaMinuti(minuti: Int?): String {
             if (minuti == null || minuti == 0) return "N/D"
             return "${minuti / 60}h ${minuti % 60}m"
         }
 
-        
+        // dati calcolati
         val hrvCalcolato = datiRiepilogo.hrv?.toString() ?: "N/D"
         val rhrCalcolato = datiRiepilogo.rhr_a_riposo?.toString() ?: "N/D"
         val recuperoCalcolato = datiRiepilogo.recupero?.toString() ?: "N/D"
+        val vo2maxCalcolato = datiRiepilogo.vo2max?.toString() ?: "N/D"
 
         val sonnoTotale = formattaMinuti(datiRiepilogo.sonno_totale_minuti)
         val sonnoProfondo = formattaMinuti(datiRiepilogo.sonno_profondo_minuti)
@@ -95,41 +95,35 @@ class DataViewModel : ViewModel() {
         val stressMedio = formattaMinuti(datiRiepilogo.stress_medio_minuti)
         val stressCalmo = formattaMinuti(datiRiepilogo.stress_calmo_minuti)
 
-        // oggetto finale da mostrare
         return DataDisplay(
-            // semplivci
+            // Semplici
             hrValue = "$hrAttuale bpm",
             spo2Value = "$spo2Attuale %",
             tempValue = "$tempAttuale °C",
             sweatValue = sweatAttuale,
 
-            //calcolati
-
-            // Recupero
+            // Calcolati
             hrvValue = "$hrvCalcolato ms",
             rhrValue = "$rhrCalcolato bpm",
             recuperoValue = "$recuperoCalcolato / 100",
+            vo2Value = "$vo2maxCalcolato ml/kg/min",
 
             // Sonno
             sonnoTotale = sonnoTotale,
             sonnoProfondo = sonnoProfondo,
             sonnoRem = sonnoRem,
-            sonnoGraficoJson = datiRiepilogo.sonno_grafico_json,
 
             // Attività
             attivitaIntensa = attivitaIntensa,
             attivitaModerata = attivitaModerata,
             attivitaLeggera = attivitaLeggera,
             attivitaSedentaria = attivitaSedentaria,
-            attivitaGraficoJson = datiRiepilogo.attivita_grafico_json,
 
             // Stress
             stressAlto = stressAlto,
             stressMedio = stressMedio,
             stressCalmo = stressCalmo,
-            stressGraficoJson = datiRiepilogo.stress_grafico_json
 
-            // (glucoseValue, ecc.
         )
     }
 }

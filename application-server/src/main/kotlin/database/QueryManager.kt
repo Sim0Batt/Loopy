@@ -1,6 +1,9 @@
 package database
 
 import database.tables.TabellaAccelerometroTable
+import database.tables.TabellaActivityTable
+import database.tables.TabellaSleepTable
+import database.tables.TabellaStressTable
 import database.tables.TabellaElettrodiTable
 import database.tables.TabellaGlucosioTable
 import database.tables.TabellaGlucosioTable.glicemia
@@ -128,6 +131,7 @@ object QueryManager {
 
 
     fun getDailySummary(connection: Database, id: Int): SummaryDataJson {
+
         val riepilogo = transaction(connection) {
             TabellaRiepilogoGiornalieroTable.selectAll()
                 .where { TabellaRiepilogoGiornalieroTable.userId eq id }
@@ -146,26 +150,24 @@ object QueryManager {
             recupero = riepilogo[TabellaRiepilogoGiornalieroTable.recupero],
             vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max],
 
-            // Sonno
+            // Sonno Totali
             sonno_totale_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_totale_minuti],
             sonno_profondo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_profondo_minuti],
             sonno_leggero_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_leggero_minuti],
             sonno_rem_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_rem_minuti],
             sonno_sveglio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_sveglio_minuti],
-            sonno_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_grafico_json],
 
-            // Attività
+            // Attività Totali
             attivita_sedentaria_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_sedentaria_minuti],
             attivita_leggera_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_leggera_minuti],
             attivita_moderata_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_moderata_minuti],
             attivita_intensa_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_intensa_minuti],
-            attivita_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_grafico_json],
 
-            // Stress
+            // Stress Totali
             stress_calmo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_calmo_minuti],
             stress_medio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_medio_minuti],
-            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti],
-            stress_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.stress_grafico_json]
+            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti]
+
         )
     }
 

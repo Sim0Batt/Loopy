@@ -127,24 +127,44 @@ object QueryManager {
 
 
     fun getDailySummary(connection: Database, id: Int): SummaryDataJson {
-
         val riepilogo = transaction(connection) {
             TabellaRiepilogoGiornalieroTable.selectAll()
                 .where { TabellaRiepilogoGiornalieroTable.userId eq id }
-                .orderBy(TabellaRiepilogoGiornalieroTable.data to SortOrder.DESC) // Prende il più recente
-                .firstOrNull() // Prende solo l'ultima riga calcolata
+                .orderBy(TabellaRiepilogoGiornalieroTable.data to SortOrder.DESC)
+                .firstOrNull()
         }
 
         if (riepilogo == null) {
-            return SummaryDataJson(hrv = null, stress = null, passi = null, recupero = null, vo2max = null)
+            return SummaryDataJson()
         }
 
         return SummaryDataJson(
+            // Base
             hrv = riepilogo[TabellaRiepilogoGiornalieroTable.hrv],
-            stress = riepilogo[TabellaRiepilogoGiornalieroTable.stress],
-            passi = riepilogo[TabellaRiepilogoGiornalieroTable.passi],
+            rhr_a_riposo = riepilogo[TabellaRiepilogoGiornalieroTable.rhr_a_riposo],
             recupero = riepilogo[TabellaRiepilogoGiornalieroTable.recupero],
-            vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max]
+            vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max],
+
+            // Sonno
+            sonno_totale_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_totale_minuti],
+            sonno_profondo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_profondo_minuti],
+            sonno_leggero_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_leggero_minuti],
+            sonno_rem_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_rem_minuti],
+            sonno_sveglio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_sveglio_minuti],
+            sonno_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_grafico_json],
+
+            // Attività
+            attivita_sedentaria_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_sedentaria_minuti],
+            attivita_leggera_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_leggera_minuti],
+            attivita_moderata_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_moderata_minuti],
+            attivita_intensa_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_intensa_minuti],
+            attivita_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_grafico_json],
+
+            // Stress
+            stress_calmo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_calmo_minuti],
+            stress_medio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_medio_minuti],
+            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti],
+            stress_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.stress_grafico_json]
         )
     }
 

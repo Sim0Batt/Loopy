@@ -4,7 +4,7 @@ import datetime
 # Assicurati che il nome del DB sia corretto come da tuo screenshot
 DB_CONFIG = {
     'user': 'root',
-    'password': 'Simone04',
+    'password': 'loopy',
     'host': 'localhost',
     'database': 'LoopyDB_local' 
 }

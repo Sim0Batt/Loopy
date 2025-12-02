@@ -139,10 +139,8 @@ def analizza_sonno_e_metriche(dati_grezzi: dict):
             'sonno_rem_minuti': int(counts.get('REM', 0)),
             'sonno_sveglio_minuti': int(counts.get('SVEGLIO', 0))
         }
-        
-        df.index = df.index.strftime('%Y-%m-%d %H:%M')
-        # Ritorniamo il dataframe COMPLETO (anche i momenti sveglio pre-sonno) per il grafico
-        return risultati, df['fase'].to_json()
+      # Ritorniamo il DataFrame intero, così 'salva_tutto' può filtrare is_asleep_stable
+        return risultati, df
 
     except Exception as e:
         print(f"  [ERRORE SONNO] {e}")
@@ -175,7 +173,7 @@ def salva_tutto(cursor, user_id, metriche, df_timeline):
 
     if df_timeline is not None:
         # Mappatura Fasi
-        map_sonno = {'SVEGLIO': 0, 'LEGGERO': 1, 'REM': 2, 'PROFONDO': 3}
+        map_sonno = {'SVEGLIO': 0, 'LEGGERO': 33, 'REM': 66, 'PROFONDO': 100}
 
         df_grafico = df_timeline[df_timeline['is_asleep_stable'] == True]
 

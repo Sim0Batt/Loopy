@@ -137,9 +137,9 @@ def analizza_attivita_e_stress(dati_grezzi: dict, rhr: int):
             'stress_alto_minuti': int(counts_stress.get('ALTO', 0))
         }
 
-        # JSON per i grafici (Time -> Categoria)
-        df.index = df.index.strftime('%H:%M')
-        return totali_attivita, df['zona_attivita'].to_json(), totali_stress, df['zona_stress'].to_json()
+       
+        # Ritorniamo il DataFrame originale per il salvataggio SQL
+        return totali_attivita, totali_stress, df
 
     except Exception as e:
         print(f"  [ERRORE ANALISI DIURNA] {e}")
@@ -163,7 +163,7 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
     """
     print(f"  [DB] Salvataggio Totali e Timeline per user_id {user_id}...")
     oggi = datetime.date.today()
-    oggi_str = today.strftime('%Y-%m-%d') # Per cancellare i vecchi dati
+    oggi_str = oggi.strftime('%Y-%m-%d') # Per cancellare i vecchi dati
 
     query_totali = """
         INSERT INTO daily_summary (
@@ -175,7 +175,7 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             attivita_sedentaria_minuti = VALUES(attivita_sedentaria_minuti),
-            atmtivita_leggera_minuti = VALUES(attivita_leggera_minuti),
+            attivita_leggera_minuti = VALUES(attivita_leggera_minuti),
             attivita_moderata_minuti = VALUES(attivita_moderata_minuti),
             attivita_intensa_minuti = VALUES(attivita_intensa_minuti),
             stress_calmo_minuti = VALUES(stress_calmo_minuti),

@@ -1,12 +1,15 @@
 package database
 
 import database.tables.TabellaAccelerometroTable
+import database.tables.TabellaActivityTable
 import database.tables.TabellaElettrodiTable
 import database.tables.TabellaGlucosioTable
 import database.tables.TabellaGlucosioTable.glicemia
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import database.tables.TabellaRiepilogoGiornalieroTable // <-- Importa la nuova tabella
+import database.tables.TabellaSleepTable
+import database.tables.TabellaStressTable
 import models.AccelerometerData
 import models.ElectrodeData
 import models.PPGData
@@ -14,12 +17,16 @@ import models.TermometerData
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.time
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 import server.jsonModels.outputJsons.SummaryDataJson // <-- Importa il nuovo JSON
+import java.time.Instant
+import java.time.LocalDate
 
 object QueryManager {
 
@@ -179,73 +186,32 @@ object QueryManager {
         return predict
     }
 
-    fun getDayDatas(connection: Database, id: Int): ReturnDataJson {
-        return transaction(connection) {
-            val dataLimit = 10 // Limite fisso per i dati "recenti"
+    fun getStressData(userId: Int): Map<String, Int>{
+        var timestampList = listOf<String>()
+        var stressLevelList = listOf<Int>()
+        transaction(DatabaseConfig.getConfig()) {
+            timestampList = TabellaStressTable.selectAll().where{
+                TabellaStressTable.userId eq userId and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaStressTable.timestamp] }.toList()
 
-            val ppgDatas = TabellaPpgTable.selectAll()
-                .where { TabellaPpgTable.userId eq id }
-                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
-                .map { PPGData(
-                    it[TabellaPpgTable.battito],
-                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
-                    it[TabellaPpgTable.timestamp]
-                )}
+            stressLevelList = TabellaStressTable.selectAll().where{
+                TabellaStressTable.userId eq userId and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaStressTable.stressLevel] }.toList()
+        }
+        return timestampList.zip(stressLevelList).toMap()
+    }
 
-            val electrodesDatas = TabellaElettrodiTable.selectAll()
-                .where { TabellaElettrodiTable.userId eq id }
-                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
-                .map { ElectrodeData(
-                    it[TabellaElettrodiTable.sudorazione],
-                    it[TabellaElettrodiTable.timestamp]
-                )}
 
-            val termometerDatas = TabellaTermometroTable.selectAll()
-                .where { TabellaTermometroTable.userId eq id }
-                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
-                .map { TermometerData(
-                    it[TabellaTermometroTable.temperatura],
-                    it[TabellaTermometroTable.timestamp]
-                )}
-
-            val accelerometerData = TabellaAccelerometroTable.selectAll()
-                .where { TabellaAccelerometroTable.userId eq id}
-                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
-                .map { AccelerometerData(
-                        acc_x = it[TabellaAccelerometroTable.acc_x],
-                        acc_y = it[TabellaAccelerometroTable.acc_y],
-                        acc_z = it[TabellaAccelerometroTable.acc_z],
-                        timestamp = it[TabellaAccelerometroTable.timestamp]
-                    )
-                }
-
-            ReturnDataJson(
-                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(","),
-                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(","),
-                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(","),
-                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(","),
-                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(","),
-                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(","),
-                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(","),
-                movements = accelerometerData
-                    .map { data ->
-                        // modulo del vettore (x,y,z) come indicatore di intensità movimento
-                        kotlin.math.sqrt(
-                            data.acc_x * data.acc_x +
-                                    data.acc_y * data.acc_y +
-                                    data.acc_z * data.acc_z
-                        )
-                    }
-                    .reversed()
-                    .joinToString(", "),
-
-                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
-            )
+    private fun isToday(input: String): Op<Boolean>{
+        println(LocalDate.now())
+        val tableInstant = Instant.parse(input)
+        val today = Instant.now()
+        return if(tableInstant.toEpochMilli() == today.toEpochMilli()){
+            Op.TRUE
+        }else{
+            Op.FALSE
         }
     }
 
-//    private fun isTodaa(input: String): Op<Boolean>{
-//
-//    }
 
 }

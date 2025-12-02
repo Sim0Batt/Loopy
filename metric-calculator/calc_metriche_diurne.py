@@ -10,7 +10,15 @@ ANALISI_DA_MEZZANOTTE = True
 
 
 def analizza_attivita_e_stress(dati_grezzi: dict, rhr: int):
+    """
+    Analizza l'attività diurna E i livelli di stress.
+    Classifica ogni minuto (usando Movimento, HR, Sudorazione).
 
+    RESTITUISCE 3 COSE:
+    1. Dizionario Totali Attività
+    2. Dizionario Totali Stress
+    3. DataFrame Pandas COMPLETO (la timeline minuto per minuto)
+    """
     print("  [ALGO] Avvio Analisi Attività E Stress...")
 
     risultati_vuoti = ({'attivita_sedentaria_minuti': 0, 'attivita_leggera_minuti': 0, 'attivita_moderata_minuti': 0, 'attivita_intensa_minuti': 0},
@@ -152,10 +160,14 @@ def leggi_rhr_attuale(cursor, user_id) -> int:
     else: return 55 # Default
 
 def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_stress, df_timeline):
-
+    """
+    Salva:
+    1. I TOTALI nella tua tabella 'daily_summary'.
+    2. Le RIGHE DELLA TIMELINE nelle tabelle 'Activity' e 'Stress' del tuo amico.
+    """
     print(f"  [DB] Salvataggio Totali e Timeline per user_id {user_id}...")
     oggi = datetime.date.today()
-    oggi_str = oggi.strftime('%Y-%m-%d') # Per cancellare i vecchi dati
+    oggi_str = today.strftime('%Y-%m-%d') # Per cancellare i vecchi dati
 
     query_totali = """
         INSERT INTO daily_summary (
@@ -167,7 +179,7 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             attivita_sedentaria_minuti = VALUES(attivita_sedentaria_minuti),
-            attivita_leggera_minuti = VALUES(attivita_leggera_minuti),
+            atmtivita_leggera_minuti = VALUES(attivita_leggera_minuti),
             attivita_moderata_minuti = VALUES(attivita_moderata_minuti),
             attivita_intensa_minuti = VALUES(attivita_intensa_minuti),
             stress_calmo_minuti = VALUES(stress_calmo_minuti),
@@ -195,7 +207,7 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
     valori_stress = []
 
     for index, row in df_timeline.iterrows():
-        ts_str = index.strftime('%Y-%m-%d %H:%M:%S')
+        ts_str = index.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         livello_att = map_attivita.get(row['zona_attivita'], 0)
         livello_stress = map_stress.get(row['zona_stress'], 0)

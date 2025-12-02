@@ -22,23 +22,17 @@ object TabellaRiepilogoGiornalieroTable : IntIdTable("daily_summary") {
     val sonno_leggero_minuti = integer("sonno_leggero_minuti").nullable()
     val sonno_rem_minuti = integer("sonno_rem_minuti").nullable()
     val sonno_sveglio_minuti = integer("sonno_sveglio_minuti").nullable()
-    // JSON per il grafico del sonno
-    val sonno_grafico_json = text("sonno_grafico_json").nullable()
 
     // sattivita diurna
     val attivita_sedentaria_minuti = integer("attivita_sedentaria_minuti").nullable()
     val attivita_leggera_minuti = integer("attivita_leggera_minuti").nullable()
     val attivita_moderata_minuti = integer("attivita_moderata_minuti").nullable()
     val attivita_intensa_minuti = integer("attivita_intensa_minuti").nullable()
-    // JSON per il grafico dell'attività
-    val attivita_grafico_json = text("attivita_grafico_json").nullable()
 
     // stress diurno
     val stress_calmo_minuti = integer("stress_calmo_minuti").nullable()
     val stress_medio_minuti = integer("stress_medio_minuti").nullable()
     val stress_alto_minuti = integer("stress_alto_minuti").nullable()
-    // JSON per il grafico dello stress
-    val stress_grafico_json = text("stress_grafico_json").nullable()
 
     init {
         uniqueIndex(userId, data)

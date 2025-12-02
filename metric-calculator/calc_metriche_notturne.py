@@ -9,10 +9,7 @@ ANALISI_SONNO_ORE = 48
 
 
 def analizza_sonno_e_metriche(dati_grezzi: dict):
-    """
-    Analizza Fasi Sonno, HRV (RMSSD), RHR e Recupero.
-    RESTITUISCE: (Dizionario Totali, DataFrame Timeline)
-    """
+
     print("  [ALGO] Avvio Analisi Completa Sonno...")
 
     risultati_vuoti = ({'hrv': None, 'rhr': None, 'recupero': None, 'sonno_totale_minuti': 0, 'sonno_profondo_minuti': 0, 'sonno_leggero_minuti': 0, 'sonno_rem_minuti': 0, 'sonno_sveglio_minuti': 0}, None)

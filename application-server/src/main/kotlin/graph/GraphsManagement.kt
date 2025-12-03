@@ -202,7 +202,7 @@ object GraphsManagement {
                 x(todaySleepMap.keys.map{ "Y$it:00" }.toList() + todaySleepMap.keys.map { "T$it:00" }.toList(), "Hours") {
                     scale = categorical()
                 }
-                y(yesterdaySleepLevels + todaySleepLevels, "Activity Level"){
+                y(yesterdaySleepLevels + todaySleepLevels, "Sleep Level"){
                     axis{
                         breaksLabeled(
                             listOf(0.0, 20.0, 50.0, 80.0),
@@ -223,7 +223,7 @@ object GraphsManagement {
             }
 
             layout {
-                title = "Activity"
+                title = "Sleep"
                 size = 1000 to 600
             }
         }.save("$path/sleep_graph.png")

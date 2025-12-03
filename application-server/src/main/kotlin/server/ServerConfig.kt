@@ -244,14 +244,23 @@ fun Application.module() {
             val userId = call.parameters["id"].toString().toInt()
             val graphType = call.parameters["graphType"]
             val path = "/home/ubuntu/GraphGeneratorLogic/graphs/$userId"
-            GraphsManagement.generateStressGraph(userId, path)
-            GraphsManagement.generateActivityGraph(userId, path)
-            GraphsManagement.generateSleepGraph(userId, path)
+
+            File(path).mkdirs()
 
             when(graphType){
-                "stress" -> call.respondFile(File("$path/stress_graph.png"))
-                "activity" -> call.respondFile(File("$path/activity_graph.png"))
-                "sleep" -> call.respondFile(File("$path/sleep_graph.png"))
+                "stress" -> {
+                    GraphsManagement.generateStressGraph(userId, path)
+                    call.respondFile(File("$path/stress_graph.png"))
+                }
+                "activity" -> {
+                    GraphsManagement.generateActivityGraph(userId, path)
+
+                    call.respondFile(File("$path/activity_graph.png"))
+                }
+                "sleep" -> {
+                    GraphsManagement.generateSleepGraph(userId, path)
+                    call.respondFile(File("$path/sleep_graph.png"))
+                }
                 else -> call.respondText("Invalid Graph Type")
             }
         }

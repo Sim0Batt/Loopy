@@ -2,6 +2,7 @@ package database
 
 import database.tables.TabellaAccelerometroTable
 import database.tables.TabellaActivityTable
+import database.tables.TabellaStressTable
 import database.tables.TabellaElettrodiTable
 import database.tables.TabellaGlucosioTable
 import database.tables.TabellaGlucosioTable.glicemia
@@ -9,7 +10,6 @@ import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import database.tables.TabellaRiepilogoGiornalieroTable // <-- Importa la nuova tabella
 import database.tables.TabellaSleepTable
-import database.tables.TabellaStressTable
 import models.AccelerometerData
 import models.ElectrodeData
 import models.PPGData
@@ -19,7 +19,6 @@ import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.javatime.time
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.SaveDataJson
@@ -135,6 +134,7 @@ object QueryManager {
 
 
     fun getDailySummary(connection: Database, id: Int): SummaryDataJson {
+
         val riepilogo = transaction(connection) {
             TabellaRiepilogoGiornalieroTable.selectAll()
                 .where { TabellaRiepilogoGiornalieroTable.userId eq id }
@@ -153,26 +153,24 @@ object QueryManager {
             recupero = riepilogo[TabellaRiepilogoGiornalieroTable.recupero],
             vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max],
 
-            // Sonno
+            // Sonno Totali
             sonno_totale_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_totale_minuti],
             sonno_profondo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_profondo_minuti],
             sonno_leggero_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_leggero_minuti],
             sonno_rem_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_rem_minuti],
             sonno_sveglio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_sveglio_minuti],
-            sonno_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_grafico_json],
 
-            // Attività
+            // Attività Totali
             attivita_sedentaria_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_sedentaria_minuti],
             attivita_leggera_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_leggera_minuti],
             attivita_moderata_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_moderata_minuti],
             attivita_intensa_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_intensa_minuti],
-            attivita_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_grafico_json],
 
-            // Stress
+            // Stress Totali
             stress_calmo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_calmo_minuti],
             stress_medio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_medio_minuti],
-            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti],
-            stress_grafico_json = riepilogo[TabellaRiepilogoGiornalieroTable.stress_grafico_json]
+            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti]
+
         )
     }
 
@@ -201,16 +199,34 @@ object QueryManager {
         return timestampList.zip(stressLevelList).toMap()
     }
 
+    fun getActivityData(userId: Int): Map<String, Int>{
+        var timestampList = listOf<String>()
+        var activityLevelsList = listOf<Int>()
+        transaction(DatabaseConfig.getConfig()) {
+            timestampList = TabellaActivityTable.selectAll().where{
+                TabellaActivityTable.userId eq userId and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaActivityTable.timestamp] }.toList()
 
-    private fun isToday(input: String): Op<Boolean>{
-        println(LocalDate.now())
-        val tableInstant = Instant.parse(input)
-        val today = Instant.now()
-        return if(tableInstant.toEpochMilli() == today.toEpochMilli()){
-            Op.TRUE
-        }else{
-            Op.FALSE
+            activityLevelsList = TabellaActivityTable.selectAll().where{
+                TabellaActivityTable.userId eq userId and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaActivityTable.activityLevel] }.toList()
         }
+        return timestampList.zip(activityLevelsList).toMap()
+    }
+
+    fun getSleepData(userId: Int): Map<String, Int>{
+        var timestampList = listOf<String>()
+        var sleepLevelsList = listOf<Int>()
+        transaction(DatabaseConfig.getConfig()) {
+            timestampList = TabellaSleepTable.selectAll().where{
+                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaSleepTable.timestamp] }.toList()
+
+            sleepLevelsList = TabellaSleepTable.selectAll().where{
+                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaActivityTable.activityLevel] }.toList()
+        }
+        return timestampList.zip(sleepLevelsList).toMap()
     }
 
 

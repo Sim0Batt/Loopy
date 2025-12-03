@@ -4,12 +4,7 @@ package server
 import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.QueryManager
-import database.tables.TabellaElettrodiTable
-import database.tables.TabellaPpgTable
-import database.tables.TabellaTermometroTable
-import database.tables.TabellaRiepilogoGiornalieroTable
 import database.tables.TabellaSensorsStatusTable
-import server.jsonModels.outputJsons.SummaryDataJson
 import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
 import database.tables.TabellaUserTable
@@ -29,7 +24,6 @@ import io.ktor.server.response.respondText
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import okhttp3.internal.wait
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
@@ -293,7 +287,9 @@ fun Application.module() {
 
         get("/generateGraph/{id}"){
             val userId = call.parameters["id"].toString().toInt()
-            GraphsManagement.generateGraph(userId)
+            GraphsManagement.generateStressGraph(userId)
+            GraphsManagement.generateActivityGraph(userId)
+            GraphsManagement.generateSleepGraph(userId)
         }
     }
 }

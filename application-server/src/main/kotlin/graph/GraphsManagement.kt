@@ -11,7 +11,7 @@ import org.jetbrains.kotlinx.kandy.util.color.Color
 import org.jetbrains.kotlinx.kandy.util.context.invoke
 
 object GraphsManagement {
-    fun generateStressGraph(userId: Int){
+    fun generateStressGraph(userId: Int, path: String){
 
         val map = QueryManager.getStressData(userId)
         val hours = (0..24).map {
@@ -67,35 +67,36 @@ object GraphsManagement {
                     legend.type = LegendType.None
                 }
                 borderLine.width = 0.0
+                width = 1.0
             }
 
             layout {
                 title = "Stress"
                 size = 1000 to 600
             }
-        }.save("/home/simone/stress_graph.png")
+        }.save("$path/stress_graph.png")
     }
 
-    fun generateActivityGraph(userId: Int){
+    fun generateActivityGraph(userId: Int, path: String){
         val map = QueryManager.getActivityData(userId)
         val hours = (0..24).map {
             if(it < 10) "0$it" else it.toString()
         }
 
-        val stressMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
-        hours.forEach { stressMap[it] = mutableListOf() }
+        val activityMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
+        hours.forEach { activityMap[it] = mutableListOf() }
 
         map.forEach { (key, value) ->
             val hour = key.substring(11,13)
-            stressMap[hour]!!.add(value)
+            activityMap[hour]!!.add(value)
         }
 
-        val stressLevels = stressMap.values.map {
+        val activityLevels = activityMap.values.map {
             if (it.isNotEmpty()) it.average() else 0.0
         }
 
         val colors = mutableListOf<String>()
-        stressLevels.forEach {
+        activityLevels.forEach {
             when{
                 it < 10 ->{
                     colors.add("blue")
@@ -114,10 +115,10 @@ object GraphsManagement {
 
         plot {
             bars {
-                x(stressMap.keys.toList().map { "$it:00" }, "Hours") {
+                x(activityMap.keys.toList().map { "$it:00" }, "Hours") {
                     scale = categorical()
                 }
-                y(stressLevels.toList(), "Activity Level"){
+                y(activityLevels.toList(), "Activity Level"){
                     axis{
                         breaksLabeled(
                             listOf(0.0, 20.0, 50.0, 80.0),
@@ -132,6 +133,7 @@ object GraphsManagement {
                         listOf("blue", "green", "orange", "red"),
                     )
                     legend.type = LegendType.None
+                    width = 1.0
                 }
                 borderLine.width = 0.0
             }
@@ -140,54 +142,67 @@ object GraphsManagement {
                 title = "Activity"
                 size = 1000 to 600
             }
-        }.save("/home/simone/activity_graph.png")
+        }.save("$path/activity_graph.png")
     }
 
 
-    fun generateSleepGraph(userId: Int){
-        val map = QueryManager.getSleepData(userId)
+    fun generateSleepGraph(userId: Int, path: String){
+        val yesterdayMap = QueryManager.getYesterdaySleepData(userId)
+        val todayMap = QueryManager.getTodaySleepData(userId)
         val hours = (0..24).map {
             if(it < 10) "0$it" else it.toString()
         }
         
 
 
-        val stressMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
-        hours.forEach { stressMap[it] = mutableListOf() }
+        val yesterdaySleepMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
+        hours.forEach { yesterdaySleepMap[it] = mutableListOf() }
 
-        map.forEach { (key, value) ->
+        yesterdayMap.forEach { (key, value) ->
             val hour = key.substring(11,13)
-            stressMap[hour]!!.add(value)
+            yesterdaySleepMap[hour]!!.add(value)
         }
 
-        val stressLevels = stressMap.values.map {
+        val yesterdaySleepLevels = yesterdaySleepMap.values.map {
+            if (it.isNotEmpty()) it.average() else 0.0
+        }
+
+        val todaySleepMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
+        hours.forEach { todaySleepMap[it] = mutableListOf() }
+
+        todayMap.forEach { (key, value) ->
+            val hour = key.substring(11,13)
+            todaySleepMap[hour]!!.add(value)
+        }
+
+        val todaySleepLevels = todaySleepMap.values.map {
             if (it.isNotEmpty()) it.average() else 0.0
         }
 
         val colors = mutableListOf<String>()
-        stressLevels.forEach {
+        (yesterdaySleepLevels + todaySleepLevels).forEach {
             when{
-                it < 10 ->{
+                it < 20 ->{
                     colors.add("blue")
                 }
-                it < 20 ->{
+                it < 50 ->{
                     colors.add("green")
                 }
-                it < 50 ->{
-                    colors.add("orange")
+                it < 80 ->{
+                    colors.add("purple")
                 }
-                it >= 50 ->{
-                    colors.add("red")
+                it >= 80 ->{
+                    colors.add("dark blue")
                 }
             }
         }
 
         plot {
             bars {
-                x(stressMap.keys.toList().map { "$it:00" }, "Hours") {
+                x(todaySleepMap.keys.map{ "Y$it:00" }.toList() + todaySleepMap.keys.map { "T$it:00" }.toList(), "Hours") {
                     scale = categorical()
                 }
-                y(stressLevels.toList(), "Activity Level"){
+                y(yesterdaySleepLevels + todaySleepLevels, "Activity Level"){
                     axis{
                         breaksLabeled(
                             listOf(0.0, 20.0, 50.0, 80.0),
@@ -198,18 +213,19 @@ object GraphsManagement {
 
                 fillColor(colors, "Level") {
                     scale = categorical(
-                        listOf(Color.BLUE, Color.GREEN, Color.ORANGE, Color.RED),
-                        listOf("blue", "green", "orange", "red"),
+                        listOf(Color.BLUE, Color.GREEN, Color.PURPLE,Color.hex("#042a66")),
+                        listOf("blue", "green", "purple", "dark blue"),
                     )
                     legend.type = LegendType.None
                 }
                 borderLine.width = 0.0
+                width = 1.0
             }
 
             layout {
                 title = "Activity"
                 size = 1000 to 600
             }
-        }.save("/home/simone/sleep_graph.png")
+        }.save("$path/sleep_graph.png")
     }
 }

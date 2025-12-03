@@ -214,7 +214,7 @@ object QueryManager {
         return timestampList.zip(activityLevelsList).toMap()
     }
 
-    fun getSleepData(userId: Int): Map<String, Int>{
+    fun getTodaySleepData(userId: Int): Map<String, Int>{
         var timestampList = listOf<String>()
         var sleepLevelsList = listOf<Int>()
         transaction(DatabaseConfig.getConfig()) {
@@ -224,7 +224,22 @@ object QueryManager {
 
             sleepLevelsList = TabellaSleepTable.selectAll().where{
                 TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaActivityTable.activityLevel] }.toList()
+            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
+        }
+        return timestampList.zip(sleepLevelsList).toMap()
+    }
+
+    fun getYesterdaySleepData(userId: Int): Map<String, Int>{
+        var timestampList = listOf<String>()
+        var sleepLevelsList = listOf<Int>()
+        transaction(DatabaseConfig.getConfig()) {
+            timestampList = TabellaSleepTable.selectAll().where{
+                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now().minusDays(1)}%")
+            }.map { it[TabellaSleepTable.timestamp] }.toList()
+
+            sleepLevelsList = TabellaSleepTable.selectAll().where{
+                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now().minusDays(1)}%")
+            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
         }
         return timestampList.zip(sleepLevelsList).toMap()
     }

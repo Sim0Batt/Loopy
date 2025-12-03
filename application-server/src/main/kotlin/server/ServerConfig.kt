@@ -287,9 +287,10 @@ fun Application.module() {
 
         get("/generateGraph/{id}"){
             val userId = call.parameters["id"].toString().toInt()
-            GraphsManagement.generateStressGraph(userId)
-            GraphsManagement.generateActivityGraph(userId)
-            GraphsManagement.generateSleepGraph(userId)
+            val path = "/home/ubuntu/GraphGeneratorLogic/graphs/$userId"
+            GraphsManagement.generateStressGraph(userId, path)
+            GraphsManagement.generateActivityGraph(userId, path)
+            GraphsManagement.generateSleepGraph(userId, path)
         }
     }
 }

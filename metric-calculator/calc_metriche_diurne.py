@@ -8,146 +8,155 @@ from db_utils import DB_CONFIG, leggi_dati_grezzi
 
 ANALISI_DA_MEZZANOTTE = True
 
-def analizza_attivita_e_stress(dati_grezzi: dict, rhr: int, eta_utente: int = 30):
-    """
-    Analisi attività diurna E i livelli di stress.
-    Logica: Punteggio Pesato (0-5) basato su HRR (Karvonen) e Intensità Movimento.
-    """
-    print("  [ALGO] Avvio Analisi Attività E Stress (Algoritmo Pesato)...")
 
-    totali_attivita = {'attivita_sedentaria_minuti': 0, 'attivita_leggera_minuti': 0, 
-                       'attivita_moderata_minuti': 0, 'attivita_intensa_minuti': 0}
-    totali_stress = {'stress_calmo_minuti': 0, 'stress_medio_minuti': 0, 'stress_alto_minuti': 0}
-    
+def analizza_attivita_e_stress(dati_grezzi: dict, rhr: int):
+
+    print("  [ALGO] Avvio Analisi Attività E Stress...")
+
+    risultati_vuoti = ({'attivita_sedentaria_minuti': 0, 'attivita_leggera_minuti': 0, 'attivita_moderata_minuti': 0, 'attivita_intensa_minuti': 0},
+                       {'stress_calmo_minuti': 0, 'stress_medio_minuti': 0, 'stress_alto_minuti': 0},
+                       None)
+
     try:
-        # --- 1. PARSING DATI ---
-        acc_x_str = dati_grezzi.get('acc_x', '')
+
+        # Accelerometro (X,Y,Z)
         ts_acc_str = dati_grezzi.get('timestampsAccelerometer', '')
-        
-        if not acc_x_str or not ts_acc_str:
-             return totali_attivita, "{}", totali_stress, "{}"
+        acc_x_str = dati_grezzi.get('acc_x', '')
+        acc_y_str = dati_grezzi.get('acc_y', '')
+        acc_z_str = dati_grezzi.get('acc_z', '')
 
-        ts_acc = np.array([int(t) for t in ts_acc_str.split(',') if t.strip()])
-        acc_x = np.array([float(v) for v in acc_x_str.split(',') if v.strip()])
-        acc_y = np.array([float(v) for v in dati_grezzi.get('acc_y', '').split(',') if v.strip()])
-        acc_z = np.array([float(v) for v in dati_grezzi.get('acc_z', '').split(',') if v.strip()])
-        
+        if not ts_acc_str or not acc_x_str:
+             print("  [ATTIVITA] Dati Accelerometro mancanti.")
+             return risultati_vuoti
+
+        ts_acc = [int(t.strip()) for t in ts_acc_str.split(',') if t.strip()]
+        acc_x = np.array([float(v.strip()) for v in acc_x_str.split(',') if v.strip()])
+        acc_y = np.array([float(v.strip()) for v in acc_y_str.split(',') if v.strip()])
+        acc_z = np.array([float(v.strip()) for v in acc_z_str.split(',') if v.strip()])
+
         min_len = min(len(acc_x), len(acc_y), len(acc_z), len(ts_acc))
-        df_acc = pd.DataFrame({
-            'x': acc_x[:min_len], 'y': acc_y[:min_len], 'z': acc_z[:min_len]
-        }, index=pd.to_datetime(ts_acc[:min_len], unit='ms'))
+        if min_len == 0: return risultati_vuoti
+        acc_x, acc_y, acc_z, ts_acc = acc_x[:min_len], acc_y[:min_len], acc_z[:min_len], ts_acc[:min_len]
 
-        # CALCOLO MOVIMENTO NETTO (Rolling Mean è meglio della media globale del collega)
-        df_acc['mag'] = np.sqrt(df_acc['x']**2 + df_acc['y']**2 + df_acc['z']**2)
-        # Rimuove gravità dinamica (finestra 10s)
-        df_acc['movement'] = np.abs(df_acc['mag'] - df_acc['mag'].rolling('10s').mean())
+        # Calcolo Magnitudo (movimento totale) e filtro la gravità (1g)
+        magnitudo_grezza = np.sqrt(acc_x**2 + acc_y**2 + acc_z**2)
+        magnitudo_filtrata = np.abs(magnitudo_grezza - np.mean(magnitudo_grezza))
+
+        df_acc = pd.DataFrame(
+            {'movement': magnitudo_filtrata},
+            index=pd.to_datetime(ts_acc, unit='ms', errors='coerce')
+        ).dropna()
 
         # PPG
-        hr_str = dati_grezzi.get('heartRates', '')
         ts_hr_str = dati_grezzi.get('timestampsPPG', '')
-        if hr_str:
-            hr_vals = [int(v) for v in hr_str.split(',') if v.strip()]
-            ts_hr = [int(t) for t in ts_hr_str.split(',') if t.strip()]
-            df_hr = pd.DataFrame({'hr': hr_vals}, index=pd.to_datetime(ts_hr, unit='ms'))
-        else:
-            df_hr = pd.DataFrame({'hr': rhr}, index=df_acc.index)
+        hr_vals_str = dati_grezzi.get('heartRates', '')
+        if not ts_hr_str or not hr_vals_str:
+            print("  [ATTIVITA] Dati PPG mancanti.")
+            return risultati_vuoti
 
-        # Elettrodi
-        sw_str = dati_grezzi.get('sweatings', '')
-        ts_sw_str = dati_grezzi.get('timestampsElectrodes', '')
-        if sw_str:
-            sw_vals = [float(v) for v in sw_str.split(',') if v.strip()]
-            ts_sw = [int(t) for t in ts_sw_str.split(',') if t.strip()]
-            df_sweat = pd.DataFrame({'sweat': sw_vals}, index=pd.to_datetime(ts_sw, unit='ms'))
-        else:
-            df_sweat = pd.DataFrame({'sweat': 0.1}, index=df_acc.index)
+        ts_hr = [int(t.strip()) for t in ts_hr_str.split(',') if t.strip()]
+        hr_vals = [int(h.strip()) for h in hr_vals_str.split(',') if h.strip()]
+        df_hr = pd.DataFrame(
+            {'hr': hr_vals},
+            index=pd.to_datetime(ts_hr, unit='ms', errors='coerce')
+        ).dropna()
 
-        # --- 2. RESAMPLING ---
-        df = pd.concat([
-            df_acc['movement'].resample('1min').mean(),
-            df_hr['hr'].resample('1min').mean(),
-            df_sweat['sweat'].resample('1min').mean()
-        ], axis=1).interpolate().dropna()
+        # Elettrodi (Sudorazione)
+        ts_sweat_str = dati_grezzi.get('timestampsElectrodes', '')
+        sweat_vals_str = dati_grezzi.get('sweatings', '')
+        if not ts_sweat_str or not sweat_vals_str:
+            print("  [ATTIVITA] Dati Sudorazione mancanti.")
+            return risultati_vuoti
 
-        if df.empty: return totali_attivita, "{}", totali_stress, "{}"
+        ts_sweat = [int(t.strip()) for t in ts_sweat_str.split(',') if t.strip()]
+        sweat_vals = [float(s.strip()) for s in sweat_vals_str.split(',') if s.strip()]
+        df_sweat = pd.DataFrame(
+            {'sweat': sweat_vals},
+            index=pd.to_datetime(ts_sweat, unit='ms', errors='coerce')
+        ).dropna()
 
-        # --- 3. LOGICA DI CLASSIFICAZIONE (CORRETTA) ---
-        
-        # Stima HR Max (Formula standard)
-        hr_max = 220 - eta_utente 
+        df_acc_min = df_acc.resample('1Min').sum()
+        df_hr_min = df_hr.resample('1Min').mean()
+        df_sweat_min = df_sweat.resample('1Min').mean()
 
-        def calcola_score(row):
-            mov, hr, sweat = row['movement'], row['hr'], row['sweat']
-            
-            # A. Normalizzazione
-            # [FIX CRITICO] Fondo scala accelerometro alzato a 2.0g (prima era 0.5g)
-            # 0.5g è troppo poco per definire "Intenso", satura subito.
-            norm_mov = np.clip((mov - 0.02) / (2.0 - 0.02), 0, 1)
-            
-            # Cuore: Riserva Cardiaca (HRR) -> Molto meglio delle soglie fisse del collega
-            norm_hr = np.clip((hr - rhr) / (hr_max - rhr), 0, 1)
-            
-            # Sudore
-            norm_sweat = np.clip((sweat - 0.5) / (5.0 - 0.5), 0, 1)
+        df = pd.concat([df_acc_min, df_hr_min, df_sweat_min], axis=1)
+        df = df.interpolate(method='time').fillna(method='bfill').fillna(method='ffill')
 
-            # B. Score Attività (0-5)
-            # Pesi: 50% Movimento, 40% Cuore, 10% Sudore
-            raw_score = (norm_mov * 0.5) + (norm_hr * 0.4) + (norm_sweat * 0.1)
-            act_score = int(round(raw_score * 5))
-            
-            cat_attivita = 'SEDENTARIO'
-            if act_score == 1: cat_attivita = 'LEGGERO'
-            elif act_score == 2: cat_attivita = 'MODERATO'
-            elif act_score >= 3: cat_attivita = 'INTENSO'
+        if df.empty:
+            print("  [ATTIVITA] DataFrame vuoto dopo il resampling.")
+            return risultati_vuoti
 
-            # C. Stress
-            cat_stress = 'CALMO'
-            if act_score <= 1: # Solo se fermo
-                stress_index = (norm_hr * 0.6) + (norm_sweat * 0.4)
-                if stress_index > 0.5: cat_stress = 'ALTO' # Soglia tarata
-                elif stress_index > 0.25: cat_stress = 'MEDIO'
-            
-            return cat_attivita, cat_stress
 
-        df[['zona_attivita', 'zona_stress']] = df.apply(calcola_score, axis=1, result_type='expand')
+        # TODO: tarare movimenti
+        SOGLIA_MOV_SEDENTARIO = 0.5
+        SOGLIA_MOV_LEGGERO = 5.0
+        SOGLIA_HR_LEGGERO = rhr + 20
+        SOGLIA_HR_MODERATO = rhr + 50
 
-        # --- 4. OUTPUT ---
-        counts_att = df['zona_attivita'].value_counts()
-        totali_attivita = {
-            'attivita_sedentaria_minuti': int(counts_att.get('SEDENTARIO', 0)),
-            'attivita_leggera_minuti': int(counts_att.get('LEGGERO', 0)),
-            'attivita_moderata_minuti': int(counts_att.get('MODERATO', 0)),
-            'attivita_intensa_minuti': int(counts_att.get('INTENSO', 0))
-        }
-        
-        counts_stress = df['zona_stress'].value_counts()
-        totali_stress = {
-            'stress_calmo_minuti': int(counts_stress.get('CALMO', 0)),
-            'stress_medio_minuti': int(counts_stress.get('MEDIO', 0)),
-            'stress_alto_minuti': int(counts_stress.get('ALTO', 0))
+        SOGLIA_HR_STRESS = rhr + 15
+        SOGLIA_SUDORE_STRESS = 2.0
+
+        def classifica_dati(riga):
+            mov = riga['movement']
+            hr = riga['hr']
+            sweat = riga['sweat']
+
+            zona_attivita = 'LEGGERO' # Default
+            if mov <= SOGLIA_MOV_SEDENTARIO:
+                zona_attivita = 'SEDENTARIO'
+            elif hr >= SOGLIA_HR_MODERATO:
+                zona_attivita = 'INTENSO'
+            elif hr >= SOGLIA_HR_LEGGERO and mov > SOGLIA_MOV_LEGGERO:
+                zona_attivita = 'MODERATO'
+
+            zona_stress = 'CALMO' # Default
+            if zona_attivita != 'INTENSO':
+                if mov <= SOGLIA_MOV_SEDENTARIO:
+                    if hr > SOGLIA_HR_STRESS and sweat > SOGLIA_SUDORE_STRESS:
+                        zona_stress = 'ALTO'
+                    elif hr > SOGLIA_HR_STRESS or sweat > SOGLIA_SUDORE_STRESS:
+                        zona_stress = 'MEDIO'
+
+            return zona_attivita, zona_stress
+
+        df[['zona_attivita', 'zona_stress']] = df.apply(classifica_dati, axis=1, result_type='expand')
+
+        conteggio_zone_attivita = df['zona_attivita'].value_counts()
+        risultati_totali_attivita = {
+            'attivita_sedentaria_minuti': int(conteggio_zone_attivita.get('SEDENTARIO', 0)),
+            'attivita_leggera_minuti': int(conteggio_zone_attivita.get('LEGGERO', 0)),
+            'attivita_moderata_minuti': int(conteggio_zone_attivita.get('MODERATO', 0)),
+            'attivita_intensa_minuti': int(conteggio_zone_attivita.get('INTENSO', 0))
         }
 
-        df.index = df.index.strftime('%H:%M')
-        return totali_attivita, df['zona_attivita'].to_json(), totali_stress, df['zona_stress'].to_json()
+        conteggio_zone_stress = df['zona_stress'].value_counts()
+        risultati_totali_stress = {
+            'stress_calmo_minuti': int(conteggio_zone_stress.get('CALMO', 0)),
+            'stress_medio_minuti': int(conteggio_zone_stress.get('MEDIO', 0)),
+            'stress_alto_minuti': int(conteggio_zone_stress.get('ALTO', 0))
+        }
+
+        print(f"  [ATTIVITA] Analisi completata: {risultati_totali_attivita}")
+        return risultati_totali_attivita, risultati_totali_stress, df
 
     except Exception as e:
-        print(f"  [ERRORE ANALISI DIURNA] {e}")
-        return totali_attivita, "{}", totali_stress, "{}"
-    
+        print(f"  [ATTIVITA] !!! ERRORE GRAVE durante l'analisi: {e} !!!")
+        return risultati_vuoti
 
 def leggi_rhr_attuale(cursor, user_id) -> int:
+    """ Legge l'RHR calcolato stanotte """
     query = "SELECT rhr_a_riposo FROM daily_summary WHERE userId = %s ORDER BY data DESC LIMIT 1"
     cursor.execute(query, (user_id,))
     risultato = cursor.fetchone()
     if risultato and risultato[0] is not None: return int(risultato[0])
-    else: return 55 
+    else: return 55 # Default
 
 def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_stress, df_timeline):
-    print(f"  [DB] Salvataggio Totali e Timeline per user_id {user_id}...")
-    oggi = datetime.date.today()
-    oggi_str = today.strftime('%Y-%m-%d') 
 
-    # [FIX CRITICO] Corretto 'atmtivita' in 'attivita'
+    print(f"  [DB] Salvataggio Totali e Timeline per user_id {user_id}...")
+    oggi = datetime.datetime.now().today()
+    oggi_str = oggi.strftime('%Y-%m-%d')
+
     query_totali = """
         INSERT INTO daily_summary (
             userId, data,
@@ -173,10 +182,12 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
         metriche_stress.get('stress_alto_minuti')
     ))
 
+
     # Mappatura Stringhe
     map_attivita = {'SEDENTARIO': 0, 'LEGGERO': 1, 'MODERATO': 2, 'INTENSO': 3}
     map_stress = {'CALMO': 0, 'MEDIO': 1, 'ALTO': 2}
 
+    # Cancello i dati di oggi
     cursor.execute(f"DELETE FROM Activity WHERE userId = %s AND timestamp LIKE '{oggi_str}%'", (user_id,))
     cursor.execute(f"DELETE FROM Stress WHERE userId = %s AND timestamp LIKE '{oggi_str}%'", (user_id,))
 
@@ -184,14 +195,14 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
     valori_stress = []
 
     for index, row in df_timeline.iterrows():
-        # Assicurati che il formato timestamp sia compatibile con la tua tabella (DATETIME o VARCHAR)
-        ts_str = index.strftime('%Y-%m-%dT%H:%M:%SZ') 
+        ts_str = index.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         livello_att = map_attivita.get(row['zona_attivita'], 0)
         livello_stress = map_stress.get(row['zona_stress'], 0)
 
         valori_activity.append((livello_att, user_id, ts_str))
         valori_stress.append((livello_stress, user_id, ts_str))
+
 
     if valori_activity:
         cursor.executemany("INSERT INTO Activity (activity_level, userId, timestamp) VALUES (%s, %s, %s)", valori_activity)
@@ -200,6 +211,7 @@ def salva_riepilogo_attivita_e_stress(cursor, user_id, metriche_att, metriche_st
         cursor.executemany("INSERT INTO Stress (stress_level, userId, timestamp) VALUES (%s, %s, %s)", valori_stress)
 
     print(f"  [DB] Inserite {len(valori_activity)} righe nelle tabelle grafici.")
+
 
 def main():
     start_time = time.time()
@@ -225,8 +237,8 @@ def main():
                 tabelle_necessarie = ['PPG', 'Accelerometro', 'Elettrodi']
                 dati_grezzi = leggi_dati_grezzi(cursor, user_id, ora_inizio_ms, ora_fine_ms, tabelle_necessarie)
 
-                if not dati_grezzi.get('acc_x') or not dati_grezzi.get('heartRates'): 
-                    print(f"[USER: {user_id}] Dati mancanti. Salto.")
+                if not dati_grezzi.get('acc_x') or not dati_grezzi.get('heartRates') or not dati_grezzi.get('sweatings'):
+                    print(f"[USER: {user_id}] Dati (PPG, ACC o Elettrodi) mancanti. Salto.")
                     continue
 
                 risultati_att, risultati_stress, df_grafici = analizza_attivita_e_stress(dati_grezzi, rhr_attuale)

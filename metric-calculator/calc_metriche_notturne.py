@@ -9,7 +9,10 @@ ANALISI_SONNO_ORE = 48
 
 
 def analizza_sonno_e_metriche(dati_grezzi: dict):
-
+    """
+    Analizza Fasi Sonno, HRV (RMSSD), RHR e Recupero.
+    RESTITUISCE: (Dizionario Totali, DataFrame Timeline)
+    """
     print("  [ALGO] Avvio Analisi Completa Sonno...")
 
     risultati_vuoti = ({'hrv': None, 'rhr': None, 'recupero': None, 'sonno_totale_minuti': 0, 'sonno_profondo_minuti': 0, 'sonno_leggero_minuti': 0, 'sonno_rem_minuti': 0, 'sonno_sveglio_minuti': 0}, None)
@@ -138,7 +141,7 @@ def salva_tutto(cursor, user_id, metriche, df_timeline):
 
         valori_sleep = []
         for index, row in df_grafico.iterrows():
-            ts_str = index.strftime('%Y-%m-%d %H:%M:%S')
+            ts_str = index.strftime('%Y-%m-%dT%H:%M:%SZ')
             livello = map_sonno.get(row['fase'], 0)
             valori_sleep.append((livello, user_id, ts_str))
 

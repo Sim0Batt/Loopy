@@ -206,51 +206,6 @@ fun Application.module() {
             }
         }
 
-        //questo get serve a dare l'indirizzo all'applicazione per prendere i grafici
-        get("/graph/{id}/{name}") { //http://0.0.0.0:8080/graph/1/stress 
-            val name = call.parameters["name"]
-            val userId = call.parameters["id"]
-            val filename = when (name) {
-                "stress"   -> "grafico_stress_finale_barre.png"
-                "activity" -> "grafico_attivita_finale.png"
-                "sleep"    -> "grafico_sonno_finale.png"
-                else -> return@get call.respondText("Graph not found")
-            }
-            //luogo sulla macchina fisico dove stanno i grafici generati
-            val file = File("/home/ubuntu/GraphGeneratorLogic/graphs/$userId/$filename")
-            // il dollaro sta per la f string quindi & e poi nome variabile
-            if (!file.exists()) return@get call.respondText("Graph $filename for user $userId not valid")
-            call.respondFile(file)
-        }
-
-        get ("/generate/{id}") {
-            val userId = call.parameters["id"].toString()
-            val scriptPath = "/home/ubuntu/GraphGeneratorLogic/graph_generator.py"
-            //è il percorso dove vai prendere i file pyhton da avviare
-            try {
-                val processBuilder = ProcessBuilder( //avvia il mio file python "python3 graph_generator.py id"
-                    "/usr/bin/python3",
-                    scriptPath, // se servissero dei parametri dovrei scriverli qui sotto
-                    userId
-                )
-                val process = processBuilder.start()
-                val output = process.inputStream.bufferedReader().readText()
-                val error = process.errorStream.bufferedReader().readText()
-                process.waitFor(60, TimeUnit.SECONDS)
-                if (process.exitValue() == 0) {
-                    call.respondText("return success\n")
-                } else {
-                    call.respondText(
-                        "Errore durante l'esecuzione: $output",
-                        status = HttpStatusCode.InternalServerError
-                    )
-                }
-            } catch (e: Exception) {
-                call.respondText("Train Failed: ${e.stackTraceToString()}")
-            }
-        }
-
-
         //Sensors Staus
         get("/status/{id}"){
             val userId = call.parameters["id"].toString().toInt()
@@ -285,12 +240,20 @@ fun Application.module() {
             }
         }
 
-        get("/generateGraph/{id}"){
+        get("/generateGraph/{graphType}/{id}"){
             val userId = call.parameters["id"].toString().toInt()
+            val graphType = call.parameters["graphType"]
             val path = "/home/ubuntu/GraphGeneratorLogic/graphs/$userId"
             GraphsManagement.generateStressGraph(userId, path)
             GraphsManagement.generateActivityGraph(userId, path)
             GraphsManagement.generateSleepGraph(userId, path)
+
+            when(graphType){
+                "stress" -> call.respondFile(File("$path/stress_graph.png"))
+                "activity" -> call.respondFile(File("$path/activity_graph.png"))
+                "sleep" -> call.respondFile(File("$path/sleep_graph.png"))
+                else -> call.respondText("Invalid Graph Type")
+            }
         }
     }
 }

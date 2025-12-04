@@ -56,17 +56,25 @@ fun Application.module() {
 
         post("/login") {
             val credentials = call.receive<UserJson>()
-
-            val userId = transaction(DatabaseConfig.getConfig()) {
-                TabellaUserTable.selectAll()
+            var userId = -1
+            var username = ""
+            transaction(DatabaseConfig.getConfig()) {
+                userId = TabellaUserTable.selectAll()
                     .firstOrNull {
                         it[TabellaUserTable.email] == credentials.email &&
                                 it[TabellaUserTable.password] == credentials.password
-                    }?.getOrNull(TabellaUserTable.id).toString().toIntOrNull()
+                    }?.getOrNull(TabellaUserTable.id).toString().toInt()
+
+                username = TabellaUserTable.selectAll()
+                    .firstOrNull {
+                        it[TabellaUserTable.email] == credentials.email &&
+                                it[TabellaUserTable.password] == credentials.password
+                    }?.getOrNull(TabellaUserTable.username).toString()
+
             }
 
-            if (userId != null) {
-                call.respondText(AccountJson(userId).toString())
+            if (userId != -1) {
+                call.respondText(AccountJson(userId, username).toString())
             } else {
                 call.respondText("failure")
             }
@@ -75,8 +83,15 @@ fun Application.module() {
         post("/register") {
             val credentials = call.receive<RegisterJson>()
             val userId = MainScript.registerUser(credentials)
+            var username = ""
+            transaction(DatabaseConfig.getConfig()) {
+                username = TabellaUserTable.selectAll().where{
+                    TabellaUserTable.id eq userId
+                }.firstOrNull()?.get(TabellaUserTable.username).toString()
+            }
+
             call.response.header("Location", "/login")
-            call.respondText(AccountJson(userId).toString())
+            call.respondText(AccountJson(userId, username).toString())
         }
 
 

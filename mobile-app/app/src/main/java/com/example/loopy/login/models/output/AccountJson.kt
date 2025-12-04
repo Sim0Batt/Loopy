@@ -6,12 +6,14 @@ import kotlinx.serialization.Serializable
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
 class AccountJson(
-    val userId: Int
+    val userId: Int,
+    val username: String
 ) {
     override fun toString(): String {
         return """
             {
-                "userId":"$userId"
+                "userId":"$userId",
+                "username":"$username"
             }
         """.trimIndent()
     }

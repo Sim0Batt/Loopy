@@ -61,7 +61,7 @@ class LoginActivity : ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://56.228.35.114:8080/login") {
+                    val response = client.post ("http://13.60.38.181:8080/login") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }
@@ -76,6 +76,7 @@ class LoginActivity : ComponentActivity() {
                             // Parse the JSON response {"userId": id} and save in object S.M.
                             val loginResponse = KotlinxJson.decodeFromString<AccountJson>(responseBody)
                             SessionManager.currentUserId = loginResponse.userId
+                            SessionManager.currentUsername = loginResponse.username
 
                             Toast.makeText(this@LoginActivity, "Login Success",
                                 Toast.LENGTH_LONG).show()

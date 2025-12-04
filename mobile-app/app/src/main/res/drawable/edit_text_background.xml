@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- The background color of the EditText -->
-    <solid android:color="@android:color/white" />
+    <solid android:color="#7A7474" />
 
     <!-- The radius for the rounded corners -->
     <corners android:radius="8dp" />

@@ -10,6 +10,7 @@ import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
 import database.tables.TabellaRiepilogoGiornalieroTable // <-- Importa la nuova tabella
 import database.tables.TabellaSleepTable
+import database.tables.TabellaUserTable
 import models.AccelerometerData
 import models.ElectrodeData
 import models.PPGData
@@ -24,6 +25,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 import server.jsonModels.outputJsons.SummaryDataJson // <-- Importa il nuovo JSON
+import server.jsonModels.outputJsons.UserDataJson
 import java.time.Instant
 import java.time.LocalDate
 
@@ -242,6 +244,47 @@ object QueryManager {
             }.map { it[TabellaSleepTable.sleepLevel] }.toList()
         }
         return timestampList.zip(sleepLevelsList).toMap()
+    }
+
+
+    fun getUserInformation(userId: Int): UserDataJson {
+        var userDatajson = UserDataJson("", "", "", "", "", "")
+        transaction(DatabaseConfig.getConfig()) {
+            val username = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.username]
+
+            val email = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.email]
+
+            val age = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.age].toString()
+
+            val gender = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.sex]
+
+            val weight = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.weight].toString()
+
+            val height = TabellaUserTable.selectAll().where{
+                TabellaUserTable.id eq userId
+            }.first()[TabellaUserTable.height].toString()
+
+            userDatajson = UserDataJson(
+                username,
+                email,
+                age,
+                gender,
+                weight,
+                height
+            )
+        }
+
+        return userDatajson
     }
 
 

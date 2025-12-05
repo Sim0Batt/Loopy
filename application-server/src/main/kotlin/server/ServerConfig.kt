@@ -35,6 +35,7 @@ import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
 import server.jsonModels.outputJsons.PredictJson
 import server.jsonModels.outputJsons.StatusJson
+import server.jsonModels.outputJsons.UserDataJson
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -92,6 +93,16 @@ fun Application.module() {
 
             call.response.header("Location", "/login")
             call.respondText(AccountJson(userId, username).toString())
+        }
+
+        post("/user/{id}") {
+            val userId = call.parameters["id"]?.toInt()
+            var userJson = UserDataJson("", "", "", "", "", "")
+
+            transaction(DatabaseConfig.getConfig()) {
+                userJson = QueryManager.getUserInformation(userId!!)
+            }
+            call.respondText(userJson.toString())
         }
 
 

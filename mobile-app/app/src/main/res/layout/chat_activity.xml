@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_chat"
+    android:background="#212020"
     tools:context=".chat.ChatActivity">
 
     <ScrollView
@@ -28,31 +28,34 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="78dp"
-        android:layout_height="52dp"
+        android:layout_width="98dp"
+        android:layout_height="66dp"
         android:text="SEND"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.958"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.883" />
+        app:layout_constraintVertical_bias="0.902" />
 
+    <!-- TASTI PER NAVIGAZIONE -->
     <EditText
         android:id="@+id/inputMessage"
         android:layout_width="275dp"
         android:layout_height="41dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/white"
         android:ems="10"
         android:inputType="text"
         android:text=""
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.191"
+        app:layout_constraintHorizontal_bias="0.117"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.885" />
 
-    <!-- TASTI PER NAVIGAZIONE -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavBar"
         android:layout_width="0dp"

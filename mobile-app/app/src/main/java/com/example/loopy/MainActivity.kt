@@ -49,6 +49,7 @@ class MainActivity : BaseActivity() {
 
 
         val userId = SessionManager.currentUserId!!
+        val username = SessionManager.currentUsername
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)
@@ -58,13 +59,7 @@ class MainActivity : BaseActivity() {
         val hbView = findViewById<TextView>(R.id.heartBeat)
         val viewPager = findViewById<ViewPager2>(R.id.graphsViewPager)
 
-
-
-
-
-
-
-
+        helloUser.text = "Welcome $username"
 
         settingsButton.setOnClickListener {
             val intent = Intent(this@MainActivity, SettingsActivity::class.java)

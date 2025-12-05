@@ -2,42 +2,43 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_empty"
+    android:background="#212020"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <com.google.android.material.card.MaterialCardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="0dp" android:layout_height="120dp"
         android:layout_marginStart="16dp" android:layout_marginEnd="16dp"   app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191"> <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        app:layout_constraintVertical_bias="0.191">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Raspberry Status"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="#7A7474"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/deviceStatus"
-            android:layout_width="123dp"
-            android:layout_height="wrap_content"
-            android:text="FAILURE"
-            android:textAlignment="center"
-            android:textColor="@color/red"
-            android:textSize="24sp" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="General Status"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/deviceStatus"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:text="FAILURE"
+                android:textAlignment="center"
+                android:textColor="@color/red"
+                android:textSize="24sp" />
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -92,6 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:background="#7A7474"
                 android:orientation="vertical">
 
                 <TextView
@@ -133,6 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:background="#7A7474"
                 android:orientation="vertical">
 
                 <TextView
@@ -185,6 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:background="#7A7474"
                 android:orientation="vertical">
 
                 <TextView
@@ -225,6 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:background="#7A7474"
                 android:orientation="vertical">
 
                 <TextView
@@ -256,19 +261,18 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="362dp"
-        android:layout_height="57dp"
-        android:text="Device Manager"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:layout_width="364dp"
+        android:layout_height="101dp"
+        android:text="Manage your Loopy Device"
         android:textAlignment="center"
+        android:textColor="@color/white"
         android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintVertical_bias="0.009" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -93,35 +93,29 @@ class ChatActivity: ComponentActivity() {
     }
 
     private fun addMessage(testo: String, isSentByUser: Boolean, chatContainer: LinearLayout, scrollView: ScrollView) {
-        // Crea una nuova TextView programmaticamente
         val textViewMessaggio = TextView(this)
         textViewMessaggio.text = testo
 
-        // Imposta lo stile (padding, margini, ecc.)
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            // Se il messaggio è inviato, allinealo a destra. Altrimenti a sinistra.
             gravity = if (isSentByUser) Gravity.END else Gravity.START
-            bottomMargin = 16 // Un po' di spazio tra i messaggi
+            bottomMargin = 16
         }
         textViewMessaggio.layoutParams = layoutParams
         textViewMessaggio.setPadding(24, 16, 24, 16)
 
-        // Imposta lo sfondo e il colore del testo
         if (isSentByUser) {
             textViewMessaggio.background = ContextCompat.getDrawable(this, R.drawable.user_message_text_background)
-            textViewMessaggio.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+            textViewMessaggio.setTextColor(ContextCompat.getColor(this, android.R.color.black))
         } else {
             textViewMessaggio.background = ContextCompat.getDrawable(this, R.drawable.agent_message_text_background)
-            textViewMessaggio.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+            textViewMessaggio.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         }
 
-        // Aggiungi la TextView alla LinearLayout
         chatContainer.addView(textViewMessaggio)
 
-        // Scorri automaticamente verso il basso per mostrare l'ultimo messaggio
         scrollView.post {
             scrollView.fullScroll(View.FOCUS_DOWN)
         }

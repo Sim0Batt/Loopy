@@ -15,6 +15,7 @@ import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.login.models.input.RegisterJson
 import com.example.loopy.login.models.output.AccountJson
+import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -124,7 +125,7 @@ class RegisterActivity: ComponentActivity() {
 
                     // Log della risposta del server
                     val responseBody = response.bodyAsText()
-                    Log.d("Login", "Risposta del server: $responseBody")
+                    Log.d("Register", "Risposta del server: $responseBody")
                     println("Risposta del server: $responseBody") //responseBody contiene success o failure
 
                     runOnUiThread {
@@ -135,7 +136,8 @@ class RegisterActivity: ComponentActivity() {
                                 Toast.LENGTH_LONG).show()
                             val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                             // Optionally pass the userId to the next activity
-                            intent.putExtra("USER_ID", loginResponse.userId)
+                            SessionManager.currentUserId = loginResponse.userId
+                            SessionManager.currentUsername = loginResponse.username
                             startActivity(intent)
                             finish()
                         } catch (e: Exception) {

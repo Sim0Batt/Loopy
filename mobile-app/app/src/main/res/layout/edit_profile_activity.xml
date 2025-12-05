@@ -9,30 +9,21 @@
     tools:layout_editor_absoluteY="7dp">
 
     <TextView
-        android:id="@+id/textView15"
-        android:layout_width="293dp"
-        android:layout_height="61dp"
+        android:id="@+id/textView16"
+        android:layout_width="379dp"
+        android:layout_height="68dp"
         android:fontFamily="@font/alex_brush"
-        android:text="Register to Loopy"
+        android:text="Edit your Loopy Account"
         android:textAlignment="center"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.125" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="283dp"
-        android:layout_height="78dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.031"
-        app:srcCompat="@drawable/loopy_logo" />
+        app:layout_constraintVertical_bias="0.093" />
 
     <EditText
         android:id="@+id/usernameInput"
@@ -248,20 +239,19 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="222dp"
-        android:layout_height="64dp"
+        android:layout_width="307dp"
+        android:layout_height="74dp"
         android:background="@drawable/rounded_button"
-        android:text="Register"
+        android:text="Save changes"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        app:layout_constraintVertical_bias="0.975" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

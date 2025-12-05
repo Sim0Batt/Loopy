@@ -155,15 +155,15 @@ class MainActivity : BaseActivity() {
     private suspend fun downloadImagesBitmap(client: HttpClient, userId: Int): List<Bitmap> {
         val tmp: MutableList<Bitmap> = mutableListOf()
         try {
-            var serverResponse = client.get("http://13.60.38.181:8080/generateGraph/stress/$userId")
+            var serverResponse = client.get("http://51.20.84.226:8080/generateGraph/stress/$userId")
             var imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://13.60.38.181:8080/generateGraph/sleep/$userId")
+            serverResponse = client.get("http://51.20.84.226:8080/generateGraph/sleep/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://13.60.38.181:8080/generateGraph/activity/$userId")
+            serverResponse = client.get("http://51.20.84.226:8080/generateGraph/activity/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
         }catch (e: Exception){

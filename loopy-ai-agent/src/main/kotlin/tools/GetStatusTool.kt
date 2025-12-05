@@ -41,7 +41,7 @@ class GetStatusTool : ToolSet {
         var responseBody = ""
 
         try {
-            val response = client.get("http://13.60.38.181:8080/getPPG/$id")
+            val response = client.get("http://51.20.84.226:8080/getPPG/$id")
             responseBody = response.bodyAsText()
             println("Response by server: $response")
             println("Server response: $responseBody")
@@ -77,7 +77,7 @@ class GetStatusTool : ToolSet {
         var responseBody = ""
 
         try {
-            val response = client.get("http://13.60.38.181:8080/getElectrodes/$id")
+            val response = client.get("http://51.20.84.226:8080/getElectrodes/$id")
             responseBody = response.bodyAsText()
             println("Response by server: $response")
             println("Server response: $responseBody")
@@ -114,7 +114,7 @@ class GetStatusTool : ToolSet {
         var responseBody = ""
 
         try {
-            val response = client.get("http://13.60.38.181:8080/getAccelerometer/$id")
+            val response = client.get("http://51.20.84.226:8080/getAccelerometer/$id")
             responseBody = response.bodyAsText()
             println("Response by server: $response")
             println("Server response: $responseBody")
@@ -149,7 +149,7 @@ class GetStatusTool : ToolSet {
         var responseBody = ""
 
         try {
-            val response = client.get("http://13.60.38.181:8080/getTermometer/$id")
+            val response = client.get("http://51.20.84.226:8080/getTermometer/$id")
             responseBody = response.bodyAsText()
             println("Response by server: $response")
             println("Server response: $responseBody")

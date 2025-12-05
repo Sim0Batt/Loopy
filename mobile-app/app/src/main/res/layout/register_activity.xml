@@ -32,7 +32,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.031"
-        app:srcCompat="@drawable/loopy_logo" />
+        android:src="@drawable/loopy_logo" />
 
     <EditText
         android:id="@+id/usernameInput"

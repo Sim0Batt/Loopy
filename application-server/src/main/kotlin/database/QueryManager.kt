@@ -22,6 +22,8 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
 import server.jsonModels.outputJsons.SummaryDataJson // <-- Importa il nuovo JSON
@@ -285,6 +287,27 @@ object QueryManager {
         }
 
         return userDatajson
+    }
+
+    fun updateUserInformation(userId: Int, registerJson: RegisterJson): Boolean{
+        var isLoaded = false
+        transaction(DatabaseConfig.getConfig()) {
+            try{
+                TabellaUserTable.update({ TabellaUserTable.id eq userId }) {
+                    it[username] = registerJson.username
+                    it[email] = registerJson.email
+                    it[password] = registerJson.password
+                    it[age] = registerJson.age
+                    it[weight] = registerJson.weight
+                    it[height] = registerJson.height
+                    it[sex] = registerJson.sex
+                }
+                isLoaded = true
+            }catch (e: Exception){
+                isLoaded = false
+            }
+        }
+        return isLoaded
     }
 
 

@@ -47,7 +47,7 @@ fun Application.module() {
 
 
     routing {
-        //LOGIN LOGIC
+        //USERS LOGIC
         staticResources("static", "static")
         get("/getUsers") {
             call.respondText {
@@ -105,6 +105,16 @@ fun Application.module() {
             call.respondText(userJson.toString())
         }
 
+        post("/editUser/{id}"){
+            val userId = call.parameters["id"].toString().toInt()
+            val editJson = call.receive<RegisterJson>()
+
+            val isLoaded = QueryManager.updateUserInformation(userId, editJson)
+            if(isLoaded) call.respondText("User Updated") else call.respondText("Error during update", status = HttpStatusCode.InternalServerError)
+        }
+
+
+
 
         //DATA LOGIC
         staticResources("static", "static")
@@ -137,7 +147,7 @@ fun Application.module() {
             call.respond(riepilogo) // se te lo stai chiedendo, non ho messo respondText perche respond lo fa in automatico ed è piu efficiente
         }
 
-        //AI AGENT LOGIC
+        //AI LOGIC
         post("/agentProcess") {
             val credentials = call.receive<AgentJson>()
             var id = 0
@@ -232,7 +242,7 @@ fun Application.module() {
             }
         }
 
-        //Sensors Staus
+        //Sensors Staus Logic
         get("/status/{id}"){
             val userId = call.parameters["id"].toString().toInt()
             var currentStatus: ResultRow? = null
@@ -266,6 +276,8 @@ fun Application.module() {
             }
         }
 
+
+        //Graphs Logic
         get("/generateGraph/{graphType}/{id}"){
             val userId = call.parameters["id"].toString().toInt()
             val graphType = call.parameters["graphType"]
@@ -290,6 +302,8 @@ fun Application.module() {
                 else -> call.respondText("Invalid Graph Type")
             }
         }
+
+
     }
 }
 

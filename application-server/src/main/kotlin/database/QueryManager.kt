@@ -121,7 +121,6 @@ object QueryManager {
                 timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
                 movements = accelerometerData
                     .map { data ->
-                        // modulo del vettore (x,y,z) come indicatore di intensità movimento
                         kotlin.math.sqrt(
                             data.acc_x * data.acc_x +
                                     data.acc_y * data.acc_y +

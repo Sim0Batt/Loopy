@@ -54,7 +54,7 @@ class ProfileActivity : BaseActivity() {
 
 
         lifecycleScope.launch {
-            val response = client.post("http://13.60.192.241:8080/user/$userId")
+            val response = client.post("http://13.53.132.231:8080/user/$userId")
             val responseBody = response.bodyAsText()
             println(responseBody)
             val userJson = KotlinxJson.decodeFromString<UserDataJson>(responseBody)

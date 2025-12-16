@@ -133,19 +133,6 @@ fun Application.module() {
             call.respondText(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()).toString())
         }
 
-        // Chiamata per prendere il Json con i dati "complessi"
-        get("/getSummary/{id}") {
-            val id = call.parameters["id"]
-            if (id == null) {
-                call.respondText("Missing id", status = HttpStatusCode.BadRequest)
-                return@get
-            }
-            call.response.header("Content-Type", "application/json")
-
-            val riepilogo = QueryManager.getDailySummary(DatabaseConfig.getConfig(), id.toString().toInt())
-
-            call.respond(riepilogo) // se te lo stai chiedendo, non ho messo respondText perche respond lo fa in automatico ed è piu efficiente
-        }
 
         //AI LOGIC
         post("/agentProcess") {

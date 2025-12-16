@@ -8,15 +8,9 @@ import database.tables.TabellaGlucosioTable
 import database.tables.TabellaGlucosioTable.glicemia
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
-import database.tables.TabellaRiepilogoGiornalieroTable // <-- Importa la nuova tabella
 import database.tables.TabellaSleepTable
 import database.tables.TabellaUserTable
-import models.AccelerometerData
-import models.ElectrodeData
-import models.PPGData
-import models.TermometerData
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -26,9 +20,7 @@ import org.jetbrains.exposed.sql.update
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.ReturnDataJson
-import server.jsonModels.outputJsons.SummaryDataJson // <-- Importa il nuovo JSON
 import server.jsonModels.outputJsons.UserDataJson
-import java.time.Instant
 import java.time.LocalDate
 
 object QueryManager {
@@ -66,115 +58,74 @@ object QueryManager {
 
     fun getDatas(connection: Database, id: Int): ReturnDataJson {
         return transaction(connection) {
-            val dataLimit = 10 // Limite fisso per i dati "recenti"
 
-            val ppgDatas = TabellaPpgTable.selectAll()
-                .where { TabellaPpgTable.userId eq id }
-                .orderBy(TabellaPpgTable.id to SortOrder.DESC)
-                .limit(dataLimit)
-                .map { PPGData(
-                    it[TabellaPpgTable.battito],
-                    it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble(),
-                    it[TabellaPpgTable.timestamp]
-                )}
-
-            val electrodesDatas = TabellaElettrodiTable.selectAll()
-                .where { TabellaElettrodiTable.userId eq id }
-                .orderBy(TabellaElettrodiTable.id to SortOrder.DESC)
-                .limit(dataLimit)
-                .map { ElectrodeData(
-                    it[TabellaElettrodiTable.sudorazione],
-                    it[TabellaElettrodiTable.timestamp]
-                )}
-
-            val termometerDatas = TabellaTermometroTable.selectAll()
-                .where { TabellaTermometroTable.userId eq id }
-                .orderBy(TabellaTermometroTable.id to SortOrder.DESC)
-                .limit(dataLimit)
-                .map { TermometerData(
-                    it[TabellaTermometroTable.temperatura],
-                    it[TabellaTermometroTable.timestamp]
-                )}
-
-
-            val accelerometerData = TabellaAccelerometroTable.selectAll()
-                .where { TabellaAccelerometroTable.userId eq id }
-                .orderBy(TabellaAccelerometroTable.id to SortOrder.DESC)
-                .limit(dataLimit)
+            val ppgData = TabellaPpgTable.selectAll()
+                .where { TabellaPpgTable.userId eq id and (TabellaPpgTable.timestamp like "${LocalDate.now()}%") }
                 .map {
-                    AccelerometerData(
-                        acc_x = it[TabellaAccelerometroTable.acc_x],
-                        acc_y = it[TabellaAccelerometroTable.acc_y],
-                        acc_z = it[TabellaAccelerometroTable.acc_z],
-                        timestamp = it[TabellaAccelerometroTable.timestamp]
-                    )
+                    it[TabellaPpgTable.battito]
                 }
+
+            val oxygenData = TabellaPpgTable.selectAll()
+            .where { TabellaPpgTable.userId eq id and (TabellaPpgTable.timestamp like "${LocalDate.now()}%") }
+            .map {
+                it[TabellaPpgTable.ossigenazione].toDouble()
+            }
+
+            val electrodesData = TabellaElettrodiTable.selectAll()
+                .where { TabellaElettrodiTable.userId eq id and (TabellaElettrodiTable.timestamp like "${LocalDate.now()}%") }
+                .map {
+                    it[TabellaElettrodiTable.sudorazione]
+                }
+
+            val thermometerData = TabellaTermometroTable.selectAll()
+                .where { TabellaTermometroTable.userId eq id and (TabellaTermometroTable.timestamp like "${LocalDate.now()}%") }
+                .map { it[TabellaTermometroTable.temperatura]}
+
+
+            val activityData = TabellaActivityTable.selectAll().where{
+                TabellaActivityTable.userId eq id and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaActivityTable.activityLevel] }.toList()
+
+            val sleepData = TabellaSleepTable.selectAll().where{
+                TabellaSleepTable.userId eq id and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
+
+            val stressData = TabellaStressTable.selectAll().where{
+                TabellaStressTable.id eq id and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[TabellaStressTable.stressLevel] }.toList()
+
+            val glucoseData = TabellaGlucosioTable.selectAll().where{
+                TabellaGlucosioTable.userId eq id and (TabellaGlucosioTable.timestamp like "${LocalDate.now()}%")
+            }.map { it[glicemia] }.toList()
+
 
 
             ReturnDataJson(
-                heartRates = ppgDatas.map { it.heartRate }.reversed().joinToString(", "),
-                oxygens = ppgDatas.map { it.oxygen }.reversed().joinToString(", "),
-                timestampsPPG = ppgDatas.map { it.timestamp }.reversed().joinToString(", "),
-                sweatings = electrodesDatas.map { it.sweating }.reversed().joinToString(", "),
-                timestampsElectrodes = electrodesDatas.map { it.timestamp }.reversed().joinToString(", "),
-                temperatures = termometerDatas.map { it.temperature }.reversed().joinToString(", "),
-                timestampsTermometer = termometerDatas.map { it.timestamp }.reversed().joinToString(", "),
-                movements = accelerometerData
-                    .map { data ->
-                        kotlin.math.sqrt(
-                            data.acc_x * data.acc_x +
-                                    data.acc_y * data.acc_y +
-                                    data.acc_z * data.acc_z
-                        )
-                    }
-                    .reversed()
-                    .joinToString(", "),
-
-                timestampsAccelerometer = accelerometerData.map { it.timestamp }.reversed().joinToString(", ")
+                heartRate = ppgData.average(),
+                oxygen = oxygenData.average(),
+                sweating = electrodesData.average(),
+                temperature = thermometerData.average(),
+                glucose = glucoseData.average(),
+                activity = when{
+                    activityData.average() < 10 -> "Sedentary"
+                    activityData.average() < 20 -> "Light"
+                    activityData.average() < 50 -> "Moderate"
+                    else -> "Intense"
+                },
+                sleep = when{
+                    sleepData.average() < 20 -> "Woke Up"
+                    sleepData.average() < 50 -> "Light"
+                    sleepData.average() < 80 -> "REM"
+                    else -> "Deep"
+                },
+                stress = when{
+                    stressData.count() == 0 -> "No Stress"
+                    stressData.average() < 33.3 -> "Calm"
+                    stressData.average() < 66.6 -> "Medium"
+                    else -> "High"
+                }
             )
         }
-    }
-
-
-    fun getDailySummary(connection: Database, id: Int): SummaryDataJson {
-
-        val riepilogo = transaction(connection) {
-            TabellaRiepilogoGiornalieroTable.selectAll()
-                .where { TabellaRiepilogoGiornalieroTable.userId eq id }
-                .orderBy(TabellaRiepilogoGiornalieroTable.data to SortOrder.DESC)
-                .firstOrNull()
-        }
-
-        if (riepilogo == null) {
-            return SummaryDataJson()
-        }
-
-        return SummaryDataJson(
-            // Base
-            hrv = riepilogo[TabellaRiepilogoGiornalieroTable.hrv],
-            rhr_a_riposo = riepilogo[TabellaRiepilogoGiornalieroTable.rhr_a_riposo],
-            recupero = riepilogo[TabellaRiepilogoGiornalieroTable.recupero],
-            vo2max = riepilogo[TabellaRiepilogoGiornalieroTable.vo2max],
-
-            // Sonno Totali
-            sonno_totale_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_totale_minuti],
-            sonno_profondo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_profondo_minuti],
-            sonno_leggero_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_leggero_minuti],
-            sonno_rem_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_rem_minuti],
-            sonno_sveglio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.sonno_sveglio_minuti],
-
-            // Attività Totali
-            attivita_sedentaria_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_sedentaria_minuti],
-            attivita_leggera_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_leggera_minuti],
-            attivita_moderata_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_moderata_minuti],
-            attivita_intensa_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.attivita_intensa_minuti],
-
-            // Stress Totali
-            stress_calmo_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_calmo_minuti],
-            stress_medio_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_medio_minuti],
-            stress_alto_minuti = riepilogo[TabellaRiepilogoGiornalieroTable.stress_alto_minuti]
-
-        )
     }
 
     fun getGlucosePredict(userId: Int): String {

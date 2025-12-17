@@ -8,6 +8,8 @@
     android:background="#121212">
 
     <ScrollView
+
+
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -17,7 +19,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavContainer"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavInclude"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -30,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Daily Datas"
+                android:text="Daily Data"
                 android:textColor="#FFFFFF"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -519,43 +521,21 @@
             <!-- spacer sotto per non “toccare” la navbar pill -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="88dp" />
+                android:layout_height="36dp" />
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- Navbar "pill" -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottomNavContainer"
+    <include
+        android:id="@+id/bottomNavInclude"
+        layout="@layout/view_bottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cardCornerRadius="22dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:cardBackgroundColor="#2C2C2E"
-        app:strokeColor="#2C2C2E">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:menu="@menu/bottom_nav_menu"
-            app:labelVisibilityMode="labeled"
-            app:itemHorizontalTranslationEnabled="false"
-            app:itemIconSize="24dp"
-            app:itemRippleColor="@android:color/transparent"
-            app:itemIconTint="@color/bottom_nav_selector"
-            app:itemTextColor="@color/bottom_nav_selector"
-            app:itemActiveIndicatorColor="@android:color/transparent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
-    </com.google.android.material.card.MaterialCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

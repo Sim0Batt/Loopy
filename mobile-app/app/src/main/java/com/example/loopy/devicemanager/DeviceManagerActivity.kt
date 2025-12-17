@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.MainActivity
+import com.example.loopy.main.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.data.DataActivity
@@ -125,47 +125,26 @@ class DeviceManagerActivity : BaseActivity() {
         /*------------------TASTI NAVBAR--------------------*/
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
 
+// su questa pagina DEVE essere dm
         bottomNavBar.selectedItemId = R.id.nav_dm
 
         bottomNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_dm -> {
-                    true
-                }
+                R.id.nav_dm -> true // NON riaprire te stesso
 
-                R.id.nav_data -> {
-                    val intent = Intent(this@DeviceManagerActivity, DataActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_chatbot -> {
-                    val intent = Intent(this@DeviceManagerActivity, ChatActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_home -> {
-                    val intent = Intent(this@DeviceManagerActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_profile -> {
-                    val intent = Intent(this@DeviceManagerActivity, ProfileActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
+                R.id.nav_home -> { startActivity(Intent(this, MainActivity::class.java)); finish(); true }
+                R.id.nav_data -> { startActivity(Intent(this, DataActivity::class.java)); finish(); true }
+                R.id.nav_chatbot -> { startActivity(Intent(this, ChatActivity::class.java)); finish(); true }
+                R.id.nav_profile -> { startActivity(Intent(this, ProfileActivity::class.java)); finish(); true }
                 else -> false
             }
         }
+
         /* ----------------------------------------------------------------------------------------- */
     }
     override fun onResume() {
         super.onResume()
-        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
-        bottomNavBar.selectedItemId = R.id.nav_dm
+        findViewById<BottomNavigationView>(R.id.bottomNavBar).selectedItemId = R.id.nav_dm
     }
 
     @SuppressLint("SetTextI18n")

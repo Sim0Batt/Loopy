@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.loopy.MainActivity
+import com.example.loopy.main.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.scripts.ChatCaller
 import com.example.loopy.data.DataActivity

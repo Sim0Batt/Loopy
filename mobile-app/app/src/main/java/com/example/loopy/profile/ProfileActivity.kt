@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.MainActivity
+import com.example.loopy.main.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.data.DataActivity
@@ -73,34 +73,10 @@ class ProfileActivity : BaseActivity() {
 
         bottomNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_profile -> {
-                    true
-                }
-
-                R.id.nav_home -> {
-                    val intent = Intent(this@ProfileActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_chatbot -> {
-                    val intent = Intent(this@ProfileActivity, ChatActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_dm -> {
-                    val intent = Intent(this@ProfileActivity, DeviceManagerActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.nav_data -> {
-                    val intent = Intent(this@ProfileActivity, DataActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
+                R.id.nav_home -> { startActivity(Intent(this, MainActivity::class.java)); finish(); true }
+                R.id.nav_chatbot -> { startActivity(Intent(this, ChatActivity::class.java)); finish(); true }
+                R.id.nav_dm -> { startActivity(Intent(this, DeviceManagerActivity::class.java)); finish(); true }
+                R.id.nav_data -> { startActivity(Intent(this, DataActivity::class.java)); finish(); true }
                 else -> false
             }
         }

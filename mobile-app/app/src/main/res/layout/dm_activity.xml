@@ -2,277 +2,313 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#212020"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#121212">
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="0dp" android:layout_height="120dp"
-        android:layout_marginStart="16dp" android:layout_marginEnd="16dp"   app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- NAV BAR PILL -->
+    <include
+        android:id="@+id/bottomNavInclude"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/dmTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Device Manager"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Manage your Loopy Device"
+        android:textColor="#8E8E93"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/dmTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- General Status Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/generalStatusCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#1C1C1E"
+        app:strokeWidth="1dp"
+        app:strokeColor="#2C2C2E"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="#7A7474"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="General Status"
-                android:textAlignment="center"
-                android:textSize="30sp"
+                android:textColor="#C7C7CC"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/deviceStatus"
-                android:layout_width="123dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FAILURE"
-                android:textAlignment="center"
-                android:textColor="@color/red"
-                android:textSize="24sp" />
+                android:layout_marginTop="8dp"
+                android:text="—"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavBar"
+
+    <!-- Sensors title -->
+    <TextView
+        android:id="@+id/sensorsTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sensors"
+        android:textColor="#8E8E93"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/generalStatusCard"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        app:menu="@menu/bottom_nav_menu" />
-    <!-- ******************************************************* -->
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="238dp"
-        android:layout_height="61dp"
-        android:background="@drawable/rounded_button"
-        android:text="Reload Values"
-        android:textColor="@color/white"
-        android:textSize="50px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.904" />
-
-
+    <!-- Row 1 -->
     <LinearLayout
-        android:layout_width="386dp"
-        android:layout_height="120dp"
+        android:id="@+id/sensorsRow1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintTop_toBottomOf="@id/sensorsTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.44">
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- PPG -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="112dp"
             android:layout_weight="1"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1C1E"
+            app:strokeWidth="1dp"
+            app:strokeColor="#2C2C2E">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="#7A7474"
-                android:orientation="vertical">
+                android:padding="14dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="PPG Sensor"
-                    android:textAlignment="center"
-
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:textSize="18sp"
+                    android:textColor="#C7C7CC"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/ppgStatus"
-                    android:layout_width="123dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FAILURE"
-                    android:textAlignment="center"
-                    android:textColor="@color/red"
-                    android:textSize="24sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Accelerometer -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="112dp"
             android:layout_weight="1"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1C1E"
+            app:strokeWidth="1dp"
+            app:strokeColor="#2C2C2E">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="#7A7474"
-                android:orientation="vertical">
+                android:padding="14dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Accelerometer Sensor"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:textSize="18sp"
+                    android:text="Accelerometer"
+                    android:textColor="#C7C7CC"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/accelerometerStatus"
-                    android:layout_width="133dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FAILURE"
-                    android:textAlignment="center"
-                    android:textColor="@color/red"
-                    android:textSize="24sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
 
+    <!-- Row 2 -->
     <LinearLayout
-        android:layout_width="385dp"
-        android:layout_height="122dp"
+        android:id="@+id/sensorsRow2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintTop_toBottomOf="@id/sensorsRow1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.716">
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Thermometer -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="112dp"
             android:layout_weight="1"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1C1E"
+            app:strokeWidth="1dp"
+            app:strokeColor="#2C2C2E">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="#7A7474"
-                android:orientation="vertical">
+                android:padding="14dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thermometer Sensor"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:textSize="18sp"
+                    android:text="Thermometer"
+                    android:textColor="#C7C7CC"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/thermometerStatus"
-                    android:layout_width="131dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FAILURE"
-                    android:textAlignment="center"
-                    android:textColor="@color/red"
-                    android:textSize="24sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Electrodes -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="112dp"
             android:layout_weight="1"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1C1C1E"
+            app:strokeWidth="1dp"
+            app:strokeColor="#2C2C2E">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="#7A7474"
-                android:orientation="vertical">
+                android:padding="14dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Electrodes Sensor"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:textSize="18sp"
+                    android:text="Electrodes"
+                    android:textColor="#C7C7CC"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/electrodesStatus"
-                    android:layout_width="129dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FAILURE"
-                    android:textAlignment="center"
-                    android:textColor="@color/red"
-                    android:textSize="24sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="364dp"
-        android:layout_height="101dp"
-        android:text="Manage your Loopy Device"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- Reload button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="12dp"
+        android:text="Reload values"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        app:cornerRadius="18dp"
+        app:backgroundTint="#2C2C2E"
+        app:layout_constraintTop_toBottomOf="@id/sensorsRow2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavInclude" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

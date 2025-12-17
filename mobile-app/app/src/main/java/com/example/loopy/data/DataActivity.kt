@@ -7,7 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.loopy.data.models.DataViewModel
 import androidx.activity.viewModels
-import com.example.loopy.MainActivity
+import com.example.loopy.main.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity

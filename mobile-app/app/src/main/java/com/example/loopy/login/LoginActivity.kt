@@ -8,7 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.MainActivity
+import com.example.loopy.main.MainActivity
 import com.example.loopy.R
 import com.example.loopy.login.models.input.UserJson
 import com.example.loopy.login.models.output.AccountJson

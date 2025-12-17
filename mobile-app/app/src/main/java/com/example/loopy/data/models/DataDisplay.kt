@@ -10,7 +10,6 @@ data class DataDisplay(
     //Recupero
     val hrvValue: String = "N/D",
     val rhrValue: String = "N/D",
-    val recuperoValue: String = "N/D",
 
     //Sonno
     val sonnoTotale: String = "N/D",
@@ -31,13 +30,15 @@ data class DataDisplay(
     val stressCalmo: String = "N/D",
     val stressGraficoJson: String? = null,
 
-    // val glucoseValue: String = "N/D"
 
-    //TODO: da implementare
+
+    //Riepilogo giornaliero
+
     val activityValue: String = "N/D",
     val vo2Value: String = "N/D",
     val sleepValue: String = "N/D",
-    val stressValue: String? = null,
     val recoveryValue: String = "N/D",
-    val glucoseValue: String? = null,
-)
+    val stressValue: String = "N/D",
+    val glucoseValue: String = "N/D",
+
+    )

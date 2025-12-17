@@ -39,6 +39,9 @@ class DataActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.data_activity)
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavBar)
+
+        bottomNav.selectedItemId = R.id.nav_data
 
         initViews()
         setupBottomNavBar()

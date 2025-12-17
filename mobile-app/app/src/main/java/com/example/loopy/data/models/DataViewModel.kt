@@ -5,125 +5,77 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.loopy.data.models.DataDisplay
-import com.example.loopy.data.models.input.SensorDataJson
-import com.example.loopy.data.models.input.SummaryDataJson
+import com.example.loopy.data.models.input.DailyDataJson
 import com.example.loopy.network.KtorClient
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.Locale
+
 
 class DataViewModel : ViewModel() {
 
     private val client = KtorClient.client
-    // qui ho creato ste robe cosi se per caso cambiamo http per la decima volta non è un problema :)
-    private val baseUrl = "http://51.21.196.187:8080"
-    private val endpointRecente = "$baseUrl/getDatas"
-    private val endpointRiepilogo = "$baseUrl/getSummary"
+
+    private val baseUrl = "http://13.53.132.231:8080"
+    private val endpointDaily = "$baseUrl/getDatas"
 
     private val _displayData = MutableLiveData<DataDisplay>()
     val displayData: LiveData<DataDisplay> = _displayData
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    // vabbe funzione che gestisce le chiamate per prendere i dati
     fun caricaDatiUtente(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                Log.d("DataViewModel", "Calling: $endpointDaily/$userId")
 
-                Log.d("DataViewModel", "Avvio chiamate parallele per userId: $userId")
+                val daily = client.get("$endpointDaily/$userId").body<DailyDataJson>()
 
-                val datiRecentiJob = async {
-                    Log.d("DataViewModel", "Chiamo: $endpointRecente/$userId")
-                    client.get("$endpointRecente/$userId").body<SensorDataJson>()
-                }
-                val datiRiepilogoJob = async {
-                    Log.d("DataViewModel", "Chiamo: $endpointRiepilogo/$userId")
-                    client.get("$endpointRiepilogo/$userId").body<SummaryDataJson>()
-                }
+                val display = mapDailyToDisplay(daily)
 
-                // le ho fatte con await cosi non si sfancula tutto se magari l'utente gira il telefono
-                val datiRecenti = datiRecentiJob.await()
-                val datiRiepilogo = datiRiepilogoJob.await()
-
-                Log.d("DataViewModel", "Dati recenti e riepilogo scaricati.")
-
-                // Combina i risultati dei due lavori
-                val datiPuliti = combinaDati(datiRecenti, datiRiepilogo)
-
-                // Scrivo in bacheca
-                _displayData.postValue(datiPuliti)
+                _displayData.postValue(display)
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                _error.postValue("Errore di rete: ${e.message}")
+                _error.postValue("Network/parsing error: ${e.message}")
             }
         }
     }
 
-    private fun combinaDati(datiRecenti: SensorDataJson, datiRiepilogo: SummaryDataJson): DataDisplay {
-
-        // dati base
-        val hrAttuale = datiRecenti.heartRates.split(',').lastOrNull()?.trim() ?: "N/D"
-        val spo2Attuale = datiRecenti.oxygens.split(',').lastOrNull()?.trim() ?: "N/D"
-        val tempAttuale = datiRecenti.temperatures.split(',').lastOrNull()?.trim() ?: "N/D"
-        val sweatAttuale = datiRecenti.sweatings.split(',').lastOrNull()?.trim() ?: "N/D"
-
-        fun formattaMinuti(minuti: Int?): String {
-            if (minuti == null || minuti == 0) return "N/D"
-            return "${minuti / 60}h ${minuti % 60}m"
-        }
-
-        // dati calcolati
-        val hrvCalcolato = datiRiepilogo.hrv?.toString() ?: "N/D"
-        val rhrCalcolato = datiRiepilogo.rhr_a_riposo?.toString() ?: "N/D"
-        val recuperoCalcolato = datiRiepilogo.recupero?.toString() ?: "N/D"
-        val vo2maxCalcolato = datiRiepilogo.vo2max?.toString() ?: "N/D"
-
-        val sonnoTotale = formattaMinuti(datiRiepilogo.sonno_totale_minuti)
-        val sonnoProfondo = formattaMinuti(datiRiepilogo.sonno_profondo_minuti)
-        val sonnoRem = formattaMinuti(datiRiepilogo.sonno_rem_minuti)
-
-        val attivitaIntensa = formattaMinuti(datiRiepilogo.attivita_intensa_minuti)
-        val attivitaModerata = formattaMinuti(datiRiepilogo.attivita_moderata_minuti)
-        val attivitaLeggera = formattaMinuti(datiRiepilogo.attivita_leggera_minuti)
-        val attivitaSedentaria = formattaMinuti(datiRiepilogo.attivita_sedentaria_minuti)
-
-        val stressAlto = formattaMinuti(datiRiepilogo.stress_alto_minuti)
-        val stressMedio = formattaMinuti(datiRiepilogo.stress_medio_minuti)
-        val stressCalmo = formattaMinuti(datiRiepilogo.stress_calmo_minuti)
+    private fun mapDailyToDisplay(d: DailyDataJson): DataDisplay {
+        val hr = d.heartRate.toDoubleSafe()
+        val spo2 = d.oxygen.toDoubleSafe()
+        val temp = d.temperature.toDoubleSafe()
+        val sweat = d.sweating.toDoubleSafe()
+        val gluc = d.glucose.toDoubleSafe()
 
         return DataDisplay(
-            // Semplici
-            hrValue = "$hrAttuale bpm",
-            spo2Value = "$spo2Attuale %",
-            tempValue = "$tempAttuale °C",
-            sweatValue = sweatAttuale,
+            hrValue = "${fmt0(hr)} bpm",
+            spo2Value = "${fmt1(spo2)} %",
+            tempValue = "${fmt1(temp)} °C",
+            sweatValue = fmt1(sweat),
 
-            // Calcolati
-            hrvValue = "$hrvCalcolato ms",
-            rhrValue = "$rhrCalcolato bpm",
-            recuperoValue = "$recuperoCalcolato / 100",
-            vo2Value = "$vo2maxCalcolato ml/kg/min",
+            activityValue = d.activity,
+            stressValue = d.stress,
+            sleepValue = d.sleep,
+            glucoseValue = fmt0(gluc),
 
-            // Sonno
-            sonnoTotale = sonnoTotale,
-            sonnoProfondo = sonnoProfondo,
-            sonnoRem = sonnoRem,
-
-            // Attività
-            attivitaIntensa = attivitaIntensa,
-            attivitaModerata = attivitaModerata,
-            attivitaLeggera = attivitaLeggera,
-            attivitaSedentaria = attivitaSedentaria,
-
-            // Stress
-            stressAlto = stressAlto,
-            stressMedio = stressMedio,
-            stressCalmo = stressCalmo,
-
+            hrvValue = "—",
+            vo2Value = "—",
+            recoveryValue = "—"
         )
     }
+
+    private fun String.toDoubleSafe(): Double? =
+        this.replace(',', '.').toDoubleOrNull()
+
+    private fun fmt0(x: Double?): String =
+        x?.let { "%.0f".format(it) } ?: "—"
+
+    private fun fmt1(x: Double?): String =
+        x?.let { String.format(Locale.US, "%.1f", it) } ?: "—"
+
 }

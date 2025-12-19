@@ -1,4 +1,4 @@
-package com.example.loopy.main
+package com.example.loopy
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -6,30 +6,30 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
-import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.chat.scripts.ChatCaller
-import com.example.loopy.core.BaseActivity
 import com.example.loopy.data.DataActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
 import com.example.loopy.settings.SettingsActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.loopy.core.BaseActivity
 import com.example.loopy.utils.GraphsAdapter
 import com.example.loopy.utils.SessionManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.readBytes
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json as KotlinxJson
+
 
 class MainActivity : BaseActivity() {
 
@@ -37,17 +37,15 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        val client = HttpClient(CIO) {
+        val client = HttpClient (CIO) {
             install(ContentNegotiation) {
-                json(Json {
+                json(KotlinxJson {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
                 })
             }
         }
-
-
 
 
         val userId = SessionManager.currentUserId!!
@@ -99,23 +97,45 @@ class MainActivity : BaseActivity() {
 
 
 
-        //tasti nav-bar
+
+        /*------------------TASTI NAVBAR--------------------*/
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+
         bottomNavBar.selectedItemId = R.id.nav_home
 
         bottomNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> true
+                R.id.nav_home -> {
+                    true
+                }
 
-                R.id.nav_data -> { startActivity(Intent(this, DataActivity::class.java)); finish(); true }
-                R.id.nav_chatbot -> { startActivity(Intent(this, ChatActivity::class.java)); finish(); true }
-                R.id.nav_dm -> { startActivity(Intent(this, DeviceManagerActivity::class.java)); finish(); true }
-                R.id.nav_profile -> { startActivity(Intent(this, ProfileActivity::class.java)); finish(); true }
+                R.id.nav_data -> {
+                    val intent = Intent(this@MainActivity, DataActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_chatbot -> {
+                    val intent = Intent(this@MainActivity, ChatActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_dm -> {
+                    val intent = Intent(this@MainActivity, DeviceManagerActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_profile -> {
+                    val intent = Intent(this@MainActivity, ProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
 
                 else -> false
             }
         }
-
     }
 
     override fun onResume() {

@@ -243,14 +243,25 @@ object QueryManager {
         var isLoaded = false
         transaction(DatabaseConfig.getConfig()) {
             try{
-                TabellaUserTable.update({ TabellaUserTable.id eq userId }) {
-                    it[username] = registerJson.username
-                    it[email] = registerJson.email
-                    it[password] = registerJson.password
-                    it[age] = registerJson.age
-                    it[weight] = registerJson.weight
-                    it[height] = registerJson.height
-                    it[sex] = registerJson.sex
+                if(registerJson.password != ""){
+                    TabellaUserTable.update({ TabellaUserTable.id eq userId }) {
+                        it[username] = registerJson.username
+                        it[email] = registerJson.email
+                        it[password] = registerJson.password
+                        it[age] = registerJson.age
+                        it[weight] = registerJson.weight
+                        it[height] = registerJson.height
+                        it[sex] = registerJson.sex
+                    }
+                }else{
+                    TabellaUserTable.update({ TabellaUserTable.id eq userId }) {
+                        it[username] = registerJson.username
+                        it[email] = registerJson.email
+                        it[age] = registerJson.age
+                        it[weight] = registerJson.weight
+                        it[height] = registerJson.height
+                        it[sex] = registerJson.sex
+                    }
                 }
                 isLoaded = true
             }catch (e: Exception){

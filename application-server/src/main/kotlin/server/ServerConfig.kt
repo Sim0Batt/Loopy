@@ -91,7 +91,6 @@ fun Application.module() {
                 }.firstOrNull()?.get(TabellaUserTable.username).toString()
             }
 
-            call.response.header("Location", "/login")
             call.respondText(AccountJson(userId, username).toString())
         }
 

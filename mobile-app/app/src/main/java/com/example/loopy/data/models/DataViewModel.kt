@@ -18,7 +18,7 @@ class DataViewModel : ViewModel() {
 
     private val client = KtorClient.client
 
-    private val baseUrl = "http://13.53.132.231:8080"
+    private val baseUrl = "http://13.60.184.192:8080"
     private val endpointDaily = "$baseUrl/getDatas"
 
     private val _displayData = MutableLiveData<DataDisplay>()

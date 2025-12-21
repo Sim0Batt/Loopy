@@ -24,7 +24,7 @@ class SettingsActivity : BaseActivity() {
 
 
         editAccountButton.setOnClickListener {
-            val intent = Intent(this@SettingsActivity, RegisterActivity::class.java)
+            val intent = Intent(this@SettingsActivity, EditAccountActivity::class.java)
             startActivity(intent)
         }
 

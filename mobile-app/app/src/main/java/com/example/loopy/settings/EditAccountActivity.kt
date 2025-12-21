@@ -80,7 +80,7 @@ class EditAccountActivity : ComponentActivity() {
         if (userId != null) {
             lifecycleScope.launch {
                 try {
-                    val url = "http://13.60.184.192:8080/user/$userId"
+                    val url = "http://13.60.104.145:8080/user/$userId"
                     val response = client.post(url)
                     val responseBody = response.bodyAsText()
 
@@ -144,7 +144,7 @@ class EditAccountActivity : ComponentActivity() {
             lifecycleScope.launch {
                 try {
                     // Endpoint per SCRIVERE i dati: post("/editUser/{id}")
-                    val updateUrl = "http://13.60.184.192:8080/editUser/$userId"
+                    val updateUrl = "http://13.60.104.145:8080/editUser/$userId"
                     Log.d("EditAccount", "Updating to: $updateUrl")
 
                     val response = client.post(updateUrl) {

@@ -118,7 +118,7 @@ class RegisterActivity: ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://13.60.184.192:8080/register") {
+                    val response = client.post ("http://13.60.104.145:8080/register") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }

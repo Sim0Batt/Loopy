@@ -30,7 +30,7 @@ class DataViewModel : ViewModel() {
             try {
                 Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")
 
-                val daily = client.get("http://10.0.2.2:8080/getDatas/$userId").body<ReturnDataJson>()
+                val daily = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
 
                 val display = mapDailyToDisplay(daily)
 

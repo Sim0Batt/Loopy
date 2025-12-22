@@ -28,11 +28,11 @@ class ChatCaller {
             socketTimeoutMillis = 40000 // 15 seconds
         }
     }
-    suspend fun run(input: String, username: String): String{
-        val credentials = ChatJson(input, username)
+    suspend fun run(input: String, userId: Int): String{
+        val credentials = ChatJson(input, userId)
 
 
-        val response = client.post("http://$APPLICATION_SERVER_2_IP:8080/agentProcess") {
+        val response = client.post("http://$APPLICATION_SERVER_2_IP:8080/agentProcess/$userId") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }

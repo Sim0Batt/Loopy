@@ -18,6 +18,7 @@ import com.example.loopy.chat.scripts.ChatCaller
 import com.example.loopy.data.DataActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity
 import com.example.loopy.profile.ProfileActivity
+import com.example.loopy.utils.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
@@ -30,12 +31,14 @@ class ChatActivity: ComponentActivity() {
         val scrollView = findViewById<ScrollView>(R.id.scrollView)
         val messageInputText = findViewById<EditText>(R.id.inputMessage)
 
+        val userId = SessionManager.currentUserId!!
+
         submitButton.setOnClickListener {
             val testo = messageInputText.text.toString().trim()
             if (testo.isNotEmpty()) {
                 addMessage(testo, true, chatContainer, scrollView)
                 lifecycleScope.launch {
-                    val agentResponse = ChatCaller().run(testo, "Simone")
+                    val agentResponse = ChatCaller().run(testo, userId)
                     addMessage(agentResponse, false, chatContainer, scrollView)
                 }
                 messageInputText.text?.clear()

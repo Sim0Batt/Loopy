@@ -8,13 +8,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 class ChatJson(
     val input: String,
-    val username: String
+    val userId: Int
 ) {
     override fun toString(): String {
         return """
             {
                 "input": "$input",
-                "username": "$username"
+                "userId": "$userId"
             }
         """.trimIndent()
     }

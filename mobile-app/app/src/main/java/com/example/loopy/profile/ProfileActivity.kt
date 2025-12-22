@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.main.MainActivity
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.data.DataActivity

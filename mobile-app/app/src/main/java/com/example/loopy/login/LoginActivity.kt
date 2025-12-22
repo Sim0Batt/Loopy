@@ -85,6 +85,7 @@ class LoginActivity : ComponentActivity() {
                             startActivity(intent)
                             finish()
                         } catch (e: Exception) {
+                            Log.e("Login", "Failed to parse login response: $responseBody", e)
                             Toast.makeText(this@LoginActivity, "Login Failed: Invalid response", Toast.LENGTH_LONG).show()
                         }
                     }

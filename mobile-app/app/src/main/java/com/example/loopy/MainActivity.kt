@@ -19,6 +19,7 @@ import com.example.loopy.settings.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
 import com.example.loopy.utils.APPLICATION_SERVER_1_IP
+import com.example.loopy.utils.APPLICATION_SERVER_2_IP
 import com.example.loopy.utils.GraphsAdapter
 import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
@@ -88,11 +89,11 @@ class MainActivity : BaseActivity() {
 
         /*------------------ASYNCHRONOUS LOGIC--------------------*/
         lifecycleScope.launch {
-            val agentResponse = ChatCaller().run(BEGINNING_PROMPT, "Simone")
-            updateChatBotMessage(chatbotCloud, agentResponse)
-
             //Image Retrive
             viewPager.adapter = GraphsAdapter(downloadImagesBitmap(client, userId))
+
+            val agentResponse = ChatCaller().run(BEGINNING_PROMPT, userId)
+            updateChatBotMessage(chatbotCloud, agentResponse)
         }
 
 
@@ -155,15 +156,15 @@ class MainActivity : BaseActivity() {
     private suspend fun downloadImagesBitmap(client: HttpClient, userId: Int): List<Bitmap> {
         val tmp: MutableList<Bitmap> = mutableListOf()
         try {
-            var serverResponse = client.get("http://${APPLICATION_SERVER_1_IP}:8080/generateGraph/stress/$userId")
+            var serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/stress/$userId")
             var imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://${APPLICATION_SERVER_1_IP}:8080/generateGraph/sleep/$userId")
+            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/sleep/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://${APPLICATION_SERVER_1_IP}:8080/generateGraph/activity/$userId")
+            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/activity/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
         }catch (e: Exception){

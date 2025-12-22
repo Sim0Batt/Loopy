@@ -8,10 +8,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.main.MainActivity
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.login.models.input.UserJson
 import com.example.loopy.login.models.output.AccountJson
+import com.example.loopy.utils.APPLICATION_SERVER_1_IP
 import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -61,7 +62,7 @@ class LoginActivity : ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://13.60.184.192:8080/login") {
+                    val response = client.post ("http://$APPLICATION_SERVER_1_IP:8080/login") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }

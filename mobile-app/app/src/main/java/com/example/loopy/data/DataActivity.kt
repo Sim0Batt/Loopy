@@ -7,7 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.loopy.data.models.DataViewModel
 import androidx.activity.viewModels
-import com.example.loopy.main.MainActivity
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.devicemanager.DeviceManagerActivity
@@ -39,7 +39,7 @@ class DataActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.data_activity)
-        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavBar)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavBar)
 
         bottomNav.selectedItemId = R.id.nav_data
 

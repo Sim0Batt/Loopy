@@ -1,7 +1,9 @@
 package com.example.loopy.data.models.input
 
+import android.annotation.SuppressLint
 import kotlinx.serialization.Serializable
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class DailyDataJson(
         val heartRate: String,

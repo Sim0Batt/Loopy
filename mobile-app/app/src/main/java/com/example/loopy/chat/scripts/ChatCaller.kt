@@ -1,5 +1,6 @@
 package com.example.loopy.chat.scripts
 
+import com.example.loopy.utils.APPLICATION_SERVER_2_IP
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -31,7 +32,7 @@ class ChatCaller {
         val credentials = ChatJson(input, username)
 
 
-        val response = client.post("http://13.60.184.192:8080/agentProcess") {
+        val response = client.post("http://$APPLICATION_SERVER_2_IP:8080/agentProcess") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }

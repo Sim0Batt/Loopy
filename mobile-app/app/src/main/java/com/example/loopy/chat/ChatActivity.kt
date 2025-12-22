@@ -1,9 +1,7 @@
 package com.example.loopy.chat
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -14,9 +12,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.loopy.main.MainActivity
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.scripts.ChatCaller
 import com.example.loopy.data.DataActivity

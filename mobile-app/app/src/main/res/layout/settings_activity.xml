@@ -79,12 +79,12 @@
         app:layout_constraintVertical_bias="0.495" />
 
     <Button
-        android:id="@+id/InfoAppButton"
+        android:id="@+id/GithubButton"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/white"
-        android:text="Info app"
+        android:text="Github"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,12 +94,12 @@
         app:layout_constraintVertical_bias="0.575" />
 
     <Button
-        android:id="@+id/GithubButton"
+        android:id="@+id/FunctionalSheet"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/white"
-        android:text="Github"
+        android:text="Functional Sheet"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -109,12 +109,12 @@
         app:layout_constraintVertical_bias="0.647" />
 
     <Button
-        android:id="@+id/PrivacyButton"
+        android:id="@+id/TechnicalSheet"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/white"
-        android:text="Privacy Policy"
+        android:text="Technical Sheet"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.example.loopy.main.MainActivity
+import com.example.loopy.MainActivity
 import com.example.loopy.R
 import com.example.loopy.chat.ChatActivity
 import com.example.loopy.data.DataActivity
@@ -16,6 +16,7 @@ import com.example.loopy.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
 import com.example.loopy.devicemanager.models.StatusJson
+import com.example.loopy.utils.APPLICATION_SERVER_1_IP
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -52,7 +53,7 @@ class DeviceManagerActivity : BaseActivity() {
         reloadButton.setOnClickListener {
             lifecycleScope.launch{
                 try {
-                    val response = client.get("http://13.60.184.192:8080/status")
+                    val response = client.get("http://$APPLICATION_SERVER_1_IP:8080/status")
 
                     val responseBody = response.bodyAsText()
                     Log.d("Device Manager", "Server Response: $responseBody")
@@ -82,7 +83,7 @@ class DeviceManagerActivity : BaseActivity() {
 
         lifecycleScope.launch{
             try {
-                val response = client.get("http://13.60.184.192:8080/status/1")
+                val response = client.get("http://$APPLICATION_SERVER_1_IP:8080/status/1")
 
                 val responseBody = response.bodyAsText()
                 Log.d("Device Manager", "Server Response: $responseBody")

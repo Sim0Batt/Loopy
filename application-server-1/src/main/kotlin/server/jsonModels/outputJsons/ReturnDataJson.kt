@@ -9,10 +9,6 @@ class ReturnDataJson(
     val oxygen: Double,
     val sweating: Double,
     val temperature: Double,
-    val glucose: Double,
-    val activity: String,
-    val stress: String,
-    val sleep: String
     ) {
     override fun toString(): String {
         return """
@@ -21,10 +17,6 @@ class ReturnDataJson(
             "oxygen": "$oxygen",
             "sweating": "$sweating",
             "temperature": "$temperature",
-            "glucose": "$glucose",
-            "activity": "$activity",
-            "stress": "$stress",
-            "sleep": "$sleep"
             }
         """.trimIndent()
     }

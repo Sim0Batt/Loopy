@@ -10,8 +10,4 @@ data class ReturnDataJson(
         val oxygen: String,
         val sweating: String,
         val temperature: String,
-        val glucose: String,
-        val activity: String,
-        val stress: String,
-        val sleep: String
 )

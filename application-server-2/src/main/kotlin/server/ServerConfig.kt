@@ -16,6 +16,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
@@ -122,6 +123,16 @@ fun Application.module() {
                 call.respondText("Process Failed: ${e.stackTraceToString()}")
             }
         }
+
+        get("/getSSAGData/{id}"){
+            val userId = call.parameters["id"].toString().toInt()
+            try {
+                call.respond(QueryManager.getSSGAData(userId))
+            }catch (e: Exception){
+                call.respondText("Error during SSAG request: ${e.stackTraceToString()}")
+            }
+        }
+
 
         //Graphs Logic
         get("/generateGraph/{graphType}/{id}"){

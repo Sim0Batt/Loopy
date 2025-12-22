@@ -1,14 +1,12 @@
 package server
 
 
-import aiAgent.scripts.AgentCreation
 import database.DatabaseConfig
 import database.QueryManager
 import database.tables.TabellaSensorsStatusTable
 import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
 import database.tables.TabellaUserTable
-import graph.GraphsManagement
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -19,7 +17,6 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.header
-import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondText
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
@@ -29,15 +26,11 @@ import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import server.jsonModels.inputJsons.AgentJson
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
-import server.jsonModels.outputJsons.PredictJson
 import server.jsonModels.outputJsons.StatusJson
 import server.jsonModels.outputJsons.UserDataJson
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 fun Application.module() {

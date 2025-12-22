@@ -1,14 +1,9 @@
 package database
 
 import database.tables.TabellaAccelerometroTable
-import database.tables.TabellaActivityTable
-import database.tables.TabellaStressTable
 import database.tables.TabellaElettrodiTable
-import database.tables.TabellaGlucosioTable
-import database.tables.TabellaGlucosioTable.glicemia
 import database.tables.TabellaPpgTable
 import database.tables.TabellaTermometroTable
-import database.tables.TabellaSleepTable
 import database.tables.TabellaUserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SortOrder
@@ -96,113 +91,33 @@ object QueryManager {
                 .where { TabellaTermometroTable.userId eq id and (TabellaTermometroTable.timestamp like "${LocalDate.now()}%") }
                 .map { it[TabellaTermometroTable.temperatura]}
 
-
-            val activityData = TabellaActivityTable.selectAll().where{
-                TabellaActivityTable.userId eq id and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaActivityTable.activityLevel] }.toList()
-
-            val sleepData = TabellaSleepTable.selectAll().where{
-                TabellaSleepTable.userId eq id and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
-
-            val stressData = TabellaStressTable.selectAll().where{
-                TabellaStressTable.id eq id and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaStressTable.stressLevel] }.toList()
-
-            val glucoseData = TabellaGlucosioTable.selectAll().where{
-                TabellaGlucosioTable.userId eq id and (TabellaGlucosioTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[glicemia] }.toList()
-
-
-
             ReturnDataJson(
                 heartRate = ppgData.average(),
                 oxygen = oxygenData.average(),
                 sweating = electrodesData.average(),
                 temperature = thermometerData.average(),
-                glucose = glucoseData.average(),
-                activity = when{
-                    activityData.average() < 10 -> "Sedentary"
-                    activityData.average() < 20 -> "Light"
-                    activityData.average() < 50 -> "Moderate"
-                    else -> "Intense"
-                },
-                sleep = when{
-                    sleepData.average() < 20 -> "Woke Up"
-                    sleepData.average() < 50 -> "Light"
-                    sleepData.average() < 80 -> "REM"
-                    else -> "Deep"
-                },
-                stress = when{
-                    stressData.count() == 0 -> "No Stress"
-                    stressData.average() < 33.3 -> "Calm"
-                    stressData.average() < 66.6 -> "Medium"
-                    else -> "High"
-                }
+//                glucose = glucoseData.average(),
+//                activity = when{
+//                    activityData.average() < 10 -> "Sedentary"
+//                    activityData.average() < 20 -> "Light"
+//                    activityData.average() < 50 -> "Moderate"
+//                    else -> "Intense"
+//                },
+//                sleep = when{
+//                    sleepData.average() < 20 -> "Woke Up"
+//                    sleepData.average() < 50 -> "Light"
+//                    sleepData.average() < 80 -> "REM"
+//                    else -> "Deep"
+//                },
+//                stress = when{
+//                    stressData.count() == 0 -> "No Stress"
+//                    stressData.average() < 33.3 -> "Calm"
+//                    stressData.average() < 66.6 -> "Medium"
+//                    else -> "High"
+//                }
             )
         }
     }
-
-    fun getStressData(userId: Int): Map<String, Int>{
-        var timestampList = listOf<String>()
-        var stressLevelList = listOf<Int>()
-        transaction(DatabaseConfig.getConfig()) {
-            timestampList = TabellaStressTable.selectAll().where{
-                TabellaStressTable.userId eq userId and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaStressTable.timestamp] }.toList()
-
-            stressLevelList = TabellaStressTable.selectAll().where{
-                TabellaStressTable.userId eq userId and (TabellaStressTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaStressTable.stressLevel] }.toList()
-        }
-        return timestampList.zip(stressLevelList).toMap()
-    }
-
-    fun getActivityData(userId: Int): Map<String, Int>{
-        var timestampList = listOf<String>()
-        var activityLevelsList = listOf<Int>()
-        transaction(DatabaseConfig.getConfig()) {
-            timestampList = TabellaActivityTable.selectAll().where{
-                TabellaActivityTable.userId eq userId and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaActivityTable.timestamp] }.toList()
-
-            activityLevelsList = TabellaActivityTable.selectAll().where{
-                TabellaActivityTable.userId eq userId and (TabellaActivityTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaActivityTable.activityLevel] }.toList()
-        }
-        return timestampList.zip(activityLevelsList).toMap()
-    }
-
-    fun getTodaySleepData(userId: Int): Map<String, Int>{
-        var timestampList = listOf<String>()
-        var sleepLevelsList = listOf<Int>()
-        transaction(DatabaseConfig.getConfig()) {
-            timestampList = TabellaSleepTable.selectAll().where{
-                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaSleepTable.timestamp] }.toList()
-
-            sleepLevelsList = TabellaSleepTable.selectAll().where{
-                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now()}%")
-            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
-        }
-        return timestampList.zip(sleepLevelsList).toMap()
-    }
-
-    fun getYesterdaySleepData(userId: Int): Map<String, Int>{
-        var timestampList = listOf<String>()
-        var sleepLevelsList = listOf<Int>()
-        transaction(DatabaseConfig.getConfig()) {
-            timestampList = TabellaSleepTable.selectAll().where{
-                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now().minusDays(1)}%")
-            }.map { it[TabellaSleepTable.timestamp] }.toList()
-
-            sleepLevelsList = TabellaSleepTable.selectAll().where{
-                TabellaSleepTable.userId eq userId and (TabellaSleepTable.timestamp like "${LocalDate.now().minusDays(1)}%")
-            }.map { it[TabellaSleepTable.sleepLevel] }.toList()
-        }
-        return timestampList.zip(sleepLevelsList).toMap()
-    }
-
 
     fun getUserInformation(userId: Int): UserDataJson {
         var userDatajson = UserDataJson("", "", "", "", "", "")

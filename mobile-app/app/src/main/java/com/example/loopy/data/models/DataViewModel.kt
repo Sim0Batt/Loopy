@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.loopy.data.models.input.ReturnDataJson
+import com.example.loopy.data.models.input.ReturnSSAGDataJson
 import com.example.loopy.network.KtorClient
 import com.example.loopy.utils.APPLICATION_SERVER_1_IP
+import com.example.loopy.utils.APPLICATION_SERVER_2_IP
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +32,10 @@ class DataViewModel : ViewModel() {
             try {
                 Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")
 
-                val daily = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
+                val dataJson = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
+                val SSAGJson = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId").body<ReturnSSAGDataJson>()
 
-                val display = mapDailyToDisplay(daily)
+                val display = mapDailyToDisplay(dataJson, SSAGJson)
 
                 _displayData.postValue(display)
 
@@ -43,12 +46,12 @@ class DataViewModel : ViewModel() {
         }
     }
 
-    private fun mapDailyToDisplay(d: ReturnDataJson): DataDisplay {
-        val hr = d.heartRate.toDoubleSafe()
-        val spo2 = d.oxygen.toDoubleSafe()
-        val temp = d.temperature.toDoubleSafe()
-        val sweat = d.sweating.toDoubleSafe()
-        val gluc = d.glucose.toDoubleSafe()
+    private fun mapDailyToDisplay(dataJson: ReturnDataJson, SSAGDataJson: ReturnSSAGDataJson): DataDisplay {
+        val hr = dataJson.heartRate.toDoubleSafe()
+        val spo2 = dataJson.oxygen.toDoubleSafe()
+        val temp = dataJson.temperature.toDoubleSafe()
+        val sweat = dataJson.sweating.toDoubleSafe()
+        //val gluc = d.glucose.toDoubleSafe()
 
         return DataDisplay(
             hrValue = "${fmt0(hr)} bpm",
@@ -56,10 +59,10 @@ class DataViewModel : ViewModel() {
             tempValue = "${fmt1(temp)} °C",
             sweatValue = fmt1(sweat),
 
-            activityValue = d.activity,
-            stressValue = d.stress,
-            sleepValue = d.sleep,
-            glucoseValue = fmt0(gluc),
+            activityValue = SSAGDataJson.activity,
+            stressValue = SSAGDataJson.stress,
+            sleepValue = SSAGDataJson.sleep,
+            glucoseValue = fmt0(SSAGDataJson.glucose.toDouble()),
 
             hrvValue = "—",
             vo2Value = "—",

@@ -84,7 +84,7 @@ kotlin {
 
 tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-        archiveFileName.set("ApplicationServer.jar")
+        archiveFileName.set("ApplicationServer-1.jar")
         archiveBaseName.set("shadow")
         mergeServiceFiles()
         manifest {

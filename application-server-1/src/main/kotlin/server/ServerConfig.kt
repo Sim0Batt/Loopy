@@ -42,7 +42,10 @@ import java.util.concurrent.TimeUnit
 
 fun Application.module() {
     install(ContentNegotiation) {
-        json(Json { ignoreUnknownKeys = true })
+        json(Json {
+            ignoreUnknownKeys = true
+            allowSpecialFloatingPointValues = true
+        })
     }
 
 
@@ -127,7 +130,8 @@ fun Application.module() {
         get("/getDatas/{id}") {
             val id = call.parameters["id"]
             call.response.header("Content-Type", "application/json")
-            call.respondText(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()).toString())
+            println("Response: ${QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt())}")
+            call.respond(QueryManager.getDatas(DatabaseConfig.getConfig(), id.toString().toInt()))
         }
 
         get("/data/csv/{id}"){

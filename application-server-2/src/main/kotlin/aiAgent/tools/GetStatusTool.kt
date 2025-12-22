@@ -10,7 +10,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
-import org.example.server.inputJsons.ReturnDataJson
+import server.outputJsons.ReturnDataJson
 import kotlinx.serialization.json.Json as KotlinxJson
 
 val client = HttpClient (CIO) {

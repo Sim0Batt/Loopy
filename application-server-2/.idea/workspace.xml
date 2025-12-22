@@ -5,9 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="24d8b980-1148-4dca-9906-a15b05481b24" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/server/outputJsons/ReturnDataJson.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-1/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-1/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-1/src/main/kotlin/database/QueryManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-1/src/main/kotlin/database/QueryManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-1/src/main/kotlin/server/ServerConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-1/src/main/kotlin/server/ServerConfig.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/login/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/login/LoginActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/profile/ProfileActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/profile/ProfileActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/aiAgent/tools/GetStatusTool.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/aiAgent/tools/GetStatusTool.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/graph/GraphsManagement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/graph/GraphsManagement.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/server/inputJsons/AgentJson.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/server/inputJsons/AgentJson.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/server/inputJsons/ReturnDataJson.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/DataViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/DataViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/input/DailyDataJson.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/input/ReturnDataJson.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,6 +124,7 @@
       <recent name="database" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="server.outputJsons" />
       <recent name="server.inputJsons" />
       <recent name="org.example.server.inputJsons" />
       <recent name="org.example.database" />
@@ -174,7 +184,7 @@
       <updated>1766338006088</updated>
       <workItem from="1766338007087" duration="12247000" />
       <workItem from="1766415740160" duration="51000" />
-      <workItem from="1766415798668" duration="605000" />
+      <workItem from="1766415798668" duration="4980000" />
     </task>
     <servers />
   </component>

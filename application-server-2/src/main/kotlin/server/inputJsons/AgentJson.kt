@@ -4,12 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class AgentJson (
-    val username: String,
+    val userId: Int,
     val input: String,
 ){
     override fun toString(): String {
         return """
             {
+            "userId": "$userId"
             "input": "$input"
             }
         """.trimIndent()

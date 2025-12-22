@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8aa43ad9-a2be-4f08-948b-3e4e8824586d" name="Changes" comment="" />
+    <list default="true" id="8aa43ad9-a2be-4f08-948b-3e4e8824586d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../application-server-2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/database/DatabaseConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/database/DatabaseConfig.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/graph/GraphsManagement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/graph/GraphsManagement.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/server/ServerConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/server/ServerConfig.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/server/inputJsons/AgentJson.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../application-server-2/src/main/kotlin/server/inputJsons/AgentJson.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/DataViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app/app/src/main/java/com/example/loopy/data/models/DataViewModel.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,39 +91,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.application-server [:Main.main()].executor": "Run",
-    "Gradle.application-server [:org.example.main.Main.main()].executor": "Run",
-    "Gradle.application-server [build].executor": "Run",
-    "Gradle.application-server [clean].executor": "Run",
-    "Gradle.application-server [shadowJar].executor": "Run",
-    "Kotlin.Main.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cidr.known.project.marker": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/simone/workspace/Loopy/application-server",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/simone/workspace/Loopy/application-server/src/main/kotlin/Main.kt",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.application-server [:Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.application-server [:org.example.main.Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.application-server [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.application-server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.application-server [shadowJar].executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.Main.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/simone/workspace/Loopy/application-server&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/simone/workspace/Loopy/application-server/src/main/kotlin/Main.kt&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/kotlin/models" />
@@ -151,11 +158,8 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="application-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -198,11 +202,8 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="application-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -245,11 +246,8 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="application-server [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -300,8 +298,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
@@ -373,6 +371,7 @@
       <workItem from="1764779705731" duration="1060000" />
       <workItem from="1764860061037" duration="548000" />
       <workItem from="1765551250704" duration="204000" />
+      <workItem from="1766419089271" duration="20000" />
     </task>
     <servers />
   </component>

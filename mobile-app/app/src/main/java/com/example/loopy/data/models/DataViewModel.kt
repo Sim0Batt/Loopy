@@ -5,8 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.loopy.data.models.input.DailyDataJson
+import com.example.loopy.data.models.input.ReturnDataJson
 import com.example.loopy.network.KtorClient
+import com.example.loopy.utils.APPLICATION_SERVER_1_IP
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +19,6 @@ class DataViewModel : ViewModel() {
 
     private val client = KtorClient.client
 
-    private val baseUrl = "http://13.60.104.145:8080"
-    private val endpointDaily = "$baseUrl/getDatas"
-
     private val _displayData = MutableLiveData<DataDisplay>()
     val displayData: LiveData<DataDisplay> = _displayData
 
@@ -30,9 +28,9 @@ class DataViewModel : ViewModel() {
     fun caricaDatiUtente(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.d("DataViewModel", "Calling: $endpointDaily/$userId")
+                Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")
 
-                val daily = client.get("$endpointDaily/$userId").body<DailyDataJson>()
+                val daily = client.get("http://10.0.2.2:8080/getDatas/$userId").body<ReturnDataJson>()
 
                 val display = mapDailyToDisplay(daily)
 
@@ -45,7 +43,7 @@ class DataViewModel : ViewModel() {
         }
     }
 
-    private fun mapDailyToDisplay(d: DailyDataJson): DataDisplay {
+    private fun mapDailyToDisplay(d: ReturnDataJson): DataDisplay {
         val hr = d.heartRate.toDoubleSafe()
         val spo2 = d.oxygen.toDoubleSafe()
         val temp = d.temperature.toDoubleSafe()

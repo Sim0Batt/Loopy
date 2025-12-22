@@ -83,7 +83,7 @@ object QueryManager {
             val oxygenData = TabellaPpgTable.selectAll()
             .where { TabellaPpgTable.userId eq id and (TabellaPpgTable.timestamp like "${LocalDate.now()}%") }
             .map {
-                it[TabellaPpgTable.ossigenazione].toDouble()
+                it[TabellaPpgTable.ossigenazione].replace("%", "").toDouble()
             }
 
             val electrodesData = TabellaElettrodiTable.selectAll()

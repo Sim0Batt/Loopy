@@ -1,4 +1,4 @@
-package org.example.server.inputJsons
+package server.outputJsons
 
 import kotlinx.serialization.Serializable
 

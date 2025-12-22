@@ -22,6 +22,7 @@ object KtorClient {
             json(Json {
                 ignoreUnknownKeys = true
                 isLenient = true
+                allowSpecialFloatingPointValues = true
             })
         }
     }

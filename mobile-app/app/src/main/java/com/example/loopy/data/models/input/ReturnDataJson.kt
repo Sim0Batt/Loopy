@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
-data class DailyDataJson(
+data class ReturnDataJson(
         val heartRate: String,
         val oxygen: String,
         val sweating: String,

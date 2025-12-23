@@ -38,7 +38,7 @@ class ChatActivity: ComponentActivity() {
             if (testo.isNotEmpty()) {
                 addMessage(testo, true, chatContainer, scrollView)
                 lifecycleScope.launch {
-                    val agentResponse = ChatCaller().run(testo, userId)
+                    val agentResponse = ChatCaller.run(testo, userId)
                     addMessage(agentResponse, false, chatContainer, scrollView)
                 }
                 messageInputText.text?.clear()

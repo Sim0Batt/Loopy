@@ -13,13 +13,14 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-class ChatCaller {
+object ChatCaller {
     val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
                 isLenient = true
                 ignoreUnknownKeys = true
+                allowSpecialFloatingPointValues = true
             })
         }
         install(HttpTimeout) {
@@ -29,10 +30,10 @@ class ChatCaller {
         }
     }
     suspend fun run(input: String, userId: Int): String{
-        val credentials = ChatJson(input, userId)
+        val credentials = AgentJson(input)
 
 
-        val response = client.post("http://$APPLICATION_SERVER_2_IP:8080/agentProcess/$userId") {
+        val response = client.post("http://${APPLICATION_SERVER_2_IP}:8080/agentProcess/$userId") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }

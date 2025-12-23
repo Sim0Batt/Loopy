@@ -92,7 +92,7 @@ class MainActivity : BaseActivity() {
             //Image Retrive
             viewPager.adapter = GraphsAdapter(downloadImagesBitmap(client, userId))
 
-            val agentResponse = ChatCaller().run(BEGINNING_PROMPT, userId)
+            val agentResponse = ChatCaller.run(BEGINNING_PROMPT, userId)
             updateChatBotMessage(chatbotCloud, agentResponse)
         }
 

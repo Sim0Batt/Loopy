@@ -1,7 +1,7 @@
 package server
 
 
-import aiAgent.scripts.AgentCreation
+import aiAgent.AgentCreation
 import database.QueryManager
 import graph.GraphsManagement
 import io.ktor.client.HttpClient
@@ -57,23 +57,8 @@ fun Application.module() {
             val credentials = call.receive<AgentJson>()
             println(credentials)
 
-
-            val userData = client.post("http://13.60.104.145:8080/user/$userId").body<UserDataJson>()
-
-
-
-            val agent = AgentCreation().getAgent(userId!!)
-            call.respondText(agent.run("""
-                User input: ${credentials.input}
-                Context:
-                -Username: ${userData.username},
-                -Age: ${userData.age},
-                -Height: ${userData.height},
-                -Weight: ${userData.weight},
-                -Sex: ${userData.gender}
-                """.trimIndent()
-            )
-            )
+            val agent = AgentCreation.getAgent(userId!!)
+            call.respondText(agent.run(credentials.input))
         }
 
 

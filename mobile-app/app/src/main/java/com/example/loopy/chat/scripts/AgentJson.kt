@@ -6,15 +6,13 @@ import kotlinx.serialization.Serializable
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
-class ChatJson(
+class AgentJson(
     val input: String,
-    val userId: Int
 ) {
     override fun toString(): String {
         return """
             {
                 "input": "$input",
-                "userId": "$userId"
             }
         """.trimIndent()
     }

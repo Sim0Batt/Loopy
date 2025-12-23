@@ -95,26 +95,7 @@ object QueryManager {
                 heartRate = ppgData.average(),
                 oxygen = oxygenData.average(),
                 sweating = electrodesData.average(),
-                temperature = thermometerData.average(),
-//                glucose = glucoseData.average(),
-//                activity = when{
-//                    activityData.average() < 10 -> "Sedentary"
-//                    activityData.average() < 20 -> "Light"
-//                    activityData.average() < 50 -> "Moderate"
-//                    else -> "Intense"
-//                },
-//                sleep = when{
-//                    sleepData.average() < 20 -> "Woke Up"
-//                    sleepData.average() < 50 -> "Light"
-//                    sleepData.average() < 80 -> "REM"
-//                    else -> "Deep"
-//                },
-//                stress = when{
-//                    stressData.count() == 0 -> "No Stress"
-//                    stressData.average() < 33.3 -> "Calm"
-//                    stressData.average() < 66.6 -> "Medium"
-//                    else -> "High"
-//                }
+                temperature = thermometerData.average()
             )
         }
     }

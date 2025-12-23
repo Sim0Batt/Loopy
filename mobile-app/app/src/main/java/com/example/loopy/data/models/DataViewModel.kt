@@ -27,7 +27,7 @@ class DataViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    fun caricaDatiUtente(userId: String) {
+    fun retriveUserData(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")

@@ -16,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
 import com.example.loopy.data.models.DataDisplay
 import com.example.loopy.utils.SessionManager
-import java.lang.Error
 
 
 class DataActivity : BaseActivity() {
@@ -50,7 +49,7 @@ class DataActivity : BaseActivity() {
 
         val userId = SessionManager.currentUserId
         if (userId != null) {
-            viewModel.caricaDatiUtente(userId.toString())
+            viewModel.retriveUserData(userId.toString())
         } else {
             Toast.makeText(this, "Errore: Utente non trovato", Toast.LENGTH_LONG).show()
             // finish()

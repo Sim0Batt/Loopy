@@ -97,7 +97,8 @@ fun Application.module() {
             transaction(DatabaseConfig.getConfig()) {
                 userJson = QueryManager.getUserInformation(userId!!)
             }
-            call.respondText(userJson.toString())
+            println(userJson)
+            call.respond(userJson)
         }
 
         post("/editUser/{id}"){

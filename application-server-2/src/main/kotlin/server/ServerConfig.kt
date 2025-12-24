@@ -5,10 +5,8 @@ import aiAgent.AgentCreation
 import database.QueryManager
 import graph.GraphsManagement
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -22,29 +20,18 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.example.script.MainScript
-import org.example.server.inputJsons.UserDataJson
-import server.jsonModels.inputJsons.AgentJson
+import server.inputJsons.AgentJson
 import server.jsonModels.outputJsons.PredictJson
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json as KotlinxJson
 
-
-
-val client = HttpClient (CIO) {
-    install(ContentNegotiation) {
-        json(KotlinxJson {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-        })
-    }
-}
-
-
 fun Application.module() {
     install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
-        json(Json { ignoreUnknownKeys = true })
+        json(Json {
+            ignoreUnknownKeys = true
+            allowSpecialFloatingPointValues = true
+        })
     }
 
 
@@ -112,8 +99,10 @@ fun Application.module() {
         get("/getSSAGData/{id}"){
             val userId = call.parameters["id"].toString().toInt()
             try {
+                println(QueryManager.getSSGAData(userId))
                 call.respond(QueryManager.getSSGAData(userId))
             }catch (e: Exception){
+                println(e.stackTraceToString())
                 call.respondText("Error during SSAG request: ${e.stackTraceToString()}")
             }
         }

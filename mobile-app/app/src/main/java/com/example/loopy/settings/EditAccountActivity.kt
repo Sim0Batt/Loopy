@@ -56,7 +56,7 @@ class EditAccountActivity : ComponentActivity() {
         val inputEmail = findViewById<EditText>(R.id.emailInput)
         val inputPassword = findViewById<EditText>(R.id.passwordInput)
         val inputUsername = findViewById<EditText>(R.id.usernameInput)
-        val saveButton = findViewById<Button>(R.id.submitButton)
+        val saveButton = findViewById<Button>(R.id.ConfirmButton)
 
         val inputAge = findViewById<Spinner>(R.id.ageInput)
         val inputWeight = findViewById<Spinner>(R.id.weightInput)
@@ -104,34 +104,38 @@ class EditAccountActivity : ComponentActivity() {
                             val sexIndex = sexList.indexOf(userData.gender)
                             if (sexIndex >= 0) inputSex.setSelection(sexIndex)
                         } catch (e: Exception) {
-                            Log.e("EditAccount", "Errore conversione numeri o ricerca indici", e)
+                            Log.e("EditAccount", "Error converting numbers or finding indices", e)
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("EditAccount", "Errore download dati utente", e)
+                    Log.e("EditAccount", "Error downloading user data", e)
                 }
             }
         } else {
-            Toast.makeText(this, "Errore: Utente non loggato", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error: User not logged in", Toast.LENGTH_SHORT).show()
         }
 
         saveButton.setOnClickListener {
-            val username = inputUsername.text.toString()
-            val email = inputEmail.text.toString()
-            val password = inputPassword.text.toString()
+            val username = inputUsername.text.toString().trim()
+            val email = inputEmail.text.toString().trim()
+            val password = inputPassword.text.toString().trim()
+
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please fill in Username, Email, and Password!", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (inputAge.selectedItem == null || inputWeight.selectedItem == null ||
+                inputHeight.selectedItem == null || inputSex.selectedItem == null) {
+                Toast.makeText(this, "Data missing, please wait for lists to load", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
             val age = inputAge.selectedItem.toString().toInt()
             val weight = inputWeight.selectedItem.toString().toInt()
             val height = inputHeight.selectedItem.toString().toInt()
             val sex = inputSex.selectedItem.toString()
 
-            // Controllo Password (necessario perché il backend la sovrascrive se presente)
-            if (password.isEmpty()) {
-                Toast.makeText(this, "Inserisci la password per confermare le modifiche", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            // Usiamo RegisterJson per l'invio (come richiesto dal server)
             val updateData = RegisterJson(
                 email = email,
                 password = password,
@@ -144,7 +148,6 @@ class EditAccountActivity : ComponentActivity() {
 
             lifecycleScope.launch {
                 try {
-                    // Endpoint per SCRIVERE i dati: post("/editUser/{id}")
                     val updateUrl = "http://$APPLICATION_SERVER_1_IP:8080/editUser/$userId"
                     Log.d("EditAccount", "Updating to: $updateUrl")
 
@@ -155,10 +158,9 @@ class EditAccountActivity : ComponentActivity() {
 
                     val responseBody = response.bodyAsText()
 
-                    // Controllo successo (il server risponde "User Updated")
                     if (response.status == HttpStatusCode.OK || responseBody.contains("Updated", ignoreCase = true)) {
                         runOnUiThread {
-                            Toast.makeText(this@EditAccountActivity, "Profilo aggiornato!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@EditAccountActivity, "Profile updated!", Toast.LENGTH_LONG).show()
 
                             SessionManager.currentUsername = username
 
@@ -169,14 +171,14 @@ class EditAccountActivity : ComponentActivity() {
                         }
                     } else {
                         runOnUiThread {
-                            Toast.makeText(this@EditAccountActivity, "Errore: $responseBody", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@EditAccountActivity, "Error: $responseBody", Toast.LENGTH_LONG).show()
                         }
                     }
 
                 } catch (e: Exception) {
-                    Log.e("EditAccount", "Errore salvataggio", e)
+                    Log.e("EditAccount", "Error saving data", e)
                     runOnUiThread {
-                        Toast.makeText(this@EditAccountActivity, "Errore di connessione", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@EditAccountActivity, "Connection error", Toast.LENGTH_LONG).show()
                     }
                 }
             }

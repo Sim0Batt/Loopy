@@ -12,7 +12,7 @@ class EditAccountListSet {
 
     fun setHeightList(): List<Int> {
         val tmp: MutableList<Int> = mutableListOf()
-        for (i in 1..250) {
+        for (i in 1..100) {
             tmp.add(i)
         }
         return tmp
@@ -20,7 +20,7 @@ class EditAccountListSet {
 
     fun setWeightList(): List<Int> {
         val tmp: MutableList<Int> = mutableListOf()
-        for (i in 1..150) {
+        for (i in 1..100) {
             tmp.add(i)
         }
         return tmp

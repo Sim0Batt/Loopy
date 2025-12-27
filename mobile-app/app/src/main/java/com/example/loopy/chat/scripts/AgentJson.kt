@@ -12,7 +12,7 @@ class AgentJson(
     override fun toString(): String {
         return """
             {
-                "input": "$input",
+                "input": "$input"
             }
         """.trimIndent()
     }

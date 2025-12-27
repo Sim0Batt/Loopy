@@ -18,14 +18,19 @@ import com.example.loopy.profile.ProfileActivity
 import com.example.loopy.settings.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.loopy.core.BaseActivity
+import com.example.loopy.data.models.input.ReturnDataJson
+import com.example.loopy.data.models.input.ReturnSSAGDataJson
+import com.example.loopy.profile.json.UserDataJson
 import com.example.loopy.utils.APPLICATION_SERVER_1_IP
 import com.example.loopy.utils.APPLICATION_SERVER_2_IP
 import com.example.loopy.utils.GraphsAdapter
 import com.example.loopy.utils.SessionManager
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.statement.readBytes
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
@@ -51,12 +56,13 @@ class MainActivity : BaseActivity() {
 
         val userId = SessionManager.currentUserId!!
         val username = SessionManager.currentUsername
+        var gender = SessionManager.currentUserGender
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)
         val helloUser = findViewById<TextView>(R.id.helloUser)
         val chatbotCloud = findViewById<TextView>(R.id.chatbotCloud)
-        val kcalView = findViewById<TextView>(R.id.dailyConsumption)
+        val recoveryView = findViewById<TextView>(R.id.dailyConsumption)
         val hbView = findViewById<TextView>(R.id.heartBeat)
         val viewPager = findViewById<ViewPager2>(R.id.graphsViewPager)
 
@@ -77,7 +83,7 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        kcalView.setOnClickListener {
+        recoveryView.setOnClickListener {
             val intent = Intent(this@MainActivity, DataActivity::class.java)
             startActivity(intent)
         }
@@ -89,9 +95,14 @@ class MainActivity : BaseActivity() {
 
         /*------------------ASYNCHRONOUS LOGIC--------------------*/
         lifecycleScope.launch {
+            //Circle Valuse Retrieve
+            val userData = client.post("http://${APPLICATION_SERVER_1_IP}:8080/user/$userId").body<UserDataJson>()
+            calculateCircleValues(client, recoveryView, hbView, userId, userData)
+
             //Image Retrive
             viewPager.adapter = GraphsAdapter(downloadImagesBitmap(client, userId))
 
+            //Agent Summary
             val agentResponse = ChatCaller.run(BEGINNING_PROMPT, userId)
             updateChatBotMessage(chatbotCloud, agentResponse)
         }
@@ -171,6 +182,30 @@ class MainActivity : BaseActivity() {
             Log.d("HomePage", "Error during graphs download")
         }
         return tmp
+    }
+
+    private suspend fun calculateCircleValues(client: HttpClient, recoveryText: TextView, heartRateText: TextView, userId : Int, userData: UserDataJson){
+        try{
+            val app1Data = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
+            val app2Data = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId").body<ReturnSSAGDataJson>()
+            heartRateText.text = app1Data.heartRate
+
+            var basal = if(userData.gender == "M"){
+                66.5 + (13.75 * userData.weight.toDouble()) + (5.0 * userData.height.toDouble()) - (6.775 * userData.age.toInt())
+            }else{
+                655.1 + (9.563 * userData.weight.toDouble()) + (1.85 * userData.height.toDouble()) - (4.676 * userData.age.toInt())
+            }
+
+            recoveryText.text = when(app2Data.activity){
+                "Sedentary" -> (basal * 1.2).toInt().toString()
+                "Light" -> (basal * 1.375).toInt().toString()
+                "Moderate" -> (basal * 1.55).toInt().toString()
+                "Intense" -> (basal * 1.725).toInt().toString()
+                else -> (basal * 1.2).toInt().toString()
+            }
+        }catch (e: Exception){
+            Log.d("HomePage", "Error during circle values calculation")
+        }
     }
 
 }

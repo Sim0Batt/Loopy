@@ -21,7 +21,7 @@ class UserDataJson(
     "age": "$age",
     "gender": "$gender",
     "weight": "$weight",
-    "height": "$height",
+    "height": "$height"
 }
         """.trimIndent()
     }

@@ -12,6 +12,7 @@ import com.example.loopy.utils.APPLICATION_SERVER_1_IP
 import com.example.loopy.utils.APPLICATION_SERVER_2_IP
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -32,8 +33,12 @@ class DataViewModel : ViewModel() {
             try {
                 Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")
 
-                val dataJson = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
-                val SSAGJson = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId").body<ReturnSSAGDataJson>()
+                val dataJson = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId") {
+                    accept(ContentType.Application.Json)
+                }.body<ReturnDataJson>()
+                val SSAGJson = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId") {
+                    accept(ContentType.Application.Json)
+                }.body<ReturnSSAGDataJson>()
 
                 val display = mapDailyToDisplay(dataJson, SSAGJson)
 

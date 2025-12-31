@@ -75,7 +75,7 @@ fun Application.module() {
             }
         }
 
-        get("/termometer"){
+        get("/thermometer"){
             val completed = MainScript.executeThermometerSensor()
             if(completed == "success"){
                 call.respondText("SUCCESS")

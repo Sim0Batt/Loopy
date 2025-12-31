@@ -56,7 +56,6 @@ class MainActivity : BaseActivity() {
 
         val userId = SessionManager.currentUserId!!
         val username = SessionManager.currentUsername
-        var gender = SessionManager.currentUserGender
 
         val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
         val profilePictures = findViewById<ImageButton>(R.id.profilePicture)

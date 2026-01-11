@@ -102,8 +102,12 @@ class MainActivity : BaseActivity() {
             viewPager.adapter = GraphsAdapter(downloadImagesBitmap(client, userId))
 
             //Agent Summary
-            val agentResponse = ChatCaller.run(BEGINNING_PROMPT, userId)
-            updateChatBotMessage(chatbotCloud, agentResponse)
+            try{
+                val agentResponse = ChatCaller.run(BEGINNING_PROMPT, userId)
+                updateChatBotMessage(chatbotCloud, agentResponse)
+            }catch (e: Exception){
+                Log.d("HomePage", "Error during agent summary")
+            }
         }
 
 

@@ -1,5 +1,16 @@
-# Loopy
-## Distributed Health Monitoring System
+<p align="center">
+  <img src="./images/loopy_logo.png" width="180">
+</p>
+
+<h1 align="center">Loopy</h1>
+<h3 align="center">Distributed Health Monitoring System</h3>
+
+<p align="center">
+  A modular distributed health monitoring system based on a wearable Raspberry Pi armband,
+  Android app, cloud backend and ML/AI analysis modules.
+</p>
+
+<!--=========================================================================-->
 
 Loopy is a **distributed health monitoring system** based on a wearable armband device. It continuously collects, processes, and visualizes physiological and activity-related data through a modular and scalable architecture.
 
@@ -399,17 +410,21 @@ The repository is organized as follows:
 ## Hardware and Software Requirements
 
 ### Hardware Requirements
-- Raspberry Pi 3B + (wearable device)
+- Raspberry Pi 3B+ (wearable device)
 - Health monitoring sensors
 - Android smartphone
-- Cloud infrastructure (e.g., AWS EC2 or local server)
+- Cloud infrastructure (e.g., AWS EC2 or equivalent)
+
+<p align="center">
+  <img src="./images/Raspberry pi 3B+.jpg" width="420">
+</p>
 
 ### Software Requirements
 - Android Studio (latest stable version)
 - Java Development Kit (JDK)
 - Python 3
 - Gradle (via Gradle Wrapper)
-- Git
+- Git 
 
 ---
 

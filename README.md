@@ -80,16 +80,11 @@ The repository is organized as follows:
 │       └── main
 │           └── kotlin
 │               ├── database
-│               │   ├── dao
-│               │   └── tables
 │               ├── Main.kt
 │               ├── models
 │               ├── scripts
 │               └── server
-│                   ├── jsonModels
-│                   │   ├── inputJsons
-│                   │   └── outputJsons
-│                   └── ServerConfig.kt
+|
 ├── application-server-2
 │   ├── build.gradle.kts
 │   ├── gradle
@@ -101,28 +96,21 @@ The repository is organized as follows:
 │       └── main
 │           └── kotlin
 │               ├── aiAgent
-│               │   ├── AgentCreation.kt
-│               │   ├── customModels
-│               │   └── strategies
 │               ├── database
-│               │   ├── dao
-│               │   ├── DatabaseConfig.kt
-│               │   ├── QueryManager.kt
-│               │   └── table
 │               ├── graph
 │               ├── Main.kt
 │               ├── script
-│               │   └── MainScript.kt
 │               ├── server
-│               │   ├── inputJsons
-│               │   ├── outputJsons
-│               │   └── ServerConfig.kt
 │               └── utils
+|
 ├── documentation
 │   ├── Functional_Sheet_Loopy.pdf
 │   └── Technical_Sheet_Loopy.pdf
+|
 ├── glucose-calculator-ML
+|
 ├── metric-calculator
+|
 ├── mobile-app
 │   ├── app
 │   │   ├── build.gradle.kts
@@ -130,58 +118,30 @@ The repository is organized as follows:
 │   │   └── src
 │   │       ├── androidTest
 │   │       ├── main
-│   │       │   ├── AndroidManifest.xml
-│   │       │   ├── ic_launcher-playstore.png
-│   │       │   ├── java
-│   │       │   │   └── com
-│   │       │   │       └── example
-│   │       │   │           └── loopy
-│   │       │   │               ├── chat
-│   │       │   │               │   ├── ChatActivity.kt
-│   │       │   │               │   └── scripts
-│   │       │   │               ├── data
-│   │       │   │               │   ├── DataActivity.kt
-│   │       │   │               │   └── models
-│   │       │   │               │       └── input
-│   │       │   │               ├── devicemanager
-│   │       │   │               │   └── models
-│   │       │   │               ├── login
-│   │       │   │               │   ├── models
-│   │       │   │               │   │   ├── input
-│   │       │   │               │   │   └── output
-│   │       │   │               ├── MainActivity.kt
-│   │       │   │               ├── network
-│   │       │   │               ├── profile
-│   │       │   │               │   ├── json
-│   │       │   │               ├── settings
-│   │       │   │               ├── ui
-│   │       │   │               │   └── theme
-│   │       │   │               └── utils
-│   │       │   └── res
-│   │       │       ├── color
-│   │       │       │   └── bottom_nav_selector.xml
-│   │       │       ├── drawable
-│   │       │       ├── font
-│   │       │       ├── layout
-│   │       │       ├── menu
-│   │       │       ├── mipmap-anydpi-v26
-│   │       │       ├── mipmap-hdpi
-│   │       │       ├── mipmap-mdpi
-│   │       │       ├── mipmap-xhdpi
-│   │               ├── mipmap-xxhdpi
-│   │               ├── mipmap-xxxhdpi
-│   │               ├── values
-│   │               └── xml
+│   │           ├── AndroidManifest.xml
+│   │           ├── ic_launcher-playstore.png
+│   │           ├── java
+│   │           │   └── com
+│   │           │        └── example
+│   │           │            └── loopy
+│   │           │               ├── chat
+│   │           │               ├── data
+│   │           │               ├── devicemanager
+│   │           │               ├── login
+│   │           │               ├── MainActivity.kt
+│   │           │               ├── network
+│   │           │               ├── profile
+│   │           │               ├── settings
+│   │           │               ├── ui
+│   │           │               └── utils
+│   │           └── res
 │   ├── build.gradle.kts
 │   ├── gradle
-│   │   ├── libs.versions.toml
-│   │   └── wrapper
-│   │       ├── gradle-wrapper.jar
-│   │       └── gradle-wrapper.properties
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
 │   └── settings.gradle.kts
+|
 ├── raspberry-pi-server-logic
 │   ├── main-server
 │   │   ├── build.gradle.kts
@@ -197,10 +157,6 @@ The repository is organized as follows:
 │   │       └── main
 │   │           └── kotlin
 │   │               ├── database
-│   │               │   ├── dao
-│   │               │   ├── DatabaseConfig.kt
-│   │               │   ├── QueryManagement.kt
-│   │               │   └── tables
 │   │               ├── Main.kt
 │   │               ├── models
 │   │               ├── scripts

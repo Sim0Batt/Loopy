@@ -81,43 +81,14 @@ The repository is organized as follows:
 │           └── kotlin
 │               ├── database
 │               │   ├── dao
-│               │   │   ├── TabellaAccelerometroEntity.kt
-│               │   │   ├── TabellaElettrodiEntity.kt
-│               │   │   ├── TabellaPpgEntity.kt
-│               │   │   ├── TabellaSensorsStatusEntity.kt
-│               │   │   ├── TabellaTermometroEntity.kt
-│               │   │   └── TabellaUserEntity.kt
-│               │   ├── DatabaseConfig.kt
-│               │   ├── QueryManager.kt
 │               │   └── tables
-│               │       ├── TabellaAccelerometroTable.kt
-│               │       ├── TabellaElettrodiTable.kt
-│               │       ├── TabellaPpgTable.kt
-│               │       ├── TabellaSensorsStatusTable.kt
-│               │       ├── TabellaTermometroTable.kt
-│               │       └── TabellaUserTable.kt
 │               ├── Main.kt
 │               ├── models
-│               │   ├── AccelerometerData.kt
-│               │   ├── ElectrodeData.kt
-│               │   ├── PPGData.kt
-│               │   └── TermometerData.kt
 │               ├── scripts
-│               │   └── MainScript.kt
 │               └── server
 │                   ├── jsonModels
 │                   │   ├── inputJsons
-│                   │   │   ├── AgentJson.kt
-│                   │   │   ├── RegisterJson.kt
-│                   │   │   ├── SaveDataJson.kt
-│                   │   │   └── UserJson.kt
 │                   │   └── outputJsons
-│                   │       ├── AccountJson.kt
-│                   │       ├── CsvDataJson.kt
-│                   │       ├── PredictJson.kt
-│                   │       ├── ReturnDataJson.kt
-│                   │       ├── StatusJson.kt
-│                   │       └── UserDataJson.kt
 │                   └── ServerConfig.kt
 ├── application-server-2
 │   ├── build.gradle.kts
@@ -132,59 +103,26 @@ The repository is organized as follows:
 │               ├── aiAgent
 │               │   ├── AgentCreation.kt
 │               │   ├── customModels
-│               │   │   └── OpenRouterCustomModels.kt
 │               │   └── strategies
-│               │       └── SimpleStrategy.kt
 │               ├── database
 │               │   ├── dao
-│               │   │   ├── TabellaActivityEntity.kt
-│               │   │   ├── TabellaGlucosioEntity.kt
-│               │   │   ├── TabellaSleepEntity.kt
-│               │   │   └── TabellaStressEntity.kt
 │               │   ├── DatabaseConfig.kt
 │               │   ├── QueryManager.kt
 │               │   └── table
-│               │       ├── TabellaActivityTable.kt
-│               │       ├── TabellaGlucosioTable.kt
-│               │       ├── TabellaSleepTable.kt
-│               │       └── TabellaStressTable.kt
 │               ├── graph
-│               │   └── GraphsManagement.kt
 │               ├── Main.kt
 │               ├── script
 │               │   └── MainScript.kt
 │               ├── server
 │               │   ├── inputJsons
-│               │   │   ├── AgentJson.kt
-│               │   │   ├── CsvDataJson.kt
-│               │   │   ├── RegisterJson.kt
-│               │   │   ├── ReturnDataJson.kt
-│               │   │   ├── SaveDataJson.kt
-│               │   │   ├── UserDataJson.kt
-│               │   │   └── UserJson.kt
 │               │   ├── outputJsons
-│               │   │   ├── AccountJson.kt
-│               │   │   ├── PredictJson.kt
-│               │   │   ├── ReturnSSAGDataJson.kt
-│               │   │   └── StatusJson.kt
 │               │   └── ServerConfig.kt
 │               └── utils
-│                   └── URL.kt
 ├── documentation
 │   ├── Functional_Sheet_Loopy.pdf
 │   └── Technical_Sheet_Loopy.pdf
 ├── glucose-calculator-ML
-│   ├── csvs
-│   │   └── result.csv
-│   ├── models
-│   │   └── model_rf.pkl
-│   ├── predict.py
-│   └── train.py
 ├── metric-calculator
-│   ├── calc_metriche_diurne.py
-│   ├── calc_metriche_notturne.py
-│   ├── db_utils.py
-│   └── TODO.txt
 ├── mobile-app
 │   ├── app
 │   │   ├── build.gradle.kts
@@ -201,126 +139,39 @@ The repository is organized as follows:
 │   │       │   │               ├── chat
 │   │       │   │               │   ├── ChatActivity.kt
 │   │       │   │               │   └── scripts
-│   │       │   │               │       ├── AgentJson.kt
-│   │       │   │               │       └── ChatCaller.kt
 │   │       │   │               ├── data
 │   │       │   │               │   ├── DataActivity.kt
 │   │       │   │               │   └── models
-│   │       │   │               │       ├── DataDisplay.kt
-│   │       │   │               │       ├── DataViewModel.kt
 │   │       │   │               │       └── input
-│   │       │   │               │           ├── ReturnDataJson.kt
-│   │       │   │               │           └── ReturnSSAGDataJson.kt
 │   │       │   │               ├── devicemanager
-│   │       │   │               │   ├── DeviceManagerActivity.kt
 │   │       │   │               │   └── models
-│   │       │   │               │       └── StatusJson.kt
 │   │       │   │               ├── login
-│   │       │   │               │   ├── LoginActivity.kt
 │   │       │   │               │   ├── models
 │   │       │   │               │   │   ├── input
-│   │       │   │               │   │   │   ├── RegisterJson.kt
-│   │       │   │               │   │   │   └── UserJson.kt
 │   │       │   │               │   │   └── output
-│   │       │   │               │   │       └── AccountJson.kt
-│   │       │   │               │   ├── RegisterActivity.kt
-│   │       │   │               │   └── RegisterListSet.kt
 │   │       │   │               ├── MainActivity.kt
 │   │       │   │               ├── network
-│   │       │   │               │   └── KtorClient.kt
 │   │       │   │               ├── profile
 │   │       │   │               │   ├── json
-│   │       │   │               │   │   └── UserDataJson.kt
-│   │       │   │               │   └── ProfileActivity.kt
 │   │       │   │               ├── settings
-│   │       │   │               │   ├── EditAccountActivity.kt
-│   │       │   │               │   ├── EditAccountListSet.kt
-│   │       │   │               │   └── SettingsActivity.kt
 │   │       │   │               ├── ui
 │   │       │   │               │   └── theme
-│   │       │   │               │       ├── Color.kt
-│   │       │   │               │       ├── Theme.kt
-│   │       │   │               │       └── Type.kt
 │   │       │   │               └── utils
-│   │       │   │                   ├── BaseActivity.kt
-│   │       │   │                   ├── GraphAdapter.kt
-│   │       │   │                   ├── SessionManager.kt
-│   │       │   │                   └── URL.kt
 │   │       │   └── res
 │   │       │       ├── color
 │   │       │       │   └── bottom_nav_selector.xml
 │   │       │       ├── drawable
-│   │       │       │   ├── agent_message_text_background.xml
-│   │       │       │   ├── bg_chat.png
-│   │       │       │   ├── bg_empty.png
-│   │       │       │   ├── bg_home.png
-│   │       │       │   ├── bg_login.png
-│   │       │       │   ├── bg_profile.png
-│   │       │       │   ├── bg_register.png
-│   │       │       │   ├── bottom_nav_bg.xml
-│   │       │       │   ├── circular_container.xml
-│   │       │       │   ├── edit_text_background.xml
-│   │       │       │   ├── ic_chatbot.xml
-│   │       │       │   ├── ic_data.xml
-│   │       │       │   ├── ic_dm.xml
-│   │       │       │   ├── ic_home.xml
-│   │       │       │   ├── ic_launcher_background.xml
-│   │       │       │   ├── ic_launcher_foreground.xml
-│   │       │       │   ├── ic_profile.xml
-│   │       │       │   ├── ic_settings.xml
-│   │       │       │   ├── login_button_background.xml
-│   │       │       │   ├── loopy_bot_avatar.png
-│   │       │       │   ├── loopy_hompage_recap.xml
-│   │       │       │   ├── loopy_logo.png
-│   │       │       │   ├── rounded_button.xml
-│   │       │       │   └── user_message_text_background.xml
 │   │       │       ├── font
-│   │       │       │   ├── adlam_display.xml
-│   │       │       │   ├── alex_brush.ttf
-│   │       │       │   ├── alfa_slab_one.xml
-│   │       │       │   └── dancingscript_variablefont_wght.ttf
 │   │       │       ├── layout
-│   │       │       │   ├── chat_activity.xml
-│   │       │       │   ├── data_activity.xml
-│   │       │       │   ├── dm_activity.xml
-│   │       │       │   ├── edit_account_activity.xml
-│   │       │       │   ├── edit_profile_activity.xml
-│   │       │       │   ├── item_graph.xml
-│   │       │       │   ├── login_activity.xml
-│   │       │       │   ├── main_activity.xml
-│   │       │       │   ├── profile_activity.xml
-│   │       │       │   ├── register_activity.xml
-│   │       │       │   ├── settings_activity.xml
-│   │       │       │   └── view_bottom_nav.xml
 │   │       │       ├── menu
-│   │       │       │   └── bottom_nav_menu.xml
 │   │       │       ├── mipmap-anydpi-v26
-│   │       │       │   ├── ic_launcher_round.xml
-│   │       │       │   └── ic_launcher.xml
 │   │       │       ├── mipmap-hdpi
-│   │       │       │   ├── ic_launcher_round.webp
-│   │       │       │   └── ic_launcher.webp
 │   │       │       ├── mipmap-mdpi
-│   │       │       │   ├── ic_launcher_round.webp
-│   │       │       │   └── ic_launcher.webp
 │   │       │       ├── mipmap-xhdpi
-│   │       │       │   ├── ic_launcher_round.webp
-│   │       │       │   └── ic_launcher.webp
 │   │               ├── mipmap-xxhdpi
-│   │               │   ├── ic_launcher_round.webp
-│   │               │   └── ic_launcher.webp
 │   │               ├── mipmap-xxxhdpi
-│   │               │   ├── ic_launcher_round.webp
-│   │               │   └── ic_launcher.webp
 │   │               ├── values
-│   │               │   ├── colors.xml
-│   │               │   ├── font_certs.xml
-│   │               │   ├── preloaded_fonts.xml
-│   │               │   ├── strings.xml
-│   │               │   └── themes.xml
 │   │               └── xml
-|   |               ├── backup_rules.xml
-|   |               └── data_extraction_rules.xml
 │   ├── build.gradle.kts
 │   ├── gradle
 │   │   ├── libs.versions.toml
@@ -347,37 +198,14 @@ The repository is organized as follows:
 │   │           └── kotlin
 │   │               ├── database
 │   │               │   ├── dao
-│   │               │   │   ├── TabellaAccelerometroEntity.kt
-│   │               │   │   ├── TabellaElettrodiEntity.kt
-│   │               │   │   ├── TabellaPpgEntity.kt
-│   │               │   │   └── TabellaTermometroEntity.kt
 │   │               │   ├── DatabaseConfig.kt
 │   │               │   ├── QueryManagement.kt
 │   │               │   └── tables
-│   │               │       ├── TabellaAccelerometroTable.kt
-│   │               │       ├── TabellaElettrodiTable.kt
-│   │               │       ├── TabellaPpgTable.kt
-│   │               │       └── TabellaTermometroTable.kt
 │   │               ├── Main.kt
 │   │               ├── models
-│   │               │   ├── AccelerometerData.kt
-│   │               │   ├── ElectrodeData.kt
-│   │               │   ├── PPGData.kt
-│   │               │   └── TermometerData.kt
 │   │               ├── scripts
-│   │               │   └── MainScript.kt
 │   │               └── server
-│   │                   ├── inputJsons
-│   │                   │   └── SaveDataJson.kt
-│   │                   ├── outputJsons
-│   │                   │   ├── ReturnDataJson.kt
-│   │                   │   └── StatusJson.kt
-│   │                   └── ServerConfig.kt
 │   └── raspberry-sensors-logic
-│       ├── accelerometer_sensor.py
-│       ├── electrode_sensor.py
-│       ├── ppg_sensor.py
-│       └── termometrer_sensor.py
 ```
 
 ### Source Code Organization

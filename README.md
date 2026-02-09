@@ -267,7 +267,7 @@ The repository is organized as follows:
 1. Navigate to `application-server-1/` or `application-server-2/`.
 2. Build the project using the Gradle Wrapper:
 
-        ./gradlew build
+        ./gradlew shadowJar
 
 3. Run the server as a standalone JVM application. Can be deployed on cloud infrastructure or run locally.
 

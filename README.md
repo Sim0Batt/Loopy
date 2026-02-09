@@ -416,7 +416,7 @@ The repository is organized as follows:
 - Cloud infrastructure (e.g., AWS EC2 or equivalent)
 
 <p align="center">
-  <img src="./images/Raspberry pi 3B+.jpg" width="420">
+  <img src="./images/Raspberry_pi_3B+.jpg" width="420">
 </p>
 
 ### Software Requirements

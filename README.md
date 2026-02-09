@@ -61,9 +61,6 @@ The repository is organized as follows:
 │   ├── build.gradle.kts
 │   ├── Downloads
 │   ├── gradle
-│   │   └── wrapper
-│   │       ├── gradle-wrapper.jar
-│   │       └── gradle-wrapper.properties
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
@@ -114,9 +111,6 @@ The repository is organized as follows:
 ├── application-server-2
 │   ├── build.gradle.kts
 │   ├── gradle
-│   │   └── wrapper
-│   │       ├── gradle-wrapper.jar
-│   │       └── gradle-wrapper.properties
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
@@ -186,11 +180,6 @@ The repository is organized as follows:
 │   │   ├── proguard-rules.pro
 │   │   └── src
 │   │       ├── androidTest
-│   │       │   └── java
-│   │       │       └── com
-│   │       │           └── example
-│   │       │               └── loopy
-│   │       │                   └── ExampleInstrumentedTest.kt
 │   │       ├── main
 │   │       │   ├── AndroidManifest.xml
 │   │       │   ├── ic_launcher-playstore.png
@@ -306,27 +295,21 @@ The repository is organized as follows:
 │   │       │       ├── mipmap-xhdpi
 │   │       │       │   ├── ic_launcher_round.webp
 │   │       │       │   └── ic_launcher.webp
-│   │       │       ├── mipmap-xxhdpi
-│   │       │       │   ├── ic_launcher_round.webp
-│   │       │       │   └── ic_launcher.webp
-│   │       │       ├── mipmap-xxxhdpi
-│   │       │       │   ├── ic_launcher_round.webp
-│   │       │       │   └── ic_launcher.webp
-│   │       │       ├── values
-│   │       │       │   ├── colors.xml
-│   │       │       │   ├── font_certs.xml
-│   │       │       │   ├── preloaded_fonts.xml
-│   │       │       │   ├── strings.xml
-│   │       │       │   └── themes.xml
-│   │       │       └── xml
-│   │       │           ├── backup_rules.xml
-│   │       │           └── data_extraction_rules.xml
-│   │       └── test
-│   │           └── java
-│   │               └── com
-│   │                   └── example
-│   │                       └── loopy
-│   │                           └── ExampleUnitTest.kt
+│   │               ├── mipmap-xxhdpi
+│   │               │   ├── ic_launcher_round.webp
+│   │               │   └── ic_launcher.webp
+│   │               ├── mipmap-xxxhdpi
+│   │               │   ├── ic_launcher_round.webp
+│   │               │   └── ic_launcher.webp
+│   │               ├── values
+│   │               │   ├── colors.xml
+│   │               │   ├── font_certs.xml
+│   │               │   ├── preloaded_fonts.xml
+│   │               │   ├── strings.xml
+│   │               │   └── themes.xml
+│   │               └── xml
+|   |               ├── backup_rules.xml
+|   |               └── data_extraction_rules.xml
 │   ├── build.gradle.kts
 │   ├── gradle
 │   │   ├── libs.versions.toml

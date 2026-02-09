@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm") version "2.2.20"
     kotlin("plugin.serialization") version "2.2.20"
@@ -23,15 +25,16 @@ dependencies {
 
     // MySql
     implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.3.2")
 
     // Ktor (Server e Client con la STESSA versione)
     implementation("io.ktor:ktor-server-core-jvm:${ktorVersion}")
     implementation("io.ktor:ktor-server-netty:${ktorVersion}")
     implementation("io.ktor:ktor-server-config-yaml:${ktorVersion}")
     implementation("io.ktor:ktor-server-status-pages:${ktorVersion}")
-    implementation("io.ktor:ktor-server-content-negotiation:${ktorVersion}") // Solo una volta
-    implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}") // Solo una volta
-    implementation("io.ktor:ktor-serialization-gson:${ktorVersion}") // Solo una volta
+    implementation("io.ktor:ktor-server-content-negotiation:${ktorVersion}")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    implementation("io.ktor:ktor-serialization-gson:${ktorVersion}")
 
     // Ktor Client (con la stessa versione del server)
     implementation("io.ktor:ktor-client-core:${ktorVersion}")
@@ -41,7 +44,7 @@ dependencies {
 
     // JSON (Una versione stabile per ognuno)
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Solo una volta
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.json:json:20240303")
 
     // Logging
@@ -60,7 +63,7 @@ kotlin {
 
 
 tasks {
-    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    named<ShadowJar>("shadowJar") {
         archiveFileName.set("server.jar")
         archiveBaseName.set("shadow")
         mergeServiceFiles()

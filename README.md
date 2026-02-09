@@ -455,8 +455,8 @@ The repository is organized as follows:
 
 ## Team Members and Contributions
 
-* **Nicola Avellino**: Backend development, data management logic, Raspberry Pi 3B+ components, Android mobile application development.
-* **Simone Battisti**: Backend services, data processing modules, AI integration, system architecture, Android mobile application development, documentation.
+* **Nicola Avellino**: Embedded development, data management logic, Raspberry Pi 3B+ sensor implementation, Android mobile application development.
+* **Simone Battisti**: Backend services, data processing modules, AI/ML integration, system architecture, Android mobile application development, documentation.
 * **Liam Demattè**: Embedded system logic, sensor integration, hardware architecture, Android mobile application development.
 * **Riccardo Gonzato**: Android mobile application development, system integration, documentation.
 

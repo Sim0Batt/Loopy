@@ -29,7 +29,15 @@ def read_temperature():
 
 def compute_bpm(ir, sample_rate):
     signal = np.array(ir, dtype=float)
-    working_data, measures = hp.process(signal, float(sample_rate))
+    rate = float(sample_rate)
+    filtered = hp.filter_signal(
+        signal,
+        cutoff=[0.7, 3.5],
+        sample_rate=rate,
+        order=3,
+        filtertype="bandpass",
+    )
+    working_data, measures = hp.process(filtered, rate, bpmmin=40, bpmmax=180)
     bpm = measures["bpm"]
     if bpm is None or np.isnan(bpm):
         raise ValueError("heartpy returned an invalid bpm")

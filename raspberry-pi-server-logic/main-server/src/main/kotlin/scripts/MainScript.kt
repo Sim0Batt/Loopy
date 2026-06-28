@@ -3,51 +3,20 @@ package scripts
 import java.util.concurrent.TimeUnit
 
 object MainScript {
+
+    private const val PYTHON_BIN = "/usr/bin/python3"
+    private const val ORCHESTRATOR_PATH = "/home/loopy/sensors-logic/orchestrator.py"
+    private const val SENSOR_TIMEOUT_SECONDS = 60L
+
     fun executeAllSensors(): String{
         var process: Process? = null
         try {
-            val termometerScriptPath = "/home/loopy/sensors-logic/termometer_sensor.py"
-            val termometerProcessBuilder = ProcessBuilder(
-                "/usr/bin/python3",
-                termometerScriptPath
-            )
-            termometerProcessBuilder.redirectErrorStream(false)
-            process = termometerProcessBuilder.start()
-            process.waitFor(30, TimeUnit.SECONDS)
-            if(process.exitValue() != 0) return "failure"
-
-            val electrodesScriptPath = "/home/loopy/sensors-logic/electrode_sensor.py"
-            val electrodesProcessBuilder = ProcessBuilder(
-                "/usr/bin/python3",
-                electrodesScriptPath
-            )
-            electrodesProcessBuilder.redirectErrorStream(false)
-            process = electrodesProcessBuilder.start()
-            process.waitFor(30, TimeUnit.SECONDS)
-            if(process.exitValue() != 0) return "failure"
-
-            val PPGScriptPath = "/home/loopy/sensors-logic/ppg_sensor.py"
-            val PPGProcessBuilder = ProcessBuilder(
-                "/usr/bin/python3",
-                PPGScriptPath
-            )
-            PPGProcessBuilder.redirectErrorStream(false)
-            process = PPGProcessBuilder.start()
-            process.waitFor(30, TimeUnit.SECONDS)
-            if(process.exitValue() != 0) return "failure"
-
-            val accelerometerScriptPath = "/home/loopy/sensors-logic/accelerometer_sensor.py"
-            val accelerometerProcessBuilder = ProcessBuilder(
-                "/usr/bin/python3",
-                accelerometerScriptPath
-            )
-            accelerometerProcessBuilder.redirectErrorStream(false)
-            process = accelerometerProcessBuilder.start()
-            process.waitFor(30, TimeUnit.SECONDS)
-            if(process.exitValue() != 0) return "failure"
-
-            return "success"
-
+            val processBuilder = ProcessBuilder(PYTHON_BIN, ORCHESTRATOR_PATH)
+            processBuilder.redirectErrorStream(false)
+            process = processBuilder.start()
+            val completed = process.waitFor(SENSOR_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            if(!completed) return "failure"
+            return if(process.exitValue() == 0) "success" else "failure"
         } catch (e: Exception) {
             println("Python execution failed: ${e.message}")
             e.printStackTrace()

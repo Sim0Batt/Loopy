@@ -11,7 +11,9 @@ class ReturnDataJson(
     val timestampsElectrodes: String,
     val temperatures: String,
     val timestampsTermometer: String,
-    val movements: String,
+    val acc_x: String,
+    val acc_y: String,
+    val acc_z: String,
     val timestampsAccelerometer: String,
 ) {
     override fun toString(): String {
@@ -24,7 +26,9 @@ class ReturnDataJson(
             "timestampElectrodes": "$timestampsElectrodes",
             "temperature": "$temperatures",
             "timestampTermometer": "$timestampsTermometer"
-            "movement": "$movements"
+            "acc_x": "$acc_x"
+            "acc_y": "$acc_y"
+            "acc_z": "$acc_z"
             "timestampAccelerometer": "$timestampsAccelerometer"
             }
         """.trimIndent()

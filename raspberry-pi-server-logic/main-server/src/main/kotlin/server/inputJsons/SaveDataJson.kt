@@ -11,7 +11,9 @@ class SaveDataJson(
     val timestampElectrodes: String,
     val temperature: Double,
     val timestampTermometer: String,
-    val movement: Boolean,
+    val acc_x: Double,
+    val acc_y: Double,
+    val acc_z: Double,
     val timestampAccelerometer: String,
 ) {
     override fun toString(): String {
@@ -24,7 +26,9 @@ class SaveDataJson(
             "timestampElectrodes": "$timestampElectrodes",
             "temperature": "$temperature",
             "timestampTermometer": "$timestampTermometer"
-            "movement": "$movement"
+            "acc_x": "$acc_x"
+            "acc_y": "$acc_y"
+            "acc_z": "$acc_z"
             "timestampAccelerometer": "$timestampAccelerometer"
             }
         """.trimIndent()

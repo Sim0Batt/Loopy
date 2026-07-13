@@ -20,33 +20,35 @@ object QueryManagement {
     fun saveDatas(connection: Database, input: SaveDataJson) {
         transaction(connection) {
             TabellaPpgTable.insert {
-                TabellaPpgTable.battito to input.heartRate
-                TabellaPpgTable.ossigenazione to input.oxygen
-                TabellaPpgTable.timestamp to input.timestampPPG
+                it[TabellaPpgTable.battito] = input.heartRate
+                it[TabellaPpgTable.ossigenazione] = "${input.oxygen}%"
+                it[TabellaPpgTable.timestamp] = input.timestampPPG
             }
         }
         println("Saved Heart Data:\n $input")
 
         transaction(connection) {
             TabellaElettrodiTable.insert {
-                TabellaElettrodiTable.sudorazione to input.sweating
-                TabellaElettrodiTable.timestamp to input.timestampElectrodes
+                it[TabellaElettrodiTable.sudorazione] = input.sweating
+                it[TabellaElettrodiTable.timestamp] = input.timestampElectrodes
             }
         }
         println("Saved Heart Data:\n $input")
 
         transaction(connection) {
             TabellaAccelerometroTable.insert {
-                TabellaAccelerometroTable.movimento to input.movement
-                TabellaAccelerometroTable.timestamp to input.timestampAccelerometer
+                it[TabellaAccelerometroTable.acc_x] = input.acc_x
+                it[TabellaAccelerometroTable.acc_y] = input.acc_y
+                it[TabellaAccelerometroTable.acc_z] = input.acc_z
+                it[TabellaAccelerometroTable.timestamp] = input.timestampAccelerometer
             }
         }
         println("Saved Heart Data:\n $input")
 
         transaction(connection) {
             TabellaTermometroTable.insert {
-                TabellaTermometroTable.temperatura to input.temperature
-                TabellaTermometroTable.timestamp to input.timestampTermometer
+                it[TabellaTermometroTable.temperatura] = input.temperature
+                it[TabellaTermometroTable.timestamp] = input.timestampTermometer
             }
         }
         println("Saved Heart Data:\n $input")
@@ -100,14 +102,20 @@ object QueryManagement {
             }
 
             //Accelerometer
-            val mvTmp = TabellaAccelerometroTable.selectAll().orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
-                it[TabellaAccelerometroTable.movimento]
+            val accXTmp = TabellaAccelerometroTable.selectAll().orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
+                it[TabellaAccelerometroTable.acc_x]
+            }.take(10)
+            val accYTmp = TabellaAccelerometroTable.selectAll().orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
+                it[TabellaAccelerometroTable.acc_y]
+            }.take(10)
+            val accZTmp = TabellaAccelerometroTable.selectAll().orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
+                it[TabellaAccelerometroTable.acc_z]
             }.take(10)
             tsTmp = TabellaAccelerometroTable.selectAll().orderBy(TabellaAccelerometroTable.id to SortOrder.DESC).map{
                 it[TabellaAccelerometroTable.timestamp]
             }
             for(i in 0..9){
-                accelerometerData.add(AccelerometerData(mvTmp[i],tsTmp[i]))
+                accelerometerData.add(AccelerometerData(accXTmp[i], accYTmp[i], accZTmp[i], tsTmp[i]))
             }
         }
         return ReturnDataJson(
@@ -118,7 +126,9 @@ object QueryManagement {
             timestampsElectrodes = electrodesDatas.joinToString { "${it.timestamp}, " },
             temperatures = termometerDatas.joinToString { "${it.temperature}, " },
             timestampsTermometer = termometerDatas.joinToString { "${it.timestamp}, " },
-            movements = accelerometerData.joinToString { "${it.movement}, " },
+            acc_x = accelerometerData.joinToString { "${it.acc_x}, " },
+            acc_y = accelerometerData.joinToString { "${it.acc_y}, " },
+            acc_z = accelerometerData.joinToString { "${it.acc_z}, " },
             timestampsAccelerometer = accelerometerData.joinToString { "${it.timestamp}, " }
         )
     }

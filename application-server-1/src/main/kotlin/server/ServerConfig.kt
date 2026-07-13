@@ -192,7 +192,12 @@ fun Application.module() {
 
         post("/saveStatus/{id}"){
             val userId = call.parameters["id"].toString().toInt()
-            val statusJson = call.receive<StatusJson>()
+            val raspOutput: String = raspClient.post("http://192.168.1.12:8080/getStatus"){
+                contentType(ContentType.Application.Json)
+            }.bodyAsText()
+
+            val statusJson = Json.decodeFromString<StatusJson>(raspOutput)
+
             transaction(DatabaseConfig.getConfig()) {
                 TabellaSensorsStatusTable.insert {
                     it[accelerometerStatus] = statusJson.accelerometerStatus

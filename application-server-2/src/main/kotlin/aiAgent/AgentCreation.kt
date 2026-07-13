@@ -32,9 +32,9 @@ object AgentCreation {
     }
     suspend fun getAgent(id: Int): AIAgent<String, String> {
 
-        val data = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$id").body<ReturnDataJson>()
+        val data = client.get("http://${APPLICATION_SERVER_1_IP}:18034/getDatas/$id").body<ReturnDataJson>()
 
-        val user = client.post("http://${APPLICATION_SERVER_1_IP}:8080/user/$id").body<UserDataJson>()
+        val user = client.post("http://${APPLICATION_SERVER_1_IP}:18034/user/$id").body<UserDataJson>()
 
         val eventHandlerConfig: EventHandlerConfig.() -> Unit = {
             onToolCallStarting { toolContext ->
@@ -55,7 +55,7 @@ object AgentCreation {
         }
 
         return AIAgent(
-            promptExecutor = simpleGoogleAIExecutor("AIzaSyDXATpG9D5-7zNoKXszHi0SnleB0hUdKVs"),
+            promptExecutor = simpleGoogleAIExecutor("AIzaSyBcyR1F9_3d3pvQUJa1RhOA7s-MpylP5bw"),
             llmModel = GoogleModels.Gemini2_5Flash,
             strategy = MockStrategy(),
             systemPrompt = generatePrompt(user, data, id)

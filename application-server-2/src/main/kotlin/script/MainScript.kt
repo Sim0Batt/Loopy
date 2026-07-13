@@ -29,7 +29,7 @@ object MainScript {
         val csvPath = "/home/ubuntu/MLLoopy/csvs/result$userId.csv"
         val outputFile = File(csvPath)
 
-        val data = client.get("http://13.60.104.145:8080/data/csv/$userId").body<CsvDataJson>()
+        val data = client.get("http://0.0.0.0:18034/data/csv/$userId").body<CsvDataJson>()
         try{
             outputFile.bufferedWriter().use { writer ->
                 writer.write("eda,hr,temp\n")

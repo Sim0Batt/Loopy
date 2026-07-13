@@ -7,8 +7,17 @@ import database.tables.TabellaSensorsStatusTable
 import org.jetbrains.exposed.sql.SortOrder
 import scripts.MainScript
 import database.tables.TabellaUserTable
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.application.install
 import io.ktor.server.engine.*
@@ -26,15 +35,29 @@ import org.jetbrains.exposed.sql.insert
 import server.jsonModels.inputJsons.UserJson
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.kotlinx.dataframe.io.JSON
 import server.jsonModels.inputJsons.RegisterJson
 import server.jsonModels.inputJsons.SaveDataJson
 import server.jsonModels.outputJsons.AccountJson
 import server.jsonModels.outputJsons.StatusJson
 import server.jsonModels.outputJsons.UserDataJson
+import kotlinx.serialization.json.Json as KotlinxJson
 
+
+
+
+val raspClient = HttpClient (CIO) {
+    install(ContentNegotiation) {
+        json(KotlinxJson {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
+    }
+}
 
 fun Application.module() {
-    install(ContentNegotiation) {
+    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
         json(Json {
             ignoreUnknownKeys = true
             allowSpecialFloatingPointValues = true
@@ -113,12 +136,20 @@ fun Application.module() {
         //DATA LOGIC
         staticResources("static", "static")
         post("/saveData/{id}") {
-            val userId = call.parameters["id"]
-            val input = call.receive<SaveDataJson>()
-            println{"Received: \n${input}"}
-            call.response.header("Content-Type", "application/json")
-            QueryManager.saveDatas(DatabaseConfig.getConfig(), input, userId.toString().toInt())
-            call.respondText("Data Saved")
+            try{
+                val userId = call.parameters["id"]
+                val raspOutput: String = raspClient.post("http://192.168.1.12:8080/getDatas"){
+                    contentType(ContentType.Application.Json)
+                }.bodyAsText()
+
+                val saveDataJson = Json.decodeFromString<SaveDataJson>(raspOutput)
+
+                println { "Received: \n${saveDataJson}" }
+                QueryManager.saveDatas(DatabaseConfig.getConfig(), saveDataJson, userId.toString().toInt())
+                call.respondText("Data Saved")
+            }catch(e: Exception){
+                call.respondText("error", status = HttpStatusCode.BadRequest)
+            }
         }
 
         get("/getDatas/{id}") {
@@ -181,7 +212,7 @@ class ServerConfig {
     fun run() {
         embeddedServer(
             Netty,
-            port = 8080,
+            port = 18034,
             host = "0.0.0.0",
             module = Application::module
         ).start(wait = true)

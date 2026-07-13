@@ -8,7 +8,7 @@ object DatabaseConfig {
             url = "jdbc:mysql://localhost:3306/LoopyDB",
             driver = "com.mysql.cj.jdbc.Driver",
             user = "root",
-            password = "Simone04"
+            password = "loopy"
         )
     }
 

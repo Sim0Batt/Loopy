@@ -50,7 +50,7 @@ fun Application.module() {
 
 
         get ("/trainModel"){
-            val scriptPath = "/home/ubuntu/MLLoopy/train.py"
+            val scriptPath = "/home/simone/MLLoopy/train.py"
             try{
                 println("Process Started")
                 val processBuilder = ProcessBuilder( // /usr/bin/python3 /home/ubuntu/MLLoopy/train.py 1
@@ -112,7 +112,7 @@ fun Application.module() {
         get("/generateGraph/{graphType}/{id}"){
             val userId = call.parameters["id"].toString().toInt()
             val graphType = call.parameters["graphType"]
-            val path = "/home/ubuntu/GraphGeneratorLogic/graphs/$userId"
+            val path = "/home/simone/GraphGeneratorLogic/graphs/$userId"
 
             File(path).mkdirs()
 
@@ -142,7 +142,7 @@ class ServerConfig {
     fun run() {
         embeddedServer(
             Netty,
-            port = 8080,
+            port = 18035,
             host = "0.0.0.0",
             module = Application::module
         ).start(wait = true)

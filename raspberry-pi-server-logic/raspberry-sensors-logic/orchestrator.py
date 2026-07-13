@@ -6,7 +6,7 @@ from datetime import datetime
 import numpy as np
 import heartpy as hp
 
-from config import TEMP_BIN, PPG_BIN, SWEAT_BIN, GYRO_BIN
+from config import TEMP_BIN, PPG_BIN, GYRO_BIN
 
 
 def run_bin(path, timeout):
@@ -24,8 +24,12 @@ def run_bin(path, timeout):
 
 
 def read_temperature():
-    data = run_bin(TEMP_BIN, 10)
-    return float(data["temperature"])
+    try:
+        data = run_bin(TEMP_BIN, 10)
+        return float(data["temperature"])
+    except Exception as error:
+        print("Temperature read failed: {}".format(error), file=sys.stderr)
+        return 0.0
 
 
 def compute_bpm(ir, sample_rate):
@@ -64,23 +68,32 @@ def compute_spo2(red, ir):
 
 
 def read_ppg():
-    data = run_bin(PPG_BIN, 15)
-    bpm = compute_bpm(data["ir"], data["sample_rate"])
-    spo2 = compute_spo2(data["red"], data["ir"])
-    return {"heartRate": int(bpm), "oxygen": float(spo2)}
+    try:
+        data = run_bin(PPG_BIN, 15)
+        bpm = compute_bpm(data["ir"], data["sample_rate"])
+        spo2 = compute_spo2(data["red"], data["ir"])
+        return {"heartRate": int(bpm), "oxygen": float(spo2)}
+    except (FileNotFoundError, PermissionError):
+        raise
+    except Exception as error:
+        print("PPG analysis failed: {}".format(error), file=sys.stderr)
+        return {"heartRate": 0, "oxygen": 0.0}
 
 
 def read_sweat():
-    data = run_bin(SWEAT_BIN, 10)
-    return {"sweating": float(data["sweating"])}
+    return {"sweating": 0.0}
 
 
 def read_accelerometer():
-    data = run_bin(GYRO_BIN, 15)
-    acc_x = float(np.mean(data["acc_x"]))
-    acc_y = float(np.mean(data["acc_y"]))
-    acc_z = float(np.mean(data["acc_z"]))
-    return {"acc_x": acc_x, "acc_y": acc_y, "acc_z": acc_z}
+    try:
+        data = run_bin(GYRO_BIN, 15)
+        acc_x = float(np.mean(data["acc_x"]))
+        acc_y = float(np.mean(data["acc_y"]))
+        acc_z = float(np.mean(data["acc_z"]))
+        return {"acc_x": acc_x, "acc_y": acc_y, "acc_z": acc_z}
+    except Exception as error:
+        print("Accelerometer read failed: {}".format(error), file=sys.stderr)
+        return {"acc_x": 0.0, "acc_y": 0.0, "acc_z": 0.0}
 
 
 def main():

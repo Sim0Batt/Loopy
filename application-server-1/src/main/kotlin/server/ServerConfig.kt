@@ -10,6 +10,7 @@ import database.tables.TabellaUserTable
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -192,9 +193,7 @@ fun Application.module() {
 
         post("/saveStatus/{id}"){
             val userId = call.parameters["id"].toString().toInt()
-            val raspOutput: String = raspClient.post("http://192.168.1.12:8080/getStatus"){
-                contentType(ContentType.Application.Json)
-            }.bodyAsText()
+            val raspOutput: String = raspClient.get("http://192.168.1.12:8080/getStatus").bodyAsText()
 
             val statusJson = Json.decodeFromString<StatusJson>(raspOutput)
 

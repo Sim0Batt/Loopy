@@ -33,7 +33,7 @@ object ChatCaller {
         val credentials = AgentJson(input)
 
 
-        val response = client.post("http://${APPLICATION_SERVER_2_IP}:8080/agentProcess/$userId") {
+        val response = client.post("http://${APPLICATION_SERVER_2_IP}/agentProcess/$userId") {
             contentType(ContentType.Application.Json)
             setBody(credentials)
         }

@@ -53,7 +53,7 @@ class DeviceManagerActivity : BaseActivity() {
         reloadButton.setOnClickListener {
             lifecycleScope.launch{
                 try {
-                    val response = client.get("http://$APPLICATION_SERVER_1_IP:8080/status")
+                    val response = client.get("http://$APPLICATION_SERVER_1_IP/status")
 
                     val responseBody = response.bodyAsText()
                     Log.d("Device Manager", "Server Response: $responseBody")
@@ -83,7 +83,7 @@ class DeviceManagerActivity : BaseActivity() {
 
         lifecycleScope.launch{
             try {
-                val response = client.get("http://$APPLICATION_SERVER_1_IP:8080/status/1")
+                val response = client.get("http://$APPLICATION_SERVER_1_IP/status/1")
 
                 val responseBody = response.bodyAsText()
                 Log.d("Device Manager", "Server Response: $responseBody")

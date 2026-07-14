@@ -95,7 +95,7 @@ class MainActivity : BaseActivity() {
         /*------------------ASYNCHRONOUS LOGIC--------------------*/
         lifecycleScope.launch {
             //Circle Valuse Retrieve
-            val userData = client.post("http://${APPLICATION_SERVER_1_IP}:8080/user/$userId").body<UserDataJson>()
+            val userData = client.post("http://${APPLICATION_SERVER_1_IP}/user/$userId").body<UserDataJson>()
             calculateCircleValues(client, recoveryView, hbView, userId, userData)
 
             //Image Retrive

@@ -112,7 +112,7 @@ fun Application.module() {
         get("/generateGraph/{graphType}/{id}"){
             val userId = call.parameters["id"].toString().toInt()
             val graphType = call.parameters["graphType"]
-            val path = "/home/simone/GraphGeneratorLogic/graphs/$userId"
+            val path = "/home/riccardo/loopy-graphs/$userId"
 
             File(path).mkdirs()
 

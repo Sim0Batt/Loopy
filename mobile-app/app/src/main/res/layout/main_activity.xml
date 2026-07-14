@@ -75,12 +75,23 @@
 
     <!-- Graphs:  -->
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/graphsViewPager"
+        android:layout_width="362dp"
+        android:layout_height="245dp"
+        android:layout_marginTop="244dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/chatbotCloud"
         android:layout_width="0dp"
         android:layout_height="77dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/loopy_hompage_recap"
         android:text="Loading..."
@@ -94,21 +105,10 @@
         android:layout_width="84dp"
         android:layout_height="78dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageView4"
         app:srcCompat="@drawable/loopy_bot_avatar" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/graphsViewPager"
-        android:layout_width="362dp"
-        android:layout_height="245dp"
-        android:layout_marginTop="264dp"
-        android:background="@drawable/edit_text_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -129,32 +129,32 @@
     <!-- Label sotto i cerchi  -->
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView2"
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:background="@drawable/circular_container"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintHorizontal_bias="0.148"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintVertical_bias="0.85" />
 
     <TextView
-        android:id="@+id/heartBeat"
+        android:id="@+id/textView5"
         android:layout_width="96dp"
         android:layout_height="40dp"
-        android:text="-"
+        android:text="kCal"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/textView3"
-        app:layout_constraintEnd_toEndOf="@id/textView3"
-        app:layout_constraintHorizontal_bias="0.531"
-        app:layout_constraintStart_toStartOf="@id/textView3"
-        app:layout_constraintTop_toTopOf="@id/textView3"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.184"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.843" />
 
     <TextView
         android:id="@+id/textView6"
@@ -168,18 +168,6 @@
         app:layout_constraintEnd_toEndOf="@id/textView2"
         app:layout_constraintStart_toStartOf="@id/textView2"
         app:layout_constraintTop_toBottomOf="@id/textView2" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:background="@drawable/circular_container"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.173"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
 
     <TextView
         android:id="@+id/textView7"
@@ -196,6 +184,50 @@
         app:layout_constraintTop_toBottomOf="@id/textView3" />
 
     <TextView
+        android:id="@+id/textView3"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:background="@drawable/circular_container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.795"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="96dp"
+        android:layout_height="40dp"
+        android:text="Bpm"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.768"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.843" />
+
+    <TextView
+        android:id="@+id/heartBeat"
+        android:layout_width="96dp"
+        android:layout_height="40dp"
+        android:text="-"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/textView3"
+        app:layout_constraintEnd_toEndOf="@id/textView3"
+        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintStart_toStartOf="@id/textView3"
+        app:layout_constraintTop_toTopOf="@id/textView3"
+        app:layout_constraintVertical_bias="0.352" />
+
+    <TextView
         android:id="@+id/dailyConsumption"
         android:layout_width="96dp"
         android:layout_height="40dp"
@@ -209,37 +241,5 @@
         app:layout_constraintStart_toStartOf="@id/textView2"
         app:layout_constraintTop_toTopOf="@id/textView2"
         app:layout_constraintVertical_bias="0.352" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="96dp"
-        android:layout_height="40dp"
-        android:text="kCal"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.206"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.765" />
-
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="96dp"
-        android:layout_height="40dp"
-        android:text="Bpm"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.79"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.765" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

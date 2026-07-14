@@ -62,7 +62,7 @@ class LoginActivity : ComponentActivity() {
 
             lifecycleScope.launch{
                 try {
-                    val response = client.post ("http://$APPLICATION_SERVER_1_IP:8080/login") {
+                    val response = client.post ("http://$APPLICATION_SERVER_1_IP/login") {
                         contentType(io.ktor.http.ContentType.Application.Json)
                         setBody(credentials)
                     }

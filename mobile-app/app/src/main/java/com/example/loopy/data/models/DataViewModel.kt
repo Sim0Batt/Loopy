@@ -31,12 +31,12 @@ class DataViewModel : ViewModel() {
     fun retriveUserData(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId")
+                Log.d("DataViewModel", "Calling: http://${APPLICATION_SERVER_1_IP}/getDatas/$userId")
 
-                val dataJson = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId") {
+                val dataJson = client.get("http://${APPLICATION_SERVER_1_IP}/getDatas/$userId") {
                     accept(ContentType.Application.Json)
                 }.body<ReturnDataJson>()
-                val SSAGJson = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId") {
+                val SSAGJson = client.get("http://${APPLICATION_SERVER_2_IP}/getSSAGData/$userId") {
                     accept(ContentType.Application.Json)
                 }.body<ReturnSSAGDataJson>()
 
@@ -83,5 +83,4 @@ class DataViewModel : ViewModel() {
 
     private fun fmt1(x: Double?): String =
         x?.let { String.format(Locale.US, "%.1f", it) } ?: "—"
-
 }

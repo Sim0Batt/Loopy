@@ -68,10 +68,56 @@ Two cloud-based application servers:
 The repository is organized as follows:
 
 ```
+.
 ├── application-server-1
+│   ├── bin
+│   │   └── main
+│   │       ├── database
+│   │       │   ├── dao
+│   │       │   │   ├── TabellaAccelerometroEntity.kt
+│   │       │   │   ├── TabellaElettrodiEntity.kt
+│   │       │   │   ├── TabellaPpgEntity.kt
+│   │       │   │   ├── TabellaSensorsStatusEntity.kt
+│   │       │   │   ├── TabellaTermometroEntity.kt
+│   │       │   │   └── TabellaUserEntity.kt
+│   │       │   ├── DatabaseConfig.kt
+│   │       │   ├── QueryManager.kt
+│   │       │   └── tables
+│   │       │       ├── TabellaAccelerometroTable.kt
+│   │       │       ├── TabellaElettrodiTable.kt
+│   │       │       ├── TabellaPpgTable.kt
+│   │       │       ├── TabellaSensorsStatusTable.kt
+│   │       │       ├── TabellaTermometroTable.kt
+│   │       │       └── TabellaUserTable.kt
+│   │       ├── Main.kt
+│   │       ├── models
+│   │       │   ├── AccelerometerData.kt
+│   │       │   ├── ElectrodeData.kt
+│   │       │   ├── PPGData.kt
+│   │       │   └── TermometerData.kt
+│   │       ├── scripts
+│   │       │   └── MainScript.kt
+│   │       └── server
+│   │           ├── jsonModels
+│   │           │   ├── inputJsons
+│   │           │   │   ├── AgentJson.kt
+│   │           │   │   ├── RegisterJson.kt
+│   │           │   │   ├── SaveDataJson.kt
+│   │           │   │   └── UserJson.kt
+│   │           │   └── outputJsons
+│   │           │       ├── AccountJson.kt
+│   │           │       ├── CsvDataJson.kt
+│   │           │       ├── PredictJson.kt
+│   │           │       ├── ReturnDataJson.kt
+│   │           │       ├── StatusJson.kt
+│   │           │       └── UserDataJson.kt
+│   │           └── ServerConfig.kt
 │   ├── build.gradle.kts
 │   ├── Downloads
 │   ├── gradle
+│   │   └── wrapper
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
@@ -120,58 +166,63 @@ The repository is organized as follows:
 │                   │       └── UserDataJson.kt
 │                   └── ServerConfig.kt
 ├── application-server-2
-│   ├── build.gradle.kts
-│   ├── gradle
+│   ├── bin
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
+│   ├── lets-plot-images
 │   ├── settings.gradle.kts
 │   └── src
-│       └── main
-│           └── kotlin
-│               ├── aiAgent
-│               │   ├── AgentCreation.kt
-│               │   ├── customModels
-│               │   │   └── OpenRouterCustomModels.kt
-│               │   └── strategies
-│               │       └── SimpleStrategy.kt
-│               ├── database
-│               │   ├── dao
-│               │   │   ├── TabellaActivityEntity.kt
-│               │   │   ├── TabellaGlucosioEntity.kt
-│               │   │   ├── TabellaSleepEntity.kt
-│               │   │   └── TabellaStressEntity.kt
-│               │   ├── DatabaseConfig.kt
-│               │   ├── QueryManager.kt
-│               │   └── table
-│               │       ├── TabellaActivityTable.kt
-│               │       ├── TabellaGlucosioTable.kt
-│               │       ├── TabellaSleepTable.kt
-│               │       └── TabellaStressTable.kt
-│               ├── graph
-│               │   └── GraphsManagement.kt
-│               ├── Main.kt
-│               ├── script
-│               │   └── MainScript.kt
-│               ├── server
-│               │   ├── inputJsons
-│               │   │   ├── AgentJson.kt
-│               │   │   ├── CsvDataJson.kt
-│               │   │   ├── RegisterJson.kt
-│               │   │   ├── ReturnDataJson.kt
-│               │   │   ├── SaveDataJson.kt
-│               │   │   ├── UserDataJson.kt
-│               │   │   └── UserJson.kt
-│               │   ├── outputJsons
-│               │   │   ├── AccountJson.kt
-│               │   │   ├── PredictJson.kt
-│               │   │   ├── ReturnSSAGDataJson.kt
-│               │   │   └── StatusJson.kt
-│               │   └── ServerConfig.kt
-│               └── utils
-│                   └── URL.kt
+│       ├── main
+│       │   ├── kotlin
+│       │   │   ├── aiAgent
+│       │   │   │   ├── AgentCreation.kt
+│       │   │   │   ├── customModels
+│       │   │   │   │   └── OpenRouterCustomModels.kt
+│       │   │   │   └── strategies
+│       │   │   │       └── SimpleStrategy.kt
+│       │   │   ├── database
+│       │   │   │   ├── dao
+│       │   │   │   │   ├── TabellaActivityEntity.kt
+│       │   │   │   │   ├── TabellaGlucosioEntity.kt
+│       │   │   │   │   ├── TabellaSleepEntity.kt
+│       │   │   │   │   └── TabellaStressEntity.kt
+│       │   │   │   ├── DatabaseConfig.kt
+│       │   │   │   ├── QueryManager.kt
+│       │   │   │   └── table
+│       │   │   │       ├── TabellaActivityTable.kt
+│       │   │   │       ├── TabellaGlucosioTable.kt
+│       │   │   │       ├── TabellaSleepTable.kt
+│       │   │   │       └── TabellaStressTable.kt
+│       │   │   ├── graph
+│       │   │   │   └── GraphsManagement.kt
+│       │   │   ├── Main.kt
+│       │   │   ├── script
+│       │   │   │   └── MainScript.kt
+│       │   │   ├── server
+│       │   │   │   ├── inputJsons
+│       │   │   │   │   ├── AgentJson.kt
+│       │   │   │   │   ├── CsvDataJson.kt
+│       │   │   │   │   ├── RegisterJson.kt
+│       │   │   │   │   ├── ReturnDataJson.kt
+│       │   │   │   │   ├── SaveDataJson.kt
+│       │   │   │   │   ├── UserDataJson.kt
+│       │   │   │   │   └── UserJson.kt
+│       │   │   │   ├── outputJsons
+│       │   │   │   │   ├── AccountJson.kt
+│       │   │   │   │   ├── PredictJson.kt
+│       │   │   │   │   ├── ReturnSSAGDataJson.kt
+│       │   │   │   │   └── StatusJson.kt
+│       │   │   │   └── ServerConfig.kt
+│       │   │   └── utils
+│       │   │       └── URL.kt
+│       │   └── resources
+│       └── test
+│           ├── kotlin
+│           └── resources
 ├── documentation
 │   ├── Functional_Sheet_Loopy.pdf
+│   ├── Presentazione Loopy.pptx
 │   └── Technical_Sheet_Loopy.pdf
 ├── glucose-calculator-ML
 │   ├── csvs
@@ -180,6 +231,9 @@ The repository is organized as follows:
 │   │   └── model_rf.pkl
 │   ├── predict.py
 │   └── train.py
+├── images
+│   ├── loopy_logo.png
+│   └── Raspberry_pi_3B+.jpg
 ├── metric-calculator
 │   ├── calc_metriche_diurne.py
 │   ├── calc_metriche_notturne.py
@@ -191,6 +245,11 @@ The repository is organized as follows:
 │   │   ├── proguard-rules.pro
 │   │   └── src
 │   │       ├── androidTest
+│   │       │   └── java
+│   │       │       └── com
+│   │       │           └── example
+│   │       │               └── loopy
+│   │       │                   └── ExampleInstrumentedTest.kt
 │   │       ├── main
 │   │       │   ├── AndroidManifest.xml
 │   │       │   ├── ic_launcher-playstore.png
@@ -306,21 +365,27 @@ The repository is organized as follows:
 │   │       │       ├── mipmap-xhdpi
 │   │       │       │   ├── ic_launcher_round.webp
 │   │       │       │   └── ic_launcher.webp
-│   │               ├── mipmap-xxhdpi
-│   │               │   ├── ic_launcher_round.webp
-│   │               │   └── ic_launcher.webp
-│   │               ├── mipmap-xxxhdpi
-│   │               │   ├── ic_launcher_round.webp
-│   │               │   └── ic_launcher.webp
-│   │               ├── values
-│   │               │   ├── colors.xml
-│   │               │   ├── font_certs.xml
-│   │               │   ├── preloaded_fonts.xml
-│   │               │   ├── strings.xml
-│   │               │   └── themes.xml
-│   │               └── xml
-|   |               ├── backup_rules.xml
-|   |               └── data_extraction_rules.xml
+│   │       │       ├── mipmap-xxhdpi
+│   │       │       │   ├── ic_launcher_round.webp
+│   │       │       │   └── ic_launcher.webp
+│   │       │       ├── mipmap-xxxhdpi
+│   │       │       │   ├── ic_launcher_round.webp
+│   │       │       │   └── ic_launcher.webp
+│   │       │       ├── values
+│   │       │       │   ├── colors.xml
+│   │       │       │   ├── font_certs.xml
+│   │       │       │   ├── preloaded_fonts.xml
+│   │       │       │   ├── strings.xml
+│   │       │       │   └── themes.xml
+│   │       │       └── xml
+│   │       │           ├── backup_rules.xml
+│   │       │           └── data_extraction_rules.xml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── example
+│   │                       └── loopy
+│   │                           └── ExampleUnitTest.kt
 │   ├── build.gradle.kts
 │   ├── gradle
 │   │   ├── libs.versions.toml
@@ -330,9 +395,200 @@ The repository is organized as follows:
 │   ├── gradle.properties
 │   ├── gradlew
 │   ├── gradlew.bat
+│   ├── local.properties
 │   └── settings.gradle.kts
 ├── raspberry-pi-server-logic
 │   ├── main-server
+│   │   ├── bin
+│   │   │   └── main
+│   │   │       ├── database
+│   │   │       │   ├── dao
+│   │   │       │   │   ├── TabellaAccelerometroEntity.kt
+│   │   │       │   │   ├── TabellaElettrodiEntity.kt
+│   │   │       │   │   ├── TabellaPpgEntity.kt
+│   │   │       │   │   └── TabellaTermometroEntity.kt
+│   │   │       │   ├── DatabaseConfig.kt
+│   │   │       │   ├── QueryManagement.kt
+│   │   │       │   └── tables
+│   │   │       │       ├── TabellaAccelerometroTable.kt
+│   │   │       │       ├── TabellaElettrodiTable.kt
+│   │   │       │       ├── TabellaPpgTable.kt
+│   │   │       │       └── TabellaTermometroTable.kt
+│   │   │       ├── Main.kt
+│   │   │       ├── models
+│   │   │       │   ├── AccelerometerData.kt
+│   │   │       │   ├── ElectrodeData.kt
+│   │   │       │   ├── PPGData.kt
+│   │   │       │   └── TermometerData.kt
+│   │   │       ├── scripts
+│   │   │       │   └── MainScript.kt
+│   │   │       └── server
+│   │   │           ├── inputJsons
+│   │   │           │   └── SaveDataJson.kt
+│   │   │           ├── outputJsons
+│   │   │           │   ├── ReturnDataJson.kt
+│   │   │           │   └── StatusJson.kt
+│   │   │           └── ServerConfig.kt
+│   │   ├── build
+│   │   │   ├── classes
+│   │   │   │   └── kotlin
+│   │   │   │       ├── main
+│   │   │   │       │   ├── database
+│   │   │   │       │   │   ├── dao
+│   │   │   │       │   │   │   ├── TabellaAccelerometroEntity.class
+│   │   │   │       │   │   │   ├── TabellaAccelerometroEntity$Companion.class
+│   │   │   │       │   │   │   ├── TabellaElettrodiEntity.class
+│   │   │   │       │   │   │   ├── TabellaElettrodiEntity$Companion.class
+│   │   │   │       │   │   │   ├── TabellaPpgEntity.class
+│   │   │   │       │   │   │   ├── TabellaPpgEntity$Companion.class
+│   │   │   │       │   │   │   ├── TabellaTermometroEntity.class
+│   │   │   │       │   │   │   └── TabellaTermometroEntity$Companion.class
+│   │   │   │       │   │   ├── DatabaseConfig.class
+│   │   │   │       │   │   ├── QueryManagement.class
+│   │   │   │       │   │   └── tables
+│   │   │   │       │   │       ├── TabellaAccelerometroTable.class
+│   │   │   │       │   │       ├── TabellaElettrodiTable.class
+│   │   │   │       │   │       ├── TabellaPpgTable.class
+│   │   │   │       │   │       └── TabellaTermometroTable.class
+│   │   │   │       │   ├── Main.class
+│   │   │   │       │   ├── META-INF
+│   │   │   │       │   │   └── main-server.kotlin_module
+│   │   │   │       │   ├── models
+│   │   │   │       │   │   ├── AccelerometerData.class
+│   │   │   │       │   │   ├── ElectrodeData.class
+│   │   │   │       │   │   ├── PPGData.class
+│   │   │   │       │   │   └── TermometerData.class
+│   │   │   │       │   ├── scripts
+│   │   │   │       │   │   └── MainScript.class
+│   │   │   │       │   └── server
+│   │   │   │       │       ├── inputJsons
+│   │   │   │       │       │   ├── SaveDataJson.class
+│   │   │   │       │       │   ├── SaveDataJson$$serializer.class
+│   │   │   │       │       │   └── SaveDataJson$Companion.class
+│   │   │   │       │       ├── outputJsons
+│   │   │   │       │       │   ├── ReturnDataJson.class
+│   │   │   │       │       │   ├── ReturnDataJson$$serializer.class
+│   │   │   │       │       │   ├── ReturnDataJson$Companion.class
+│   │   │   │       │       │   ├── StatusJson.class
+│   │   │   │       │       │   ├── StatusJson$$serializer.class
+│   │   │   │       │       │   └── StatusJson$Companion.class
+│   │   │   │       │       ├── ServerConfig.class
+│   │   │   │       │       ├── ServerConfig$run$1.class
+│   │   │   │       │       ├── ServerConfigKt.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$1.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$2.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$3.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$4.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$5.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$6.class
+│   │   │   │       │       ├── ServerConfigKt$module$3$7.class
+│   │   │   │       │       └── ServerConfigKt$module$3$8.class
+│   │   │   │       └── test
+│   │   │   ├── kotlin
+│   │   │   │   └── compileKotlin
+│   │   │   │       ├── cacheable
+│   │   │   │       │   ├── caches-jvm
+│   │   │   │       │   │   ├── inputs
+│   │   │   │       │   │   │   ├── source-to-output.tab
+│   │   │   │       │   │   │   ├── source-to-output.tab_i
+│   │   │   │       │   │   │   ├── source-to-output.tab_i.len
+│   │   │   │       │   │   │   ├── source-to-output.tab.keystream
+│   │   │   │       │   │   │   ├── source-to-output.tab.keystream.len
+│   │   │   │       │   │   │   ├── source-to-output.tab.len
+│   │   │   │       │   │   │   └── source-to-output.tab.values.at
+│   │   │   │       │   │   ├── jvm
+│   │   │   │       │   │   │   └── kotlin
+│   │   │   │       │   │   │       ├── class-attributes.tab
+│   │   │   │       │   │   │       ├── class-attributes.tab_i
+│   │   │   │       │   │   │       ├── class-attributes.tab_i.len
+│   │   │   │       │   │   │       ├── class-attributes.tab.keystream
+│   │   │   │       │   │   │       ├── class-attributes.tab.keystream.len
+│   │   │   │       │   │   │       ├── class-attributes.tab.len
+│   │   │   │       │   │   │       ├── class-attributes.tab.values.at
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab_i
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab_i.len
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab.keystream
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab.keystream.len
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab.len
+│   │   │   │       │   │   │       ├── class-fq-name-to-source.tab.values.at
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab_i
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab_i.len
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab.keystream
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab.keystream.len
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab.len
+│   │   │   │       │   │   │       ├── internal-name-to-source.tab.values.at
+│   │   │   │       │   │   │       ├── package-parts.tab
+│   │   │   │       │   │   │       ├── package-parts.tab_i
+│   │   │   │       │   │   │       ├── package-parts.tab_i.len
+│   │   │   │       │   │   │       ├── package-parts.tab.keystream
+│   │   │   │       │   │   │       ├── package-parts.tab.keystream.len
+│   │   │   │       │   │   │       ├── package-parts.tab.len
+│   │   │   │       │   │   │       ├── package-parts.tab.values.at
+│   │   │   │       │   │   │       ├── proto.tab
+│   │   │   │       │   │   │       ├── proto.tab_i
+│   │   │   │       │   │   │       ├── proto.tab_i.len
+│   │   │   │       │   │   │       ├── proto.tab.keystream
+│   │   │   │       │   │   │       ├── proto.tab.keystream.len
+│   │   │   │       │   │   │       ├── proto.tab.len
+│   │   │   │       │   │   │       ├── proto.tab.values.at
+│   │   │   │       │   │   │       ├── source-to-classes.tab
+│   │   │   │       │   │   │       ├── source-to-classes.tab_i
+│   │   │   │       │   │   │       ├── source-to-classes.tab_i.len
+│   │   │   │       │   │   │       ├── source-to-classes.tab.keystream
+│   │   │   │       │   │   │       ├── source-to-classes.tab.keystream.len
+│   │   │   │       │   │   │       ├── source-to-classes.tab.len
+│   │   │   │       │   │   │       ├── source-to-classes.tab.values.at
+│   │   │   │       │   │   │       ├── subtypes.tab
+│   │   │   │       │   │   │       ├── subtypes.tab_i
+│   │   │   │       │   │   │       ├── subtypes.tab_i.len
+│   │   │   │       │   │   │       ├── subtypes.tab.keystream
+│   │   │   │       │   │   │       ├── subtypes.tab.keystream.len
+│   │   │   │       │   │   │       ├── subtypes.tab.len
+│   │   │   │       │   │   │       ├── subtypes.tab.values.at
+│   │   │   │       │   │   │       ├── supertypes.tab
+│   │   │   │       │   │   │       ├── supertypes.tab_i
+│   │   │   │       │   │   │       ├── supertypes.tab_i.len
+│   │   │   │       │   │   │       ├── supertypes.tab.keystream
+│   │   │   │       │   │   │       ├── supertypes.tab.keystream.len
+│   │   │   │       │   │   │       ├── supertypes.tab.len
+│   │   │   │       │   │   │       └── supertypes.tab.values.at
+│   │   │   │       │   │   └── lookups
+│   │   │   │       │   │       ├── counters.tab
+│   │   │   │       │   │       ├── file-to-id.tab
+│   │   │   │       │   │       ├── file-to-id.tab_i
+│   │   │   │       │   │       ├── file-to-id.tab_i.len
+│   │   │   │       │   │       ├── file-to-id.tab.keystream
+│   │   │   │       │   │       ├── file-to-id.tab.keystream.len
+│   │   │   │       │   │       ├── file-to-id.tab.len
+│   │   │   │       │   │       ├── file-to-id.tab.values.at
+│   │   │   │       │   │       ├── id-to-file.tab
+│   │   │   │       │   │       ├── id-to-file.tab_i
+│   │   │   │       │   │       ├── id-to-file.tab_i.len
+│   │   │   │       │   │       ├── id-to-file.tab.keystream
+│   │   │   │       │   │       ├── id-to-file.tab.keystream.len
+│   │   │   │       │   │       ├── id-to-file.tab.len
+│   │   │   │       │   │       ├── id-to-file.tab.values.at
+│   │   │   │       │   │       ├── lookups.tab
+│   │   │   │       │   │       ├── lookups.tab_i
+│   │   │   │       │   │       ├── lookups.tab_i.len
+│   │   │   │       │   │       ├── lookups.tab.keystream
+│   │   │   │       │   │       ├── lookups.tab.keystream.len
+│   │   │   │       │   │       ├── lookups.tab.len
+│   │   │   │       │   │       └── lookups.tab.values.at
+│   │   │   │       │   └── last-build.bin
+│   │   │   │       ├── classpath-snapshot
+│   │   │   │       │   └── shrunk-classpath-snapshot.bin
+│   │   │   │       └── local-state
+│   │   │   ├── libs
+│   │   │   │   └── server.jar
+│   │   │   ├── reports
+│   │   │   │   └── problems
+│   │   │   │       └── problems-report.html
+│   │   │   └── tmp
+│   │   │       └── shadowJar
+│   │   │           └── MANIFEST.MF
 │   │   ├── build.gradle.kts
 │   │   ├── gradle
 │   │   │   └── wrapper
@@ -374,10 +630,18 @@ The repository is organized as follows:
 │   │                   │   └── StatusJson.kt
 │   │                   └── ServerConfig.kt
 │   └── raspberry-sensors-logic
-│       ├── accelerometer_sensor.py
-│       ├── electrode_sensor.py
-│       ├── ppg_sensor.py
-│       └── termometrer_sensor.py
+│       ├── config.py
+│       ├── gyroscope.c
+│       ├── Makefile
+│       ├── orchestrator.py
+│       ├── ppg_sensor.c
+│       ├── requirements.txt
+│       └── temp_sensor.c
+├── README.md
+└── tree.txt
+
+943 directories, 2110 files
+
 ```
 
 ### Source Code Organization
@@ -483,4 +747,4 @@ All team members collaborated on system design, testing, and overall project int
 
 * **Project Repository**: (https://github.com/Sim0Batt/Loopy).
 * **Presentation Slides**: Available in the `documentation/` folder.
-* **Demo Video**: [YouTube Link](link_to_video).
+* **Demo Video**: [YouTube Link](https://youtu.be/jCYuJQEsTf8).

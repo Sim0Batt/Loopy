@@ -203,7 +203,7 @@ class MainActivity : BaseActivity() {
                 "Sedentary" -> (basal * 1.2).toInt().toString()
                 "Light" -> (basal * 1.375).toInt().toString()
                 "Moderate" -> (basal * 1.55).toInt().toString()
-                "Intense" -> (basal * 1.725).toInt().toString()
+                "Intense" -> (basal * 1.93).toInt().toString()
                 else -> (basal * 1.2).toInt().toString()
             }
         }catch (e: Exception){

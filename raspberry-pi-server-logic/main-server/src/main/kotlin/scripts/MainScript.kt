@@ -1,5 +1,7 @@
 package scripts
 
+import kotlinx.serialization.json.Json
+import server.inputJsons.SaveDataJson
 import java.util.concurrent.TimeUnit
 
 object MainScript {
@@ -8,19 +10,19 @@ object MainScript {
     private const val ORCHESTRATOR_PATH = "/home/loopy/sensors-logic/orchestrator.py"
     private const val SENSOR_TIMEOUT_SECONDS = 60L
 
-    fun executeAllSensors(): String{
+    fun executeAllSensors(): SaveDataJson{
         var process: Process? = null
         try {
             val processBuilder = ProcessBuilder(PYTHON_BIN, ORCHESTRATOR_PATH)
             processBuilder.redirectErrorStream(false)
             process = processBuilder.start()
-            val completed = process.waitFor(SENSOR_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            if(!completed) return "failure"
-            return if(process.exitValue() == 0) "success" else "failure"
+            process.waitFor(SENSOR_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            val output = process.inputStream.bufferedReader().readText()
+            return Json.decodeFromString<SaveDataJson>(output)
         } catch (e: Exception) {
             println("Python execution failed: ${e.message}")
             e.printStackTrace()
-            return "failure"
+            throw e
         } finally {
             process?.destroy()
         }

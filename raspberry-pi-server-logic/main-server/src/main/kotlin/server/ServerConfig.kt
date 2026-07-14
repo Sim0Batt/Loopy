@@ -10,6 +10,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -54,23 +55,24 @@ fun Application.module() {
     routing {
         staticResources("static", "static")
         post("/saveData") {
-            val input = call.receive<SaveDataJson>()
-            println{"Received: \n${input}"}
-            call.response.header("Content-Type", "application/json")
-            QueryManagement.saveDatas(DatabaseConfig.getConnection(), input)
-            call.respondText("Data Saved")
+            try{
+                QueryManagement.saveDatas(DatabaseConfig.getConnection(), MainScript.executeAllSensors())
+                call.respondText("SUCCESS")
+            }catch(e: Exception){
+                e.printStackTrace()
+                call.respondText("Error During Data Save: ${e.message}")
+            }
         }
 
         get("/getDatas") {
-            call.response.header("Content-Type", "application/json")
             call.respondText(QueryManagement.getDatas(DatabaseConfig.getConnection()).toString())
         }
 
         get("/status"){
-            val completed = MainScript.executeAllSensors()
-            if(completed == "success"){
+            try{
+                val completed = MainScript.executeAllSensors()
                 call.respondText("SUCCESS")
-            }else{
+            }catch (e: Exception){
                 call.respondText("FAILURE")
             }
         }
@@ -111,32 +113,20 @@ fun Application.module() {
             }
         }
 
-        get ("/saveStatus") {
-            val mainStatus = MainScript.executeAllSensors()
-            var resultStatusJson: StatusJson
-            if(mainStatus == "success"){
-                resultStatusJson = StatusJson(
+        get ("/getStatus") {
+            try{
+                MainScript.executeAllSensors()
+                val resultStatusJson = StatusJson(
                     "OK",
                     "OK",
                     "OK",
                     "OK",
                     LocalDateTime.now().toString(),
                 )
-            }else{
-                resultStatusJson = StatusJson(
-                    if(MainScript.executeAccelerometerSensor() == "success") "OK" else "NA",
-                    if(MainScript.executeThermometerSensor() == "success") "OK" else "NA",
-                    if(MainScript.executePPGSensor() == "success") "OK" else "NA",
-                    if(MainScript.executeElectrodeSensor() == "success") "OK" else "NA",
-                    LocalDateTime.now().toString(),
-                )
+                call.respondText(resultStatusJson.toString())
+            }catch (e: Exception) {
+                call.respondText("FAILURE")
             }
-
-            client.post("http://192.168.1.12:8080/saveStatus/1"){
-                contentType(ContentType.Application.Json)
-                setBody(resultStatusJson)
-            }
-
         }
     }
 }

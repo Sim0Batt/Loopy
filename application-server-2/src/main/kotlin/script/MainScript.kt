@@ -26,7 +26,7 @@ val client = HttpClient (CIO) {
 object MainScript {
 
     suspend fun generateCsv(userId: Int){
-        val csvPath = "/home/ubuntu/MLLoopy/csvs/result$userId.csv"
+        val csvPath = "/home/simone/MLLoopy/csvs/result$userId.csv"
         val outputFile = File(csvPath)
 
         val data = client.get("http://0.0.0.0:18034/data/csv/$userId").body<CsvDataJson>()
@@ -45,7 +45,7 @@ object MainScript {
     fun executePythonScript(userId: String) {
         var process: Process? = null
         try {
-            val scriptPath = "/home/ubuntu/MLLoopy/predict.py"
+            val scriptPath = "/home/simone/MLLoopy/predict.py"
             val processBuilder = ProcessBuilder(
                 "/usr/bin/python3",
                 scriptPath,

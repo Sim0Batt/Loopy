@@ -182,7 +182,7 @@ class MainActivity : BaseActivity() {
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
         }catch (e: Exception){
-            Log.d("HomePage", "Error during graphs download")
+            Log.e("HomePage", "Error during graphs download", e)
         }
         return tmp
     }
@@ -207,7 +207,7 @@ class MainActivity : BaseActivity() {
                 else -> (basal * 1.2).toInt().toString()
             }
         }catch (e: Exception){
-            Log.d("HomePage", "Error during circle values calculation")
+            Log.e("HomePage", "Error during circle values calculation", e)
         }
     }
 

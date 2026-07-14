@@ -170,15 +170,15 @@ class MainActivity : BaseActivity() {
     private suspend fun downloadImagesBitmap(client: HttpClient, userId: Int): List<Bitmap> {
         val tmp: MutableList<Bitmap> = mutableListOf()
         try {
-            var serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/stress/$userId")
+            var serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}/generateGraph/stress/$userId")
             var imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/sleep/$userId")
+            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}/generateGraph/sleep/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
-            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}:8080/generateGraph/activity/$userId")
+            serverResponse = client.get("http://${APPLICATION_SERVER_2_IP}/generateGraph/activity/$userId")
             imageBytes = serverResponse.readBytes()
             tmp.add(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
         }catch (e: Exception){
@@ -189,8 +189,8 @@ class MainActivity : BaseActivity() {
 
     private suspend fun calculateCircleValues(client: HttpClient, recoveryText: TextView, heartRateText: TextView, userId : Int, userData: UserDataJson){
         try{
-            val app1Data = client.get("http://${APPLICATION_SERVER_1_IP}:8080/getDatas/$userId").body<ReturnDataJson>()
-            val app2Data = client.get("http://${APPLICATION_SERVER_2_IP}:8080/getSSAGData/$userId").body<ReturnSSAGDataJson>()
+            val app1Data = client.get("http://${APPLICATION_SERVER_1_IP}/getDatas/$userId").body<ReturnDataJson>()
+            val app2Data = client.get("http://${APPLICATION_SERVER_2_IP}/getSSAGData/$userId").body<ReturnSSAGDataJson>()
             heartRateText.text = app1Data.heartRate
 
             var basal = if(userData.gender == "M"){

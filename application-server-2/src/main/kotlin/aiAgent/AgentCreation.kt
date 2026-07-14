@@ -55,7 +55,7 @@ object AgentCreation {
         }
 
         return AIAgent(
-            promptExecutor = simpleGoogleAIExecutor("AIzaSyBcyR1F9_3d3pvQUJa1RhOA7s-MpylP5bw"),
+            promptExecutor = simpleGoogleAIExecutor("API_KEY_HERE"),
             llmModel = GoogleModels.Gemini2_5Flash,
             strategy = MockStrategy(),
             systemPrompt = generatePrompt(user, data, id)
